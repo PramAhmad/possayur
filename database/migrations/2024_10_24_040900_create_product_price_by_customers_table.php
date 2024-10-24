@@ -13,17 +13,18 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('product_variant', function (Blueprint $table) {
+        Schema::create('product_price_by_customers', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('product_id');
-            $table->unsignedBigInteger('variant_id');
-            $table->unsignedBigInteger('outlet_id');
-            $table->integer('qty');
-            $table->string('item_code');
-            $table->string('position');
-            $table->integer('additional_price');
-            $table->foreign('product_id')->references('id')->on('product')->onDelete('cascade');
             $table->timestamps();
+            $table->unsignedBigInteger('product_id');
+            $table->unsignedBigInteger('customer_id');
+            $table->unsignedBigInteger('outlet_id');
+            $table->decimal('price', 15, 2);
+            $table->date('start_date');
+            $table->date('end_date');
+            $table->foreign('product_id')->references('id')->on('product')->onDelete('cascade');
+            $table->foreign('customer_id')->references('id')->on('customer')->onDelete('cascade');
+            $table->foreign('outlet_id')->references('id')->on('outlets')->onDelete('cascade');
         });
     }
 
@@ -34,6 +35,6 @@ return new class extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('product_price_by_customers');
     }
 };

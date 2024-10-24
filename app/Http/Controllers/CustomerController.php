@@ -22,7 +22,8 @@ class CustomerController extends Controller
             ['name' => 'Dashboard', 'url' => route('dashboard.index'), 'active' => false],  
             ['name' => 'Customer', 'url' => route('customer.index'), 'active' => true]
         ];
-        $data['customer'] = Customer::all();
+        $data['customer'] = Customer::with('customerGroup','user')->get(); 
+
         return view('customer.index', $data);
     }
 
@@ -115,6 +116,8 @@ class CustomerController extends Controller
         ]);
    
         Customer::create([
+            'name' => $request->name,
+            'email' => $request->email,
             'is_active' => $request->is_active,
             'customer_group_id' => $request->customer_group_id,
             'user_id' => $user->id,
@@ -127,7 +130,9 @@ class CustomerController extends Controller
             'city' => $request->city,
             'state' => $request->state,
         ]);
+    
        } catch (\Throwable $th) {
+        // return $th;
         DB::rollBack();
               return redirect()->back()->with('error', 'Gagal menambahkan customer');
        }

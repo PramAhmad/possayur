@@ -66,7 +66,33 @@
                 </ul>
 
             </li>
+            <!-- transaksi purchase order -->
+            <li>
+                <a href="{{ route('purchaseorder.index') }}" class="navItem {{ (request()->is('purchaseorder*')) ? 'active' : '' }}">
+                    <span class="flex items
+                    -center">
+                        <iconify-icon class=" nav-icon" icon="heroicons-outline:shopping-bag"></iconify-icon>
+                        <span>{{ __('Purchase Order') }}</span>
+                    </span>
+                </a>
+                <ul class="sidebar-submenu first-letter:">
+                    <li class="navItem {{ request()->is('purchaseorder*') ? 'active' : '' }}">
+                        <a href="{{ route('purchaseorder.index') }}">Purchase Order</a>
+                    </li>
+                   
+                </ul>
+            </li>   
+
+
             <!-- Database -->
+            <li>
+                <a href="{{ route('product.index') }}" class="navItem {{ (request()->is('product*')) ? 'active' : '' }}">
+                    <span class="flex items-center">
+                        <iconify-icon class=" nav-icon" icon="iconoir:user"></iconify-icon>
+                        <span>{{ __('Product') }}</span>
+                    </span>
+                </a>
+            </li>
             <li>
                 <a href="{{ route('database-backups.index') }}" class="navItem {{ (request()->is('database-backups*')) ? 'active' : '' }}">
                     <span class="flex items-center">

@@ -40,86 +40,82 @@
                     <div class="inline-block min-w-full align-middle">
                         <div class="overflow-hidden ">
                             <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
-                            <thead class="bg-slate-200 dark:bg-slate-700">
-    <tr>
-        <th scope="col" class="table-th">
-            {{ __('Sl No') }}
-        </th>
-        <th scope="col" class="table-th">
-            {{ __('Logo') }}
-        </th>
-        <th scope="col" class="table-th">
-            {{ __('Name') }}
-        </th>
-        <th scope="col" class="table-th">
-            {{ __('Address') }}
-        </th>
-        <th scope="col" class="table-th">
-            {{ __('Phone') }}
-        </th>
-        <th scope="col" class="table-th">
-            {{ __('Description') }}
-        </th>
-        <th scope="col" class="table-th w-20">
-            {{ __('Action') }}
-        </th>
-    </tr>
-</thead>
-<tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
-    @forelse ($outlets as $outlet)
-    <tr>
-        <td class="table-td">
-            # {{ $outlet->id }}
-        </td>
-        <td class="table-td">
-            @if ($outlet->logo)
-                <img src="{{ asset('storage/' . $outlet->logo) }}" alt="{{ $outlet->name }}" class="w-10 h-10 object-cover">
-            @else
-                <span>{{ __('No Logo') }}</span>
-            @endif
-        </td>
-        <td class="table-td">
-            {{ $outlet->name }}
-        </td>
-        <td class="table-td">
-            {{ $outlet->address }}
-        </td>
-        <td class="table-td">
-            {{ $outlet->phone }}
-        </td>
-        <td class="table-td">
-            {{ Str::limit($outlet->description, 50) }} {{-- Menampilkan deskripsi singkat --}}
-        </td>
-        <td class="table-td">
-            <div class="flex space-x-3 rtl:space-x-reverse">
-                {{-- Edit, Delete actions --}}
-                @can('outlet update')
-                <a class="action-btn" href="{{ route('outlets.edit', ['outlet' => $outlet]) }}">
-                    <iconify-icon icon="heroicons:pencil-square"></iconify-icon>
-                </a>
-                @endcan
+                                <thead class="bg-slate-200 dark:bg-slate-700">
+                                    <tr>
+                                        <th scope="col" class="table-th">
+                                            {{ __('Sl No') }}
+                                        </th>
+                                        <th scope="col" class="table-th">
+                                            {{ __('Logo') }}
+                                        </th>
+                                        <th scope="col" class="table-th">
+                                            {{ __('Name') }}
+                                        </th>
+                                        <th scope="col" class="table-th">
+                                            {{ __('Address') }}
+                                        </th>
+                                        <th scope="col" class="table-th">
+                                            {{ __('Phone') }}
+                                        </th>
 
-                @can('outlet delete')
-                <form id="deleteForm{{ $outlet->id }}" method="POST" action="{{ route('outlets.destroy', $outlet) }}">
-                    @csrf
-                    @method('DELETE')
-                    <a class="action-btn cursor-pointer" onclick="sweetAlertDelete(event, 'deleteForm{{ $outlet->id }}')" type="submit">
-                        <iconify-icon icon="heroicons:trash"></iconify-icon>
-                    </a>
-                </form>
-                @endcan
-            </div>
-        </td>
-    </tr>
-    @empty
-    <tr class="border border-slate-100 dark:border-slate-900 relative">
-        <td class="table-cell text-center" colspan="7">
-            <img src="images/result-not-found.svg" alt="page not found" class="w-64 m-auto" />
-            <h2 class="text-xl text-slate-700 mb-8 -mt-4">{{ __('No results found.') }}</h2>
-        </td>
-    </tr>
-    @endforelse
-</tbody>
+                                        <th scope="col" class="table-th w-20">
+                                            {{ __('Action') }}
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
+                                    @forelse ($outlets as $outlet)
+                                    <tr>
+                                        <td class="table-td">
+                                            # {{ $outlet->id }}
+                                        </td>
+                                        <td class="table-td">
+                                            @if ($outlet->logo)
+                                            <img src="{{ asset('upload/outlets/' . $outlet->logo) }}" alt="{{ $outlet->name }}" class="w-10 h-10 object-cover">
+                                            @else
+                                            <span>{{ __('No Logo') }}</span>
+                                            @endif
+                                        </td>
+                                        <td class="table-td">
+                                            {{ $outlet->name }}
+                                        </td>
+                                        <td class="table-td">
+                                            {{ $outlet->address }}
+                                        </td>
+                                        <td class="table-td">
+                                            {{ $outlet->phone }}
+                                        </td>
+
+                                        <td class="table-td">
+                                            <div class="flex space-x-3 rtl:space-x-reverse">
+                                                {{-- Edit, Delete actions --}}
+                                                @can('outlet update')
+                                                <a class="action-btn" href="{{ route('outlets.edit', ['outlet' => $outlet]) }}">
+                                                    <iconify-icon icon="heroicons:pencil-square"></iconify-icon>
+                                                </a>
+                                                @endcan
+
+                                                @can('outlet delete')
+                                                <form id="deleteForm{{ $outlet->id }}" method="POST" action="{{ route('outlets.destroy', $outlet) }}">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <a class="action-btn cursor-pointer" onclick="sweetAlertDelete(event, 'deleteForm{{ $outlet->id }}')" type="submit">
+                                                        <iconify-icon icon="heroicons:trash"></iconify-icon>
+                                                    </a>
+                                                </form>
+                                                @endcan
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    @empty
+                                    <tr class="border border-slate-100 dark:border-slate-900 relative">
+                                        <td class="table-cell text-center" colspan="7">
+                                            <img src="images/result-not-found.svg" alt="page not found" class="w-64 m-auto" />
+                                            <h2 class="text-xl text-slate-700 mb-8 -mt-4">{{ __('No results found.') }}</h2>
+                                        </td>
+                                    </tr>
+                                    @endforelse
+                                </tbody>
 
                             </table>
                             <x-table-footer :per-page-route-name="'outlets.index'" :data="$outlets" />
@@ -137,11 +133,14 @@
             event.preventDefault();
             let form = document.getElementById(formId);
             Swal.fire({
-                title: '@lang('Are you sure ? ')',
+                title: '@lang('
+                Are you sure ? ')',
                 icon : 'question',
                 showDenyButton: true,
-                confirmButtonText: '@lang('Delete ')',
-                denyButtonText: '@lang('Cancel ')',
+                confirmButtonText: '@lang('
+                Delete ')',
+                denyButtonText: '@lang('
+                Cancel ')',
             }).then((result) => {
                 if (result.isConfirmed) {
                     form.submit();

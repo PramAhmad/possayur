@@ -10,6 +10,8 @@ class Customer extends Model
     use HasFactory;
     protected $table = 'customer';
     protected $fillable = [
+        'name',
+        'email',
         'is_active',
         'customer_group_id',
         'user_id',

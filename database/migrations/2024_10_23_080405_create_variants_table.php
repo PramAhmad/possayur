@@ -13,16 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('product_batches', function (Blueprint $table) {
+        Schema::create('variants', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('product_id');
-            $table->string('batch_no');
-            $table->integer('qty');
-            $table->integer('price');
-            $table->date('expired_date');
             $table->timestamps();
+            $table->string('name');
+            
         });
-           
     }
 
     /**
@@ -32,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('variants');
     }
 };

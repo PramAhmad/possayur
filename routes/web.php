@@ -21,6 +21,9 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\DatabaseBackupController;
 use App\Http\Controllers\GeneralSettingController;
 use App\Http\Controllers\OutletController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProductPriceByCustomer;
+use App\Http\Controllers\PurchaseOrderController;
 use App\Http\Controllers\SuplierController;
 
 require __DIR__ . '/auth.php';
@@ -59,5 +62,15 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
     Route::resource('customer_group', CustomerGroupController::class);
     Route::resource('customer', CustomerController::class);
     Route::resource('supplier', SuplierController::class);
+
+    Route::resource('product', ProductController::class);
+    Route::get('product/{id}/customer',[ProductPriceByCustomer::class,'index'])->name('product.customer.index');
+    Route::get('product/{id}/customer/create',[ProductPriceByCustomer::class,'create'])->name('product.customer.create');
+    Route::post('product/{id}/customer',[ProductPriceByCustomer::class,'store'])->name('product.customer.store');
+    Route::get('product/{id}/customer/{customer_id}/edit',[ProductPriceByCustomer::class,'edit'])->name('product.customer.edit');
+    Route::put('product/{id}/customer/{customer_id}',[ProductPriceByCustomer::class,'update'])->name('product.customer.update');
+    Route::delete('product/{id}/customer/{customer_id}',[ProductPriceByCustomer::class,'destroy'])->name('product.customer.destroy');
+    
+    Route::resource('purchaseorder', PurchaseOrderController::class);
 });
 
