@@ -18,6 +18,7 @@ class PurchaseOrder extends Model
         'total_discount',
         'total_tax',
         'total_cost',
+        
         'order_tax_rate',
         'order_tax',
         'order_discount',
@@ -43,5 +44,15 @@ class PurchaseOrder extends Model
     public function outlet()
     {
         return $this->belongsTo(Outlet::class);
+}
+        public function productPurchase()
+    {
+        return $this->hasMany(ProductPurchase::class);
     }
+    public function products()
+    {
+        return $this->belongsToMany(Product::class, 'product_purchase', 'purchase_id', 'product_id')->withPivot('quantity', 'unit_price', 'net_cost', 'total_cost');
+    }
+
+
 }

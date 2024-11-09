@@ -1,0 +1,49 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class SalesOrder extends Model
+{
+    use HasFactory;
+    protected $fillable = [
+        'reference_no',
+        'paid_amount',
+        'grandtotal',   
+        'customer_id',
+        'outlet_id',
+        'user_id',
+        'order_date',
+        'due_date',
+        'status',
+        'total_price',
+        'total_qty',
+        'discount',
+        'tax',
+        'grand_total',
+        'note',
+    ];
+
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class);
+    }
+
+    public function outlet()
+    {
+        return $this->belongsTo(Outlet::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function products()
+    {
+        return $this->hasMany(ProductSalesOrder::class);
+    }   
+
+}

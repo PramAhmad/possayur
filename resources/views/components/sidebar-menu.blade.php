@@ -82,7 +82,24 @@
                    
                 </ul>
             </li>   
+            <li>
+                <a href="{{ route('purchaseorder.index') }}" class="navItem {{ (request()->is('purchaseorder*')) ? 'active' : '' }}">
+                    <span class="flex items
+                    -center">
+                        <iconify-icon class=" nav-icon" icon="heroicons-outline:shopping-bag"></iconify-icon>
+                        <span>{{ __('Sales Order') }}</span>
+                    </span>
+                </a>
+                <ul class="sidebar-submenu first-letter:">
+                    <li class="navItem {{ request()->is('salesorder*') ? 'active' : '' }}">
+                        <a href="{{ route('salesorder.index') }}">Kasir</a>
+                    </li>
+                   
+                </ul>
+            </li>   
 
+
+            
 
             <!-- Database -->
             <li>

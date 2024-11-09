@@ -90,6 +90,7 @@ class ProductPriceByCustomer extends Controller
         $customer = Customer::whereNotIn('id', $existingCustomerIds)->get();
         $product = Product::find($id);
         $outlets = Outlet::all();
+        // ud
 
         return view('product.customer.create', [
             'id' => $id,
@@ -134,7 +135,6 @@ class ProductPriceByCustomer extends Controller
         ]);
     
         try {
-            // Create a new record with only the specified fields
             ModelsProductPriceByCustomer::create($request->only([
                 'product_id',
                 'customer_id',
@@ -143,8 +143,10 @@ class ProductPriceByCustomer extends Controller
                 'start_date',
                 'end_date',
             ]));
+            // update product is_difprice
+            $product = Product::find($request->product_id);
+            $product->is_difprice = "1";
         } catch (\Exception $e) {
-            // Log the exception instead of dumping it
             \Log::error('Error creating Product Price By Customer: ' . $e->getMessage());
             
             return redirect()->back()->with('error', 'Terjadi kesalahan saat menyimpan data. Silakan coba lagi.');

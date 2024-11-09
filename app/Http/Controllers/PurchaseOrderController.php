@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Outlet;
 use App\Models\Product;
+use App\Models\ProductPurchase;
 use App\Models\PurchaseOrder;
 use App\Models\Suplier;
 use Illuminate\Http\Request;
@@ -46,7 +47,7 @@ class PurchaseOrderController extends Controller
                 AllowedFilter::partial('reference_no'),
                 AllowedFilter::partial('status'),      
             ])
-            ->with(['supplier', 'user', 'outlet']) 
+            ->with(['supplier', 'user', 'outlet','products']) 
             ->where('reference_no', 'like', "%$q%") 
             ->latest() 
             ->paginate($perPage) 
@@ -113,10 +114,10 @@ class PurchaseOrderController extends Controller
     {
         $request->validate([
             'outlet_id' => 'required|exists:outlets,id',
-            'suplier_id' => 'required|exists:supliers,id',
+            'suplier_id' => 'required|exists:supplier,id',
             'note' => 'required|string',
             'product_id' => 'required|array',
-            'product_id.*' => 'required|exists:products,id',
+            'product_id.*' => 'required|exists:product,id',
             'quantity' => 'required|array',
             'quantity.*' => 'required|integer',
         ],[
@@ -133,37 +134,52 @@ class PurchaseOrderController extends Controller
             'product_id.required' => 'The product field is required.',
             'quantity.required' => 'The quantity field is required.',
         ]);
-
+        // dd($request->all());
         try{
             DB::beginTransaction();
-            PurchaseOrder::create([
+            $purchase = PurchaseOrder::create([
                 'reference_no' => 'PO-'.time(),
                 'user_id' => auth()->id(),
                 'outlet_id' => $request->outlet_id,
-                'suplier_id' => $request->suplier_id,
+                'supplier_id' => $request->suplier_id,
                 'note' => $request->note,
                 'status' => 'pending',
+                'payment_status' => 'unpaid',
                 'total_qty' => array_sum($request->quantity),
                 'total_cost' => 0,
                 'grand_total' => 0,
             ]);
 
-            $purchaseOrder = PurchaseOrder::latest()->first();
-            for ($i=0; $i < count($request->product_id); $i++) { 
+            for ($i = 0; $i < count($request->product_id); $i++) {
                 $product = Product::find($request->product_id[$i]);
-                $purchaseOrder->products()->attach($product->id, [
+              ProductPurchase::create([
+                    'purchase_id' => $purchase->id,
+                    'product_id' => $request->product_id[$i],
                     'quantity' => $request->quantity[$i],
-                    'cost' => $product->cost_price,
+                    'unit_price' => $product->selling_price,
+                    'net_cost' => $product->cost_price,
                     'total_cost' => $product->cost_price * $request->quantity[$i],
                 ]);
-                $purchaseOrder->update( [
-                    'total_cost' => $purchaseOrder->total_cost + ($product->cost_price * $request->quantity[$i]),
-                    'grand_total' => $purchaseOrder->total_cost,
-                ]);
+               
             }
+        
+            $totalCost = ProductPurchase::where('purchase_id', $purchase->id)->sum('total_cost');
+            $orderTax = $totalCost * $request->order_tax_rate / 10 ;
+            $orderDiscount = $totalCost * $request->order_discount / 10;
+            $grandTotal = $totalCost + $orderTax - $orderDiscount + $request->shipping_cos;
+            
+            $purchase->update([
+                'total_cost' => $totalCost,
+                'order_tax_rate' => $request->order_tax_rate,
+                'order_tax' => $orderTax,
+                'order_discount' => $orderDiscount,
+                'shipping_cost' => $request->shipping_cost,
+                'grand_total' => $grandTotal,
+            ]);
+
         }catch(\Exception $e){
             DB::rollBack();
-            return $e;
+            dd($e->getMessage());
             return redirect()->back()->with('error', $e->getMessage());
         }    
         DB::commit();
@@ -178,7 +194,10 @@ class PurchaseOrderController extends Controller
      */
     public function show($id)
     {
-        //
+
+        $data['purchase'] = PurchaseOrder::with('supplier', 'user', 'outlet', 'products')->findOrFail($id);
+        // return $data;
+        return view('purchaseorder.show',$data);
     }
 
     /**
@@ -189,7 +208,43 @@ class PurchaseOrderController extends Controller
      */
     public function edit($id)
     {
-        //
+        $purchaseOrder = PurchaseOrder::with('supplier', 'user', 'outlet', 'products')->findOrFail($id);
+        $breadcrumbItems = [
+            [
+                'name' => 'Settings',
+                'url' => '/general-settings',
+                'active' => false
+            ],
+            [
+                'name' => 'Purchase Order',
+                'url' => route('purchaseorder.index'),
+                'active' => false
+            ],
+            [
+                'name' => 'Edit',
+                'url' => route('purchaseorder.edit', $id),
+                'active' => true
+            ],
+        ];
+        $pageTitle = 'Edit Purchase Order';
+        $user = auth()->user();
+        if ($user->getRoleNames()[0] == 'super-admin') {
+            $outlets = Outlet::all();
+        } else {
+            $outlets = Outlet::where('id', auth()->user()->outlet_id)->get();
+        }
+
+        $suppliers = Suplier::all();
+        $products = Product::all();
+        return view('purchaseorder.edit', [
+            'purchaseOrder' => $purchaseOrder,
+            'breadcrumbItems' => $breadcrumbItems,
+            'pageTitle' => $pageTitle,
+            'outlets' => $outlets,
+            'suppliers' => $suppliers,
+            'products' => $products,
+        ]);
+        
     }
 
     /**

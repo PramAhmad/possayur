@@ -21,10 +21,13 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\DatabaseBackupController;
 use App\Http\Controllers\GeneralSettingController;
 use App\Http\Controllers\OutletController;
+use App\Http\Controllers\PointOfSalesController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductPriceByCustomer;
 use App\Http\Controllers\PurchaseOrderController;
+use App\Http\Controllers\SalesOrderControllre;
 use App\Http\Controllers\SuplierController;
+use App\Models\SalesOrder;
 
 require __DIR__ . '/auth.php';
 
@@ -72,5 +75,15 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
     Route::delete('product/{id}/customer/{customer_id}',[ProductPriceByCustomer::class,'destroy'])->name('product.customer.destroy');
     
     Route::resource('purchaseorder', PurchaseOrderController::class);
+    Route::get('pos/{outletuuid}', [PointOfSalesController::class, 'index'])->name('pos.index');
+
+    Route::get('sales/order', [PointOfSalesController::class, 'index'])->name('salesorder.index');
+    Route::get('pos/order/{id}', [PointOfSalesController::class, 'show'])->name('salesorder.show');
+
+    Route::post('pos/order', [PointOfSalesController::class, 'store'])->name('salesorder.store');
+
+
+    // sales order 
+    Route::get('sales/order/{id}', [SalesOrderControllre::class, 'index'])->name('salesorder.list');
 });
 
