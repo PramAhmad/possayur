@@ -35,6 +35,7 @@
                 request()->routeIs('brand.index') ||
                 request()->routeIs('unit.index') ||
                 request()->routeIs('customer_group.index') ||
+                request()->routeIs('coupon.index') ||
                 request()->routeIs('customer.index') ? 'active' : ''
             }}">
                 <a href="#" class="navItem">
@@ -47,6 +48,9 @@
                 <ul class="sidebar-submenu first-letter:">
                     <li class="navItem {{ request()->routeIs('category.index') ? 'active' : '' }}">
                         <a href="{{ route('category.index') }}">Category</a>
+                    </li>
+                    <li class="navItem {{ request()->routeIs('coupon.index') ? 'active' : '' }}">
+                        <a href="{{ route('coupon.index') }}">Coupon</a>
                     </li>
                     <li class="navItem {{ request()->routeIs('brand.index') ? 'active' : '' }}">
                         <a href="{{ route('brand.index') }}">Brand</a>

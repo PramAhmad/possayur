@@ -15,6 +15,7 @@ use App\Http\Controllers\UtilityController;
 use App\Http\Controllers\WidgetsController;
 use App\Http\Controllers\SetLocaleController;
 use App\Http\Controllers\ComponentsController;
+use App\Http\Controllers\CouponController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\CustomerGroupController;
 use App\Http\Controllers\PermissionController;
@@ -27,6 +28,7 @@ use App\Http\Controllers\ProductPriceByCustomer;
 use App\Http\Controllers\PurchaseOrderController;
 use App\Http\Controllers\SalesOrderControllre;
 use App\Http\Controllers\SuplierController;
+use App\Models\Coupon;
 use App\Models\SalesOrder;
 
 require __DIR__ . '/auth.php';
@@ -65,6 +67,7 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
     Route::resource('customer_group', CustomerGroupController::class);
     Route::resource('customer', CustomerController::class);
     Route::resource('supplier', SuplierController::class);
+    Route::resource('coupon',CouponController::class);
 
     Route::resource('product', ProductController::class);
     Route::get('product/{id}/customer',[ProductPriceByCustomer::class,'index'])->name('product.customer.index');
