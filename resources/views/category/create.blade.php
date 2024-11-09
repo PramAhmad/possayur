@@ -1,98 +1,90 @@
 <x-app-layout>
-    <div class="space-y-8">
-        <div>
-            <x-breadcrumb :page-title="$pageTitle" :breadcrumb-items="$breadcrumbItems" />
+    <div>
+        {{--Breadcrumb start--}}
+        <div class="mb-6">
+            <x-breadcrumb :breadcrumb-items="$breadcrumbItems" :page-title="$pageTitle" />
         </div>
+        {{--Breadcrumb end--}}
 
-        <div class="grid xl:grid-cols-2 grid-cols-1 gap-6">
+        {{--Create category form start--}}
+        <form method="POST" action="{{ route('category.store') }}" class="max-w-4xl m-auto" enctype="multipart/form-data">
+            @csrf
+            <div class="bg-white dark:bg-slate-800 rounded-md p-5 pb-6">
 
-    <!-- success section -->
-    @if (session('success'))
-    <div class="alert alert-success">
-        {{ session('success') }}
-    </div>
-    @endif
-            <div class="card xl:col-span-2">
-                <div class="card-body flex flex-col p-6">
-                    <header class="flex mb-5 items-center border-b border-slate-100 dark:border-slate-700 pb-5 -mx-6 px-6">
-                        <div class="flex-1">
-                            <div class="card-title text-slate-900 dark:text-white">Tambah Category</div>
-                        </div>
-                    </header>
-                    <div class="card-text h-full">
-                        <form class="space-y-4" method="post" action="{{route('category.store')}}" enctype="multipart/form-data">
-                            @csrf
-                            @method('POST')
-                            <div class="grid md:grid-cols-2 gap-7">
-                                <div class="input-area">
-                                    <label for="name" class="form-label">Nama Cateogry</label>
-                                    <input id="name" name="name" type="text" class="form-control" placeholder="Masukan Nama Category">
-                                    <!-- err display -->
-                                     @error('name')
-                                    <div class="text-red-500 mt-2 text-sm">
-                                        {{ $message }}
-                                    </div>
-                                     @enderror
-                                </div>
-                                <div class="input-area">
-                                    <label for="slug" class="form-label">Slug</label>
-                                    <input id="slug" name="slug" type="text" class="form-control" placeholder="Masukan Nama Slug">
-                                    <!-- err display -->
-                                     @error('slug')
-                                    <div class="text-red-500 mt-2 text-sm">
-                                        {{ $message }}
-                                    </div>
-                                    @enderror
-                                </div>
-                                <!-- image -->
-                                <div class="input-area">
-                                    <label for="image" class="form-label">Image</label>
-                                    <input id="image" name="image" type="file" class="form-control" placeholder="Masukan Gambar">
-                                    <div class="preview w-20 h-20 mt-2">
-                                        <img src="" alt="" class="w-full h-full object-cover">
-                                    </div>
-                                </div>
-                                
+                <div class="grid sm:grid-cols-2 gap-x-8 gap-y-4">
 
-                                <!-- preview image -->
+                    {{--Outlet select--}}
+                    <div class="input-area">
+                        <label for="outlet_id" class="form-label">{{ __('Outlet') }}</label>
+                        <select name="outlet_id" id="outlet_id" class="form-control">
+                            <option value="">{{ __('Select Outlet') }}</option>
+                            @foreach ($outlets as $outlet)
+                                <option value="{{ $outlet->id }}">{{ $outlet->name }}</option>
+                            @endforeach
+                        </select>
+                        <x-input-error :messages="$errors->get('outlet_id')" class="mt-2"/>
+                    </div>
 
-                                <div class="mb-2 w-full">
-                                    <label for="textMsg" class="form-label">Description</label>
-                                    <textarea name="description" id="textMsg" rows="5" class="form-control" placeholder="Masukan Deskripsi"></textarea>
-                                    <!-- err display -->
-                                     @error('description')
-                                    <div class="text-red-500 mt-2 text-sm">
-                                        {{ $message }}
-                                    </div>
-                                    @enderror
-                                </div>
+                    {{--Name input--}}
+                    <div class="input-area">
+                        <label for="name" class="form-label">{{ __('Name') }}</label>
+                        <input name="name" type="text" id="name" class="form-control" 
+                               placeholder="{{ __('Enter category name') }}" value="{{ old('name') }}" required>
+                        <x-input-error :messages="$errors->get('name')" class="mt-2"/>
+                    </div>
 
-                            </div>
-                            <button type="submit" class="btn  btn-dark mt-3">Submit</button>
-                            <!-- kembali -->
-                            <a href="{{ route('category.index') }}" class="btn py-3 btn-outline-dark mt-3">Kembali</a>
-                        </form>
+                    {{--Slug input--}}
+                    <div class="input-area">
+                        <label for="slug" class="form-label">{{ __('Slug') }}</label>
+                        <input name="slug" type="text" id="slug" class="form-control"
+                               placeholder="{{ __('Enter slug') }}" value="{{ old('slug') }}" required>
+                        <x-input-error :messages="$errors->get('slug')" class="mt-2"/>
+                    </div>
+
+                    {{--Image input--}}
+                    <div class="input-area">
+                        <label for="image" class="form-label">{{ __('Image') }}</label>
+                        <input name="image" type="file" id="image" class="form-control">
+                        <x-input-error :messages="$errors->get('image')" class="mt-2"/>
+                    </div>
+
+                    {{--Description textarea--}}
+                    <div class="input-area sm:col-span-2">
+                        <label for="description" class="form-label">{{ __('Description') }}</label>
+                        <textarea name="description" id="description" class="form-control"
+                                  placeholder="{{ __('Enter description') }}">{{ old('description') }}</textarea>
+                        <x-input-error :messages="$errors->get('description')" class="mt-2"/>
+                    </div>
+
+                    {{--User input (hidden)--}}
+                    <input type="hidden" name="user_id" value="{{ auth()->id() }}">
+
+                    {{--Status select--}}
+                    <div class="input-area">
+                        <label for="is_active" class="form-label">{{ __('Status') }}</label>
+                        <select name="is_active" id="is_active" class="form-control">
+                            <option value="0">{{ __('Inactive') }}</option>
+                            <option value="1" selected>{{ __('Active') }}</option>
+                        </select>
+                        <x-input-error :messages="$errors->get('is_active')" class="mt-2"/>
                     </div>
                 </div>
+
+                <button type="submit" class="btn inline-flex justify-center btn-dark mt-4 w-full">
+                    {{ __('Save') }}
+                </button>
             </div>
-        </div>
+        </form>
     </div>
+
+    {{--Auto generate slug from name--}}
     <script>
-        const image = document.querySelector('.preview');
-        const inputImage = document.querySelector('#image');
-        //  hide preview image
-        image.style.display = 'none';
-        inputImage.addEventListener('change', function() {
-            image.style.display = 'block';
-            const file = this.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function() {
-                    const result = reader.result;
-                    image.querySelector('img').setAttribute('src', result);
-                }
-                reader.readAsDataURL(file);
-            }
+        document.getElementById('name').addEventListener('input', function() {
+            let slug = this.value.toLowerCase()
+                .replace(/[^a-z0-9-]/g, '-')
+                .replace(/-+/g, '-')
+                .replace(/^-|-$/g, '');
+            document.getElementById('slug').value = slug;
         });
     </script>
 </x-app-layout>

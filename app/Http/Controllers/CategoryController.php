@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\Outlet;
+use Spatie\QueryBuilder\QueryBuilder;
+
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
@@ -12,10 +15,54 @@ class CategoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $category = Category::all();
-        return view('category.index', compact('category'));
+        $breadcrumbItems = [
+            [
+                'name' => 'Dashboard',
+                'url' => route('dashboard.index'),
+                'active' => false
+            ],
+            [
+                'name' => 'Category',
+                'url' => route('category.index'),
+                'active' => true
+            ],
+        ];
+
+        $q = $request->get('q');
+        $perPage = $request->get('per_page', 10);
+        $sort = $request->get('sort');
+    
+        if(auth()->user()->hasRole('super-admin')){
+            $outlets = Outlet::all();
+            $category = QueryBuilder::for(Category::class)
+            ->allowedSorts(['name', 'slug', 'description'])
+            ->where('name', 'like', "%$q%")
+            ->latest()
+            ->paginate($perPage)
+            ->appends(['per_page' => $perPage, 'q' => $q, 'sort' => $sort]);
+
+        }else{
+            $outlets = Outlet::where('id', auth()->user()->outlet_id)->get();
+            $category = QueryBuilder::for(Category::class)
+            ->allowedSorts(['name', 'slug', 'description'])
+            ->where('name', 'like', "%$q%")
+            ->where('outlet_id', auth()->user()->outlet_id)
+            ->latest()
+            ->paginate($perPage)
+            ->appends(['per_page' => $perPage, 'q' => $q, 'sort' => $sort]);
+
+        }
+
+        return view('category.index', [
+            'categories' => $category,
+            'outlets' => $outlets,
+            'breadcrumbItems' => $breadcrumbItems,
+            'pageTitle' => 'Category',
+        ]);
+        
+
     }
 
     /**
@@ -32,6 +79,12 @@ class CategoryController extends Controller
             ['name' => 'Category', 'url' => route('category.index'), 'active' => false], 
             ['name' => 'Create Category', 'url' => route('category.create'), 'active' => true]
         ];
+        if(auth()->user()->hasRole('super-admin')){
+            $data['outlets'] = Outlet::all();   
+        }else{
+            $data['outlets'] = Outlet::where('id', auth()->user()->outlet_id)->get();
+        }
+
     
         return view('category.create' , $data);
     }

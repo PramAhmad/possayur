@@ -4,16 +4,8 @@
             <x-breadcrumb :page-title="$pageTitle" :breadcrumb-items="$breadcrumbItems" />
         </div>
 
-        <div class="grid xl:grid-cols-2 grid-cols-1 gap-6">
-
-    <!-- success section -->
-    @if (session('success'))
-    <div class="alert alert-success">
-        {{ session('success') }}
-    </div>
-    @endif
-
-            <div class="card xl:col-span-2">
+        <div class="flex justify-center"> <!-- Center the form container -->
+            <div class="card w-full max-w-4xl"> <!-- Set max-width for form card -->
                 <div class="card-body flex flex-col p-6">
                     <header class="flex mb-5 items-center border-b border-slate-100 dark:border-slate-700 pb-5 -mx-6 px-6">
                         <div class="flex-1">
@@ -66,11 +58,11 @@
                                     </div>
                                     @enderror
                                 </div>
-
                             </div>
-                            <button type="submit" class="btn  btn-dark mt-3">Update</button>
-                            <!-- kembali -->
-                            <a href="{{ route('category.index') }}" class="btn py-3 btn-outline-dark mt-3">Kembali</a>
+                            <div class="flex justify-between">
+                                <button type="submit" class="btn btn-dark mt-3">Update</button>
+                                <a href="{{ route('category.index') }}" class="btn py-3 btn-outline-dark mt-3">Kembali</a>
+                            </div>
                         </form>
                     </div>
                 </div>

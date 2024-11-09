@@ -87,7 +87,7 @@
                 </ul>
             </li>   
             <li>
-                <a href="{{ route('purchaseorder.index') }}" class="navItem {{ (request()->is('purchaseorder*')) ? 'active' : '' }}">
+                <a href="{{ route('salesorder.index') }}" class="navItem {{ (request()->is('salesorder*')) ? 'active' : '' }}">
                     <span class="flex items
                     -center">
                         <iconify-icon class=" nav-icon" icon="heroicons-outline:shopping-bag"></iconify-icon>
@@ -101,7 +101,14 @@
                    
                 </ul>
             </li>   
-
+            <li>
+                <a href="{{ route('suratjalan.index') }}" class="navItem {{ (request()->is('suratjalan*')) ? 'active' : '' }}">
+                    <span class="flex items-center">
+                        <iconify-icon class=" nav-icon" icon="heroicons-outline:forward"></iconify-icon>
+                        <span>{{ __('Surat Jalan') }}</span>
+                    </span>
+                </a>
+            </li>
 
             
 

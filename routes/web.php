@@ -28,6 +28,7 @@ use App\Http\Controllers\ProductPriceByCustomer;
 use App\Http\Controllers\PurchaseOrderController;
 use App\Http\Controllers\SalesOrderControllre;
 use App\Http\Controllers\SuplierController;
+use App\Http\Controllers\SuratJalanController;
 use App\Models\Coupon;
 use App\Models\SalesOrder;
 
@@ -88,5 +89,8 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
 
     // sales order 
     Route::get('sales/order/{id}', [SalesOrderControllre::class, 'index'])->name('salesorder.list');
+
+    // surat jalan
+    Route::resource('suratjalan',SuratJalanController::class);
 });
 
