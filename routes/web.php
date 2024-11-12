@@ -92,5 +92,7 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
 
     // surat jalan
     Route::resource('suratjalan',SuratJalanController::class);
+    Route::get('/suratjalan/get-products/{salesOrderId}', [SuratJalanController::class, 'getProducts'])->name('suratjalan.getProducts');
+    
 });
 

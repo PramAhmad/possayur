@@ -22,7 +22,7 @@ return new class extends Migration
             $table->integer('unit_price');
             $table->integer('total_price');
             $table->foreign('surat_jalan_id')->references('id')->on('surat_jalans')->onDelete('cascade');
-            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
+            $table->foreign('product_id')->references('id')->on('product')->onDelete('cascade');
         });
     }
 

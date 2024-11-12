@@ -79,6 +79,9 @@ class PointOfSalesController extends Controller
                     'tax' => $item['tax'] ?? 0,
                     'total_price' => $item['qty'] * $item['price'], 
                 ]);
+                $product = Product::find($item['id']);
+                $product->update(['qty' => $product->qty - $item['qty']]);
+
             }
             // total qty 
             $total_qty = ProductSalesOrder::where('sales_order_id', $salesOrder->id)->sum('qty');

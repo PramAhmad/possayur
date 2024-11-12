@@ -274,6 +274,6 @@ class CouponController extends Controller
         return redirect()
             ->route('coupon.index')
             ->with('success', __('Coupon deleted successfully'));
-            
+
     }
 }
