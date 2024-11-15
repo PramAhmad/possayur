@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Coupon;
 use App\Models\Customer;
 use App\Models\Outlet;
 use App\Models\Product;
+use App\Models\ProductPriceByCustomer;
 use App\Models\ProductSalesOrder;
 use App\Models\SalesOrder;
 use Illuminate\Http\Request;
@@ -17,6 +19,18 @@ class PointOfSalesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function searchProducts(Request $request)
+{
+    $keyword = $request->get('keyword');
+    $products = Product::where('name', 'LIKE', '%' . $keyword . '%')->get();
+
+    return response()->json($products);
+}     public function getPriceByCustomer(Request $request)
+     {
+        $data = ProductPriceByCustomer::where('customer_id',$request->customer)->with('product')->get();
+
+        return response()->json($data);
+     }
     public function index()
     {
         $breadcrumbItems = [
@@ -29,6 +43,7 @@ class PointOfSalesController extends Controller
 
         $pageTitle = 'Point of Sales';
         $outlets = Outlet::paginate(5);
+
         return view('salesorder.index', [
             'breadcrumbItems' => $breadcrumbItems,
             'pageTitle' => $pageTitle,
@@ -114,18 +129,20 @@ class PointOfSalesController extends Controller
         ];
 
         $pageTitle = 'Point of Sales';
-        $products = Product::where('outlet_id', $id)->get();
+        $products = Product::where('outlet_id', $id)->with('unit')->get();
         $outlet = Outlet::find($id);
         $customer = Customer::whereHas('user', function($query) use ($id) {
             $query->where('outlet_id', $id);
         })->with('user')->get();
+        $coupon = Coupon::where('outlet_id', $id)->get();
         return view('salesorder.show', [
             'breadcrumbItems' => $breadcrumbItems,
             'pageTitle' => $pageTitle,
             'outlet' => $outlet,
             'products' => $products,
             'customers' => $customer,
-            'id' => $id
+            'id' => $id,
+            'coupons' => $coupon
         ]);
     }
 

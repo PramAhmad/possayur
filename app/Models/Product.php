@@ -23,9 +23,14 @@ class Product extends Model
     public function brand (){
         return $this->belongsTo(Brand::class);
     }
-    // has many product price by customer
+    public function unit()
+    {
+    return $this->belongsTo(Unit::class, 'unit_id');
+}
+
     public function productPriceByCustomer (){
         return $this->hasMany(ProductPriceByCustomer::class);
     }
+
     
 }

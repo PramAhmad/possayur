@@ -9,7 +9,7 @@
                         <div class="md:h-[186px] md:w-[186px] h-[140px] w-[140px] md:ml-0 md:mr-0 ml-auto mr-auto md:mb-0 mb-4 rounded-full ring-4
                                 ring-slate-100 relative">
                             <img src="{{ auth()->user()->getFirstMediaUrl('profile-image') ?:
-                            Avatar::create(auth()->user()->name)->setDimension(400)->setFontSize(240)->toBase64() }}" alt="" class="w-full h-full object-cover rounded-full">
+                            ''}}" alt="" class="w-full h-full object-cover rounded-full">
                             <a
                                 href="profile-setting"
                                 class="absolute right-2 h-8 w-8 bg-slate-50 text-slate-600 rounded-full shadow-sm flex flex-col items-center

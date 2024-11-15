@@ -55,6 +55,9 @@
                                             {{ __('Email') }}
                                         </th>
                                         <th scope="col" class="table-th ">
+                                            {{ __('Outlet') }}
+                                        </th>
+                                        <th scope="col" class="table-th ">
                                             {{ __('Member Since') }}
                                         </th>
                                         <th scope="col" class="table-th ">
@@ -74,8 +77,8 @@
                                         <td class="table-td">
                                             <div class="flex items-center">
                                                 <div class="flex-none">
-                                                    <div class="w-8 h-8 rounded-[100%] ltr:mr-3 rtl:ml-3">
-                                                        <img class="w-full h-full rounded-[100%] object-cover" src="{{ Avatar::create($user->name)->toBase64() }}" alt="image">
+                                                    <div class="w-10 h-10 rounded-[100%] ltr:mr-3 rtl:ml-3">
+                                                        <img class="w-full h-full rounded-[100%] object-cover" src="https://cdn3d.iconscout.com/3d/premium/thumb/boy-avatar-3d-icon-download-in-png-blend-fbx-gltf-file-formats--boys-male-man-pack-avatars-icons-5187865.png?f=webp" alt="image">
                                                     </div>
                                                 </div>
                                                 <div class="flex-1 text-start">
@@ -87,6 +90,9 @@
                                         </td>
                                         <td class="table-td">
                                             {{ $user->email }}
+                                        </td>
+                                        <td class="table-td">
+                                            {{ $user->outlet->name ?? '-' }}
                                         </td>
                                         <td class="table-td">
                                             {{ $user->created_at->diffForHumans() }}

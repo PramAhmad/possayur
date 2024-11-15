@@ -276,4 +276,10 @@ class CouponController extends Controller
             ->with('success', __('Coupon deleted successfully'));
 
     }
+
+    public function getCoupon(Request $request)
+    {
+        $coupon = Coupon::where('id', $request->coupon_id)->first();
+        return response()->json($coupon);
+    }
 }

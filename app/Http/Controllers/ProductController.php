@@ -6,17 +6,14 @@ use App\Models\Product;
 use App\Models\Outlet;
 use App\Models\Category;
 use App\Models\Brand;
+use App\Models\Unit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class ProductController extends Controller
 {
-    /**
-     * Display a listing of the product.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index(Request $request)
     {
         $breadcrumbsItems = [
@@ -39,7 +36,7 @@ class ProductController extends Controller
         $products = QueryBuilder::for(Product::class)
             ->allowedSorts(['name', 'selling_price', 'qty'])
             ->with(['category', 'brand', 'outlet'])
-            ->where('name', 'like', "%$q%")
+            ->where('name', 'like', value: "%$q%")
             ->latest()
             ->paginate($perPage)
             ->appends(['per_page' => $perPage, 'q' => $q, 'sort' => $sort]);
@@ -51,11 +48,7 @@ class ProductController extends Controller
         ]);
     }
     
-    /**
-     * Show the form for creating a new product.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function create()
     {
         $breadcrumbsItems = [
@@ -79,11 +72,12 @@ class ProductController extends Controller
         $outlets = Outlet::all();
         $categories = Category::all();
         $brands = Brand::all();
-
+        $unit = Unit::all();
         return view('product.create', [
             'outlets' => $outlets,
             'categories' => $categories,
             'brands' => $brands,
+            'unit' => $unit,
             'breadcrumbItems' => $breadcrumbsItems,
             'pageTitle' => 'Create Product'
         ]);
@@ -97,7 +91,6 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->all());
         $request->validate([
             'name' => 'required|string',
             'barcode' => 'required|string|unique:product,barcode',

@@ -52,6 +52,18 @@
                                 </option>
                             @endforeach
                         </select>
+                        <div class="input-area mt-3">
+                        <label for="role" class="form-label">{{ __('Outlet') }}</label>
+                        <select name="role" class="form-control">
+                            <option value="" selected disabled>
+                                {{ __('Select Outlet') }}
+                            </option>
+                            @foreach($outlets as $outlet)
+                                <option value="{{ $outlet->id }}">
+                                    {{ $outlet->name }}
+                                </option>
+                            @endforeach
+                        </select>
                         <iconify-icon class="absolute right-3 bottom-3 text-xl dark:text-white z-10"
                                       icon="material-symbols:keyboard-arrow-down-rounded"></iconify-icon>
                     </div>

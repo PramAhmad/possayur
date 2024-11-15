@@ -50,6 +50,7 @@ class UserController extends Controller
 
         $users = QueryBuilder::for(User::class)
             ->allowedSorts(['name', 'email','phone', 'post_code', 'city', 'country','outlet_id'])
+            ->with('outlet')
             ->where('name', 'like', "%$q%")
             ->orWhere('email', 'like', "%$q%")
             ->withoutAuthUser()
@@ -86,7 +87,11 @@ class UserController extends Controller
             ],
         ];
 
-        $oulet = Outlet::all();
+        if(auth()->user()->hasRole('super-admin')){
+            $oulet = Outlet::all();
+        }else{
+            $oulet = Outlet::where('id', auth()->user()->outlet_id)->get();
+        }
         $roles = Role::all();
         return view('users.create', [
             'roles' => $roles,
@@ -109,6 +114,7 @@ class UserController extends Controller
             + [
                 'password' => bcrypt($request->validated(['password'])),
                 'email_verified_at' => now(),
+                'outlet_id' => $request->validated('outlet_id')
             ]);
         $user->assignRole([$request->validated('role')]);
 
@@ -168,9 +174,15 @@ class UserController extends Controller
 
 
         $roles = Role::all();
+        if(auth()->user()->hasRole('super-admin')){
+            $oulet = Outlet::all();
+        }else{
+            $oulet = Outlet::where('id', auth()->user()->outlet_id)->get();
+        }
         return view('users.edit', [
             'user' => $user,
             'roles' => $roles,
+            'outlets' => $oulet,
             'breadcrumbItems' => $breadcrumbsItems,
             'pageTitle' => 'Edit User',
         ]);

@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         // crate table unit
-        Schema::create('unit', function (Blueprint $table) {
+        Schema::create('units', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('outlet_id')->nullable();
             $table->string('code');

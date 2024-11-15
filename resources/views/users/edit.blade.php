@@ -51,10 +51,29 @@
                                 </option>
                             @endforeach
                         </select>
+                        <x-input-error :messages="$errors->get('role')" class="mt-2"/>
                         <iconify-icon class="absolute right-3 bottom-3 text-xl dark:text-white z-10"
                                       icon="material-symbols:keyboard-arrow-down-rounded"></iconify-icon>
                     </div>
+
                     {{--Role input end--}}
+                    {{--Outlet input start--}}
+                    <div class="input-area">
+                        <label for="outlet" class="form-label">{{ __('Outlet') }}</label>
+                        <select name="outlet" class="form-control">
+                            <option value="" selected disabled>
+                                {{ __('Select Outlet') }}
+                            </option>
+                            @foreach($outlets as $outlet)
+                                <option value="{{ $outlet->id }}" @selected($user->outlet_id == $outlet->id)>
+                                    {{ $outlet->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <x-input-error :messages="$errors->get('outlet')" class="mt-2"/>
+                        <iconify-icon class="absolute right-3 bottom-3 text-xl dark:text-white z-10"
+                                      icon="material-symbols:keyboard-arrow-down-rounded"></iconify-icon>
+                    </div>
                 </div>
                 <button type="submit" class="btn inline-flex justify-center btn-dark mt-4 w-full">
                     {{ __('Save Changes') }}

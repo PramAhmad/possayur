@@ -31,7 +31,7 @@ return new class extends Migration
             $table->enum('is_difprice',[0,1])->default(0)->comment('0 = tidak difprice 1 = difprice');
             $table->enum('is_active',[0,1])->default(0)->comment('0 = tidak aktif 1 = aktif');
             $table->foreignId('category_id')->constrained('category');
-            $table->foreignId('brand_id')->constrained('brand');
+        $table->foreignId('brand_id')->constrained('brand');
             $table->foreign('outlet_id')->references('id')->on('outlets')->onDelete('set null');
             $table->timestamps();
         });

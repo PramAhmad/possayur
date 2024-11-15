@@ -176,7 +176,37 @@ class SuratJalanController extends Controller
      */
     public function edit($id)
     {
-        //
+        $breadcrumbItems = [
+            [
+                'name' => 'Surat Jalan',
+                'url' => route('suratjalan.index'),
+                'active' => false
+            ],
+            [
+                'name' => 'Edit',
+                'url' => route('suratjalan.edit', $id),
+                'active' => true
+            ],
+        ];
+        $suratJalan = SuratJalan::with(['salesorder.products.product','salesorder.outlet','salesorder.customer','productSuratJalans.product'])->findOrFail($id)->first();
+        if (auth()->user()->hasRole('super-admin')) {
+            $outlets = Outlet::where('id', auth()->user()->outlet_id)->get();
+            $salesOrder = SalesOrder::where('status', '=' ,'pending')->get();
+            $productSalesOrders = ProductSalesOrder::all();
+        }else{
+            $outlets = Outlet::all();
+            $salesOrder = SalesOrder::where('outlet_id', auth()->user()->outlet_id)->get();
+            $productSalesOrders = ProductSalesOrder::all();
+        }
+        // return $suratJalan;
+        return view('suratjalan.edit', [
+            'suratJalan' => $suratJalan,
+            'breadcrumbItems' => $breadcrumbItems,
+            'salesOrder' => $salesOrder,
+            'outlets' => $outlets,
+            'productSalesOrders' => $productSalesOrders,
+            'pageTitle' => 'Edit Surat Jalan',
+        ]);
     }
 
     /**
@@ -188,8 +218,46 @@ class SuratJalanController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        try {
+            $suratJalan = SuratJalan::findOrFail($id);
+            $suratJalan->update([
+                'sales_order_id' => $request->sales_order_id,
+                'packer' => $request->packer,
+                'driver' => $request->driver,
+                'due_date' => $request->due_date,
+                'total_qty' => $request->summary['total_adjusted_qty'] ?? 0, 
+                'grand_total' => $request->summary['total_adjusted_amount'] ?? 0,
+            ]);
+    
+            foreach($request->products as $product) {
+                $productSuratJalan = ProductSuratJalan::where('surat_jalan_id', $id)
+                    ->where('product_id', $product['product_id'])
+                    ->first();
+    
+                if ($productSuratJalan) {
+                    $productSuratJalan->update([
+                        'product_id' => $product['product_id'],
+                        'qty' => $product['adjusted_qty'],
+                        'unit_price' => $product['unit_price'],
+                        'total_price' => $product['adjusted_subtotal'],
+                    ]);
+                } else {
+                    ProductSuratJalan::create([
+                        'surat_jalan_id' => $id,
+                        'product_id' => $product['product_id'],
+                        'qty' => $product['adjusted_qty'],
+                        'unit_price' => $product['unit_price'],
+                        'total_price' => $product['adjusted_subtotal'],
+                    ]);
+                }
+            }
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    
+        return response()->json(['message' => 'Surat Jalan updated successfully']);
     }
+    
 
     /**
      * Remove the specified resource from storage.

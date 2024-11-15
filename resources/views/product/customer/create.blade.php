@@ -1,12 +1,9 @@
 <x-app-layout>
     <div>
-        {{--Breadcrumb start--}}
         <div class="mb-6">
-            {{--BreadCrumb--}}
             <x-breadcrumb :breadcrumb-items="$breadcrumbItems" :page-title="$pageTitle" />
         </div>
-        {{--Breadcrumb end--}}
-        <!-- catch all error -->
+
         @if ($errors->any())
         <div class="alert alert-danger">
             <ul>
@@ -17,16 +14,13 @@
         </div>
         @endif
 
-        {{--Create product form start--}}
         <form method="POST" action="{{ route('product.customer.store',['id'=>$id]) }}" class="max-w-4xl m-auto" enctype="multipart/form-data">
             @csrf
             
             <div class="bg-white dark:bg-slate-800 rounded-md p-5 pb-6">
-                <!-- input_hidden product_id -->
                 <input type="hidden" name="product_id" value="{{ $id }}">
                 <div class="grid sm:grid-cols-2 gap-x-8 gap-y-4">
 
-                    {{--Outlet select--}}
                     <div class="input-area">
                         <label for="outlet_id" class="form-label">{{ __('Outlet') }}</label>
                         <select name="outlet_id" id="outlet_id" class="form-control">
@@ -47,11 +41,6 @@
                         </select>
                         <x-input-error :messages="$errors->get('customer_id')" class="mt-2" />
                     </div>
-
-
-
-
-                    <!-- start and end date -->
                     <div class="input-area">
                         <label for="start_date" class="form-label">{{ __('Start Date') }}</label>
                         <input name="start_date" type="date" id="start_date" class="form-control"
@@ -65,7 +54,6 @@
                         <x-input-error :messages="$errors->get('end_date')" class="mt-2" />
                     </div>
                 </div>
-                <!-- price -->
                 <div class="grid sm:grid-cols-1 gap-x-8 gap-y-4 mt-3">
                     <div class="input-area">
                         <label for="price" class="form-label">{{ __('Price') }}</label>

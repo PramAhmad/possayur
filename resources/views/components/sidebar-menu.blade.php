@@ -1,13 +1,8 @@
-<!-- BEGIN: Sidebar -->
 <div class="sidebar-wrapper group w-0 hidden xl:w-[248px] xl:block">
     <div id="bodyOverlay" class="w-screen h-screen fixed top-0 bg-slate-900 bg-opacity-50 backdrop-blur-sm z-10 hidden">
     </div>
     <div class="logo-segment">
-
-        <!-- Application Logo -->
         <x-application-logo />
-
-        <!-- Sidebar Type Button -->
         <div id="sidebar_type" class="cursor-pointer text-slate-900 dark:text-white text-lg">
             <iconify-icon class="sidebarDotIcon extend-icon text-slate-900 dark:text-slate-200" icon="fa-regular:dot-circle"></iconify-icon>
             <iconify-icon class="sidebarDotIcon collapsed-icon text-slate-900 dark:text-slate-200" icon="material-symbols:circle-outline"></iconify-icon>
@@ -55,8 +50,8 @@
                     <li class="navItem {{ request()->routeIs('brand.index') ? 'active' : '' }}">
                         <a href="{{ route('brand.index') }}">Brand</a>
                     </li>
-                    <li class="navItem {{ request()->is('ecommerce-dashboard*') ? 'active' : '' }}">
-                        <a href="ecommerce-dashboard.html">Unit</a>
+                    <li class="navItem {{ request()->is('unit*') ? 'active' : '' }}">
+                        <a href="{{route('unit.index')}}">Unit</a>
                     </li>
                     <li class="navItem {{ request()->is('customer_group*') ? 'active' : '' }}">
                         <a href="{{route('customer_group.index')}}">Customer Group</a>
@@ -70,7 +65,6 @@
                 </ul>
 
             </li>
-            <!-- transaksi purchase order -->
             <li>
                 <a href="{{ route('purchaseorder.index') }}" class="navItem {{ (request()->is('purchaseorder*')) ? 'active' : '' }}">
                     <span class="flex items
@@ -90,7 +84,7 @@
                 <a href="{{ route('salesorder.index') }}" class="navItem {{ (request()->is('salesorder*')) ? 'active' : '' }}">
                     <span class="flex items
                     -center">
-                        <iconify-icon class=" nav-icon" icon="heroicons-outline:shopping-bag"></iconify-icon>
+                        <iconify-icon class=" nav-icon" icon="heroicons-outline:shopping-cart"></iconify-icon>
                         <span>{{ __('Sales Order') }}</span>
                     </span>
                 </a>
@@ -109,14 +103,10 @@
                     </span>
                 </a>
             </li>
-
-            
-
-            <!-- Database -->
             <li>
                 <a href="{{ route('product.index') }}" class="navItem {{ (request()->is('product*')) ? 'active' : '' }}">
                     <span class="flex items-center">
-                        <iconify-icon class=" nav-icon" icon="iconoir:user"></iconify-icon>
+                        <iconify-icon class=" nav-icon" icon="iconoir:gift"></iconify-icon>
                         <span>{{ __('Product') }}</span>
                     </span>
                 </a>
@@ -129,7 +119,6 @@
                     </span>
                 </a>
             </li>
-            <!-- Settings -->
             <li>
                 <a href="{{ route('general-settings.show') }}" class="navItem {{ (request()->is('general-settings*')) || (request()->is('users*')) || (request()->is('roles*')) || (request()->is('profiles*')) || (request()->is('permissions*')) ? 'active' : '' }}">
                     <span class="flex items-center">
@@ -138,10 +127,7 @@
                     </span>
                 </a>
             </li>
-            <!-- suplier -->
-
         </ul>
-        <!-- Upgrade Your Business Plan Card Start -->
         <div class="bg-slate-900 mb-10 mt-24 p-4 relative text-center rounded-2xl text-white" id="sidebar_bottom_wizard">
             <img src="/images/svg/rabit.svg" alt="" class="mx-auto relative -mt-[73px]">
             <div class="max-w-[160px] mx-auto mt-6">
@@ -156,7 +142,5 @@
                 </button>
             </div>
         </div>
-        <!-- Upgrade Your Business Plan Card Start -->
     </div>
 </div>
-<!-- End: Sidebar -->

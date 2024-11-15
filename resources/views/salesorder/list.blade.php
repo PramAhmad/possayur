@@ -1,10 +1,10 @@
 @extends('layouts.pos')
 @section('content')
 <div class="container mx-auto p-4">
-    <h2 class="text-2xl font-semibold text-cyan-600 mb-4">Sales Orders</h2>
+    <h2 class="text-2xl font-semibold text-sky-600 mb-4">Sales Orders</h2>
     <div class="overflow-x-auto">
-        <table class="min-w-full bg-white border  border-cyan-200 rounded-2xl shadow-lg ">
-            <thead class="bg-cyan-600 text-white rounded-t-xl">
+        <table class="min-w-full bg-white border  border-sky-200 rounded-2xl shadow-lg ">
+            <thead class="bg-sky-600 text-white rounded-t-xl">
                 <tr>
                     <th class="px-4 py-4 rounded-tl-xl">#</th>
                     <th class="px-4 py-2">Customer</th>
@@ -21,7 +21,7 @@
             </thead>
             <tbody>
                 @foreach($salesOrder as $order)
-                <tr class="border-b border-cyan-200">
+                <tr class="border-b border-sky-200">
                     <td class="px-4 py-4 text-center">
                         {{ $loop->iteration }}
                     </td>
@@ -46,7 +46,7 @@
                     <td class="px-4 py-2 text-center">
     <div class="flex space-x-2 justify-center">
         <!-- Edit button -->
-        <a href="" class="text-cyan-600 hover:text-cyan-900 p-2 border border-cyan-300 rounded-lg">
+        <a href="" class="text-sky-600 hover:text-sky-900 p-2 border border-sky-300 rounded-lg">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Z" />
                 <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 7.125L16.862 4.487" />

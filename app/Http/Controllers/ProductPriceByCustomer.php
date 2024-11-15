@@ -176,7 +176,36 @@ class ProductPriceByCustomer extends Controller
      */
     public function edit($id)
     {
-        //
+        $breadcrumbsItems = [
+            [
+                'name' => 'Settings',
+                'url' => '/general-settings',
+                'active' => false
+            ],
+            [
+                'name' => 'Product Price By Customer',
+                'url' => route('product.customer.index', ['id' => $id]),
+                'active' => false
+            ],
+            [
+                'name' => 'Edit Product Price By Customer',
+                'url' => route('product.customer.edit',['id' => $id]),
+                'active' => true
+            ],
+        ];
+        $data = ModelsProductPriceByCustomer::find($id);
+        $product = Product::find($data->product_id);
+        $customer = Customer::find($data->customer_id);
+        $outlets = Outlet::all();
+        return view('product.customer.edit', [
+            'id' => $id,
+            'data' => $data,
+            'product' => $product,
+            'customer' => $customer,
+            'outlets' => $outlets,
+            'breadcrumbItems' => $breadcrumbsItems,
+            'pageTitle' => 'Edit Product Price By Customer',
+        ]);
     }
 
     /**

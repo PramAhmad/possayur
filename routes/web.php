@@ -29,6 +29,7 @@ use App\Http\Controllers\PurchaseOrderController;
 use App\Http\Controllers\SalesOrderControllre;
 use App\Http\Controllers\SuplierController;
 use App\Http\Controllers\SuratJalanController;
+use App\Http\Controllers\UnitController;
 use App\Models\Coupon;
 use App\Models\SalesOrder;
 
@@ -69,6 +70,9 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
     Route::resource('customer', CustomerController::class);
     Route::resource('supplier', SuplierController::class);
     Route::resource('coupon',CouponController::class);
+    // coupon.get
+    Route::get('/this/coupon/get',[CouponController::class,'getCoupon'])->name('coupon.get');
+     Route::resource('unit',UnitController::class);
 
     Route::resource('product', ProductController::class);
     Route::get('product/{id}/customer',[ProductPriceByCustomer::class,'index'])->name('product.customer.index');
@@ -83,7 +87,8 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
 
     Route::get('sales/order', [PointOfSalesController::class, 'index'])->name('salesorder.index');
     Route::get('pos/order/{id}', [PointOfSalesController::class, 'show'])->name('salesorder.show');
-
+    Route::get('/search-products', [PointOfSalesController::class, 'searchProducts'])->name('salesorder.searchProducts');
+    Route::get('/price-by-customer', [PointOfSalesController::class, 'getPriceByCustomer'])->name('salesorder.getPriceByCustomer');
     Route::post('pos/order', [PointOfSalesController::class, 'store'])->name('salesorder.store');
 
 
