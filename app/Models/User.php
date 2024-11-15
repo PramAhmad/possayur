@@ -86,7 +86,7 @@ class User extends Authenticatable implements MustVerifyEmail, HasMedia
     {
         return $query->where('id', '!=', 1);
     }
-    public function outlet(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+public function outlet(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Outlet::class);
     }

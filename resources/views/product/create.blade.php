@@ -3,7 +3,7 @@
         <div class="mb-6">
             <x-breadcrumb :breadcrumb-items="$breadcrumbItems" :page-title="$pageTitle" />
         </div>
-        <form method="POST" action="{{ route('product.store') }}" class="max-w-4xl m-auto" enctype="multipart/form-data">
+        <form method="POST" action="{{ route('product.store') }}" class="max-w-7xl m-auto" enctype="multipart/form-data">
             @csrf
             <div class="bg-white dark:bg-slate-800 rounded-md p-5 pb-6">
                 <div class="grid sm:grid-cols-2 gap-x-8 gap-y-4">

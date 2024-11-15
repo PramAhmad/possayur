@@ -46,7 +46,13 @@
             </thead>
             <tbody>
                 @foreach ($products as $product)
-                <tr class="border-t">
+                <tr 
+                    class="border-t cursor-pointer hover:bg-gray-100"
+                    data-product-id="{{ $product->id }}"
+                    data-product-name="{{ $product->name }}"
+                    data-product-price="{{ $product->selling_price }}"
+                    data-product-image="{{ asset('upload/product/' . $product->image) }}"
+                >
                     <td class="px-4 py-2">
                         <img src="{{ asset('upload/product/' . $product->image) }}" class="w-16 h-16 object-cover rounded-md" alt="{{ $product->name }}">
                     </td>
@@ -78,7 +84,7 @@
                     </div>
                 </div>
             </div>
-            @endforeach
+            @endforeach 
         </div>
     </div>
 </div>
@@ -628,6 +634,8 @@
         tableMode.classList.remove('bg-white', 'text-blue-gray-500');
         gridMode.classList.add('bg-white', 'text-blue-gray-500');
     });
+ 
+
 </script>
 @endpush
 
