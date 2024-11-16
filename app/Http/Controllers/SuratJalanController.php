@@ -255,7 +255,7 @@ class SuratJalanController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     
-        return response()->json(['message' => 'Surat Jalan updated successfully']);
+        return redirect()->back()->with('success', 'Surat Jalan updated successfully');
     }
     
 

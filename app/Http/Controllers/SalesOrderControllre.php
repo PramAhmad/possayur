@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\SalesOrder;
 use Illuminate\Http\Request;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class SalesOrderControllre extends Controller
 {
@@ -12,10 +13,42 @@ class SalesOrderControllre extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($id)
+    public function index(Request $request)
     {
-        $salesOrder = SalesOrder::where('outlet_id', $id)->with('customer', 'outlet', 'user', 'products')->get();
-        return view('salesorder.list', data: compact('salesOrder','id'));
+        $breadcrumbItems = [
+            [
+                'name' => 'Dashboard',
+                'url' => route('dashboard.index'),
+                'active' => false
+            ],
+            [
+                'name' => 'Sales Order',
+                'url' => route('salesorder.index'),
+                'active' => true
+            ],
+        ];
+        $q = $request->get('q');
+        $perPage = $request->get('per_page', 10);
+        $sort = $request->get('sort');
+
+        if(auth()->user()->hasRole('super-admin')){
+            $salesOrder = QueryBuilder::for(SalesOrder::class)
+                ->allowedSorts(['reference_no', 'tanggal', 'outlet_id', 'customer_id', 'due_date','grand_total'])
+                ->where('reference_no', 'like', "%$q%")
+                ->with(['outlet', 'customer'])
+                ->latest()
+                ->paginate($perPage)
+                ->appends(['per_page' => $perPage, 'q' => $q, 'sort' => $sort]);
+
+        }else{
+            $salesOrder = SalesOrder::where('outlet_id', auth()->user()->outlet_id)->get();
+        }
+        // return $salesOrder;
+        return view('salesorder.index', [
+            'salesOrders' => $salesOrder,
+            'breadcrumbItems' => $breadcrumbItems,
+            'pageTitle' => 'Sales Order',
+        ]);
     }
 
     /**

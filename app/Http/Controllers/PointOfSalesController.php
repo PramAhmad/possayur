@@ -20,17 +20,18 @@ class PointOfSalesController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function searchProducts(Request $request)
-{
-    $keyword = $request->get('keyword');
-    $products = Product::where('name', 'LIKE', '%' . $keyword . '%')->get();
+    {
+        $keyword = $request->get('keyword');
+        $products = Product::where('name', 'LIKE', '%' . $keyword . '%')->get();
 
-    return response()->json($products);
-}     public function getPriceByCustomer(Request $request)
-     {
-        $data = ProductPriceByCustomer::where('customer_id',$request->customer)->with('product')->get();
+        return response()->json($products);
+    }
+    public function getPriceByCustomer(Request $request)
+    {
+        $data = ProductPriceByCustomer::where('customer_id', $request->customer)->with('product')->get();
 
         return response()->json($data);
-     }
+    }
     public function index()
     {
         $breadcrumbItems = [
@@ -44,7 +45,7 @@ class PointOfSalesController extends Controller
         $pageTitle = 'Point of Sales';
         $outlets = Outlet::paginate(5);
 
-        return view('salesorder.index', [
+        return view('pos.index', [
             'breadcrumbItems' => $breadcrumbItems,
             'pageTitle' => $pageTitle,
             'outlets' => $outlets,
@@ -70,19 +71,19 @@ class PointOfSalesController extends Controller
     public function store(Request $request)
     {
         // dd($request->all());
-     
 
-       try{
-        DB::beginTransaction();
-           $salesOrder =  SalesOrder::create([
+
+        try {
+            DB::beginTransaction();
+            $salesOrder =  SalesOrder::create([
                 'customer_id' => $request->customer,
                 'outlet_id' => $request->outlet,
-                'reference_no' =>  'SO-'.time(),
+                'reference_no' =>  'SO-' . time(),
                 'note' => $request->note ?? '-',
                 'status' => 'pending',
                 'paid_amount' =>   $request->cash,
-                'grandtotal' => $request->total,  
-                'user_id' => auth()->user()->id, 
+                'grandtotal' => $request->total,
+                'user_id' => auth()->user()->id,
             ]);
             foreach ($request->items as $item) {
                 ProductSalesOrder::create([
@@ -92,23 +93,20 @@ class PointOfSalesController extends Controller
                     'unit_price' => $item['price'],
                     'discount' => $item['discount'] ?? 0,
                     'tax' => $item['tax'] ?? 0,
-                    'total_price' => $item['qty'] * $item['price'], 
+                    'total_price' => $item['qty'] * $item['price'],
                 ]);
                 $product = Product::find($item['id']);
                 $product->update(['qty' => $product->qty - $item['qty']]);
-
             }
             // total qty 
             $total_qty = ProductSalesOrder::where('sales_order_id', $salesOrder->id)->sum('qty');
             $salesOrder->update(['total_qty' => $total_qty]);
-
-    
-       }catch(\Exception $e){
+        } catch (\Exception $e) {
             DB::rollBack();
-        dd($e->getMessage());
+            dd($e->getMessage());
             return redirect()->back()->with('error', $e->getMessage());
-       }
-         DB::commit();
+        }
+        DB::commit();
         return redirect()->route('salesorder.index')->with('success', 'Sales Order created successfully');
     }
 
@@ -131,11 +129,11 @@ class PointOfSalesController extends Controller
         $pageTitle = 'Point of Sales';
         $products = Product::where('outlet_id', $id)->with('unit')->get();
         $outlet = Outlet::find($id);
-        $customer = Customer::whereHas('user', function($query) use ($id) {
+        $customer = Customer::whereHas('user', function ($query) use ($id) {
             $query->where('outlet_id', $id);
         })->with('user')->get();
         $coupon = Coupon::where('outlet_id', $id)->get();
-        return view('salesorder.show', [
+        return view('pos.show', [
             'breadcrumbItems' => $breadcrumbItems,
             'pageTitle' => $pageTitle,
             'outlet' => $outlet,

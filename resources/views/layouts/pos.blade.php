@@ -283,7 +283,7 @@
 
         .bg-teal-900,
         .hover\:bg-teal-900:hover {
-            background-color: #004d40;
+            background-color:#0f172a;
         }
 
         .text-teal-50,
@@ -323,17 +323,17 @@
 
         .text-teal-700,
         .hover\:text-teal-700:hover {
-            color: #00796b;
+            color: #334155;
         }
 
         .text-teal-800,
         .hover\:text-teal-800:hover {
-            color: #00695c;
+            color: #1f2937;
         }
 
         .text-teal-900,
         .hover\:text-teal-900:hover {
-            color: #004d40;
+            color:#0f172a;
         }
 
         .nowrap {
@@ -403,9 +403,9 @@
             <!-- Navigation Links -->
             <ul class="flex flex-col space-y-2 mt-12">
                 <li>
-    <a href="{{ route('salesorder.show', ['id' => $id]) }}" class="flex items-center">
+    <a href="{{ route('pos.show', ['id' => $id]) }}" class="flex items-center">
         <span class="flex items-center justify-center h-12 w-12 rounded-2xl   hover:bg-sky-400
-                     {{ request()->routeIs('salesorder.show') ? 'bg-sky-300 shadow-lg text-white ' : 'text-sky-100' }}">
+                     {{ request()->routeIs('pos.show') ? 'bg-sky-300 shadow-lg text-white ' : 'text-sky-100' }}">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
             </svg>

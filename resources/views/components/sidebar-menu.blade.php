@@ -95,9 +95,16 @@
 
                 </a>
                 <ul class="sidebar-submenu first-letter:">
-                    <li class="navItem {{ request()->is('salesorder*') ? 'active' : '' }}">
-                        <a href="{{ route('salesorder.index') }}">Kasir</a>
+                <li class="navItem {{
+                        request()->is('pos*') ? 'active' : ''
+                    }}">
+                        <a href="/sales/order/list">Point Of Sales</a>
                     </li>
+                    <li class="navItem {{ request()->is('salesorder*') ? 'active' : '' }}">
+                        <a href="{{ route('salesorder.index') }}">Sales Order</a>
+                    </li>
+                    
+                   
                     <!-- surat jalan -->
                     <li class="navItem {{
                         request()->is('suratjalan*') ? 'active' : ''

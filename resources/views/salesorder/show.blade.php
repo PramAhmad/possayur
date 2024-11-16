@@ -34,8 +34,8 @@
 <!-- Products Section -->
 <div class="h-full overflow-hidden mt-4">
     <!-- Table View -->
-    <div id="tableView" class="hidden">
-        <table class="table-auto w-full bg-white rounded-lg shadow">
+    <div id="tableView" class="hidden px-5">
+        <table class="table-auto w-full bg-white rounded-lg shadow ">
             <thead>
                 <tr class="bg-gray-200 text-gray-700">
                     <th class="px-4 py-2">Image</th>
@@ -392,7 +392,7 @@
 
             if (customerId) {
                 $.ajax({
-                    url: "{{ route('salesorder.getPriceByCustomer') }}",
+                    url: "{{ route('pos.getPriceByCustomer') }}",
                     type: "GET",
                     data: {
                         _token: "{{ csrf_token() }}",
@@ -488,7 +488,7 @@
             const outlet = "{{ $outlet->id }}";
 
             $.ajax({
-                url: "{{ route('salesorder.store') }}",
+                url: "{{ route('pos.store') }}",
                 type: "POST",
                 data: {
                     _token: "{{ csrf_token() }}",
@@ -528,7 +528,7 @@
         $('#search-input').on('keyup', function() {
             let keyword = $(this).val();
             $.ajax({
-                url: `{{route('salesorder.searchProducts')}}`,
+                url: `{{route('pos.searchProducts')}}`,
                 type: 'GET',
                 data: {
                     keyword: keyword

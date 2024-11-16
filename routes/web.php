@@ -87,17 +87,17 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
     Route::delete('product/{id}/customer/{customer_id}',[ProductPriceByCustomer::class,'destroy'])->name('product.customer.destroy');
     
     Route::resource('purchaseorder', PurchaseOrderController::class);
-    Route::get('pos/{outletuuid}', [PointOfSalesController::class, 'index'])->name('pos.index');
 
-    Route::get('sales/order', [PointOfSalesController::class, 'index'])->name('salesorder.index');
-    Route::get('pos/order/{id}', [PointOfSalesController::class, 'show'])->name('salesorder.show');
-    Route::get('/search-products', [PointOfSalesController::class, 'searchProducts'])->name('salesorder.searchProducts');
-    Route::get('/price-by-customer', [PointOfSalesController::class, 'getPriceByCustomer'])->name('salesorder.getPriceByCustomer');
-    Route::post('pos/order', [PointOfSalesController::class, 'store'])->name('salesorder.store');
+
+Route::get('/sales/order/list', [PointOfSalesController::class, 'index'])->name('pos.index');
+    Route::get('pos/order/{id}', [PointOfSalesController::class, 'show'])->name('pos.show');
+    Route::get('/search-products', [PointOfSalesController::class, 'searchProducts'])->name('pos.searchProducts');
+    Route::get('/price-by-customer', [PointOfSalesController::class, 'getPriceByCustomer'])->name('pos.getPriceByCustomer');
+    Route::post('pos/order', [PointOfSalesController::class, 'store'])->name('pos.store');
 
 
     // sales order 
-    Route::get('sales/order/{id}', [SalesOrderControllre::class, 'index'])->name('salesorder.list');
+    Route::resource('salesorder',SalesOrderControllre::class);
 
     // surat jalan
     Route::resource('suratjalan',SuratJalanController::class);
