@@ -181,11 +181,13 @@ class ProductController extends Controller
         $product = Product::findOrFail($id);
         $outlets = Outlet::all();
         $categories = Category::all();
+        $unit = Unit::all();
         $brands = Brand::all();
 
         return view('product.edit', [
             'product' => $product,
             'outlets' => $outlets,
+            'unit' => $unit,
             'categories' => $categories,
             'brands' => $brands,
             'breadcrumbItems' => $breadcrumbsItems,

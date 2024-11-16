@@ -30,6 +30,7 @@
                 request()->routeIs('brand.index') ||
                 request()->routeIs('unit.index') ||
                 request()->routeIs('customer_group.index') ||
+                request()->routeIs('tax.index') ||
                 request()->routeIs('coupon.index') ||
                 request()->routeIs('customer.index') ? 'active' : ''
             }}">
@@ -49,6 +50,9 @@
                     </li>
                     <li class="navItem {{ request()->routeIs('brand.index') ? 'active' : '' }}">
                         <a href="{{ route('brand.index') }}">Brand</a>
+                    </li>
+                    <li class="navItem {{ request()->routeIs('tax.index') ? 'active' : '' }}">
+                        <a href="{{ route('tax.index') }}">Tax</a>
                     </li>
                     <li class="navItem {{ request()->is('unit*') ? 'active' : '' }}">
                         <a href="{{route('unit.index')}}">Unit</a>
@@ -87,12 +91,31 @@
                         <iconify-icon class=" nav-icon" icon="heroicons-outline:shopping-cart"></iconify-icon>
                         <span>{{ __('Sales Order') }}</span>
                     </span>
+                    <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
+
                 </a>
                 <ul class="sidebar-submenu first-letter:">
                     <li class="navItem {{ request()->is('salesorder*') ? 'active' : '' }}">
                         <a href="{{ route('salesorder.index') }}">Kasir</a>
                     </li>
-                   
+                    <!-- surat jalan -->
+                    <li class="navItem {{
+                        request()->is('suratjalan*') ? 'active' : ''
+                    }}">
+                        <a href="{{ route('suratjalan.index') }}">Surat Jalan</a>
+                    </li>
+                    <!-- invoice -->
+                    <li class="navItem {{
+                        request()->is('invoice*') ? 'active' : ''
+                    }}">
+                        <a href="{{ route('invoice.index') }}">Invoice</a>
+                    </li>
+                    <!-- return product -->
+                    <li class="navItem {{
+                        request()->is('returnsalesorder*') ? 'active' : ''
+                    }}">
+                        <a href="{{ route('returnsalesorder.index') }}">Return Product</a>
+                    </li>
                 </ul>
             </li>   
             <li>

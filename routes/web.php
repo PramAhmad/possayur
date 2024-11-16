@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ChartController;
+use App\Http\Controllers\InoviceController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AppsController;
 use App\Http\Controllers\BrandController;
@@ -29,8 +30,10 @@ use App\Http\Controllers\PurchaseOrderController;
 use App\Http\Controllers\SalesOrderControllre;
 use App\Http\Controllers\SuplierController;
 use App\Http\Controllers\SuratJalanController;
+use App\Http\Controllers\TaxController;
 use App\Http\Controllers\UnitController;
 use App\Models\Coupon;
+use App\Models\ProductReturnSalesOrder;
 use App\Models\SalesOrder;
 
 require __DIR__ . '/auth.php';
@@ -70,6 +73,7 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
     Route::resource('customer', CustomerController::class);
     Route::resource('supplier', SuplierController::class);
     Route::resource('coupon',CouponController::class);
+    Route::resource('tax',TaxController::class);
     // coupon.get
     Route::get('/this/coupon/get',[CouponController::class,'getCoupon'])->name('coupon.get');
      Route::resource('unit',UnitController::class);
@@ -98,6 +102,8 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
     // surat jalan
     Route::resource('suratjalan',SuratJalanController::class);
     Route::get('/suratjalan/get-products/{salesOrderId}', [SuratJalanController::class, 'getProducts'])->name('suratjalan.getProducts');
-    
+    Route::resource('invoice',InoviceController::class);
+    Route::resource('returnsalesorder',ProductReturnSalesOrder::class);
+
 });
 
