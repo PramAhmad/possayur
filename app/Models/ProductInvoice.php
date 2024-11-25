@@ -5,13 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ProductReturnSalesOrder extends Model
+class ProductInvoice extends Model
 {
     use HasFactory;
-
-    protected $table = 'product_return_sales_order';
+    protected $table = 'product_invoices';
     protected $fillable = [
-        'return_sales_order_id',
+        'invoice_id',
         'product_id',
         'variant_id',
         'batch_id',
@@ -21,13 +20,20 @@ class ProductReturnSalesOrder extends Model
         'total',
     ];
 
-    public function returnSalesOrder()
+    public function invoice()
     {
-        return $this->belongsTo(ReturnSalesOrder::class);
+        return $this->belongsTo(Invoice::class);
     }
 
     public function product()
     {
         return $this->belongsTo(Product::class);
     }
+
+    public function variant()
+    {
+        return $this->belongsTo(Variant::class);
+    }
+
+
 }

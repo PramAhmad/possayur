@@ -30,6 +30,7 @@ class ProductSalesOrder extends Model
     }
     public function salesOrders()
 {
-    return $this->belongsToMany(SalesOrder::class, 'product_sales_order')->withPivot('quantity');
+    return $this->belongsToMany(SalesOrder::class, 'product_sales_orders')->withPivot('qty', 'unit_price', 'total_price', 'discount', 'tax');
+
 }
 }

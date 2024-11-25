@@ -33,6 +33,7 @@ class SuratJalanController extends Controller
     
         $query = QueryBuilder::for(SuratJalan::class)
             ->allowedSorts(['no_surat_jalan', 'tanggal', 'outlet_id', 'customer_id', 'packer', 'driver', 'due_date'])
+            ->with(['salesorder.products.product', 'salesorder.outlet', 'salesorder.customer', 'productSuratJalans.product'])
             ->when($q, function ($query, $q) {
                 return $query->where('no_surat_jalan', 'like', "%$q%")
                              ->orWhere('packer', 'like', "%$q%")

@@ -7,10 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tailwind POS</title>
     <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
+    <!-- <link rel="stylesheet" href="{{asset('style.css')}}"> -->
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     <script src="https://unpkg.com/idb/build/iife/index-min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.2/dist/alpine.min.js"></script>
 
     <style>
         /* width */
@@ -283,7 +282,7 @@
 
         .bg-teal-900,
         .hover\:bg-teal-900:hover {
-            background-color:#0f172a;
+            background-color: #0f172a;
         }
 
         .text-teal-50,
@@ -333,7 +332,7 @@
 
         .text-teal-900,
         .hover\:text-teal-900:hover {
-            color:#0f172a;
+            color: #0f172a;
         }
 
         .nowrap {
@@ -369,6 +368,7 @@
                 transform: translateX(-100%);
                 transition: transform 0.3s ease-in-out;
             }
+
             .nav-menu.active {
                 transform: translateX(0);
             }
@@ -381,47 +381,47 @@
     <div class="hide-print flex flex-row h-screen antialiased text-blue-gray-800">
         <!-- left sidebar -->
         <button id="nav-toggle" class="lg:hidden fixed top-4 left-4 z-50 p-2 rounded-lg bg-sky-500 text-white">
-        <svg xmlns="http://www.w3.org/2000/svg" class="toggle-open h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-        </svg>
-        <svg xmlns="http://www.w3.org/2000/svg" class="toggle-close hidden h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-        </svg>
-    </button>
+            <svg xmlns="http://www.w3.org/2000/svg" class="toggle-open h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+            <svg xmlns="http://www.w3.org/2000/svg" class="toggle-close hidden h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
 
-    <!-- Navigation Menu -->
-    <div class="nav-menu fixed lg:relative top-0 left-0 h-full z-40">
-        <div class="flex flex-col items-center h-screen py-4 flex-shrink-0 w-20 bg-sky-500">
-            <!-- Logo -->
-            <a href="#" class="flex items-center justify-center h-12 w-12 md:mt-0 mt-20 bg-sky-50 text-sky-700 rounded-full">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32.623 32.605" class="w-8 h-8">
-                    <path d="M15.612 0c-.36.003-.705.01-1.03.021C8.657.223 5.742 1.123 3.4 3.472.714 6.166-.145 9.758.019 17.607c.137 6.52.965 9.271 3.542 11.768 1.31 1.269 2.658 2 4.73 2.57.846.232 2.73.547 3.56.596.36.021 2.336.048 4.392.06 3.162.018 4.031-.016 5.63-.221 3.915-.504 6.43-1.778 8.234-4.173 1.806-2.396 2.514-5.731 2.516-11.846.001-4.407-.42-7.59-1.278-9.643-1.463-3.501-4.183-5.53-8.394-6.258-1.634-.283-4.823-.475-7.339-.46z" fill="#fff"/>
-                    <path d="M16.202 13.758c-.056 0-.11 0-.16.003-.926.031-1.38.172-1.747.538-.42.421-.553.982-.528 2.208.022 1.018.151 1.447.553 1.837.205.198.415.313.739.402.132.036.426.085.556.093.056.003.365.007.686.009.494.003.63-.002.879-.035.611-.078 1.004-.277 1.286-.651.282-.374.392-.895.393-1.85 0-.688-.066-1.185-.2-1.506-.228-.547-.653-.864-1.31-.977a7.91 7.91 0 00-1.147-.072z" fill="#00dace"/>
-                </svg>
-            </a>
+        <!-- Navigation Menu -->
+        <div class="nav-menu fixed lg:relative top-0 left-0 h-full z-40">
+            <div class="flex flex-col items-center h-screen py-4 flex-shrink-0 w-20 bg-sky-500">
+                <!-- Logo -->
+                <a href="#" class="flex items-center justify-center h-12 w-12 md:mt-0 mt-20 bg-sky-50 text-sky-700 rounded-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32.623 32.605" class="w-8 h-8">
+                        <path d="M15.612 0c-.36.003-.705.01-1.03.021C8.657.223 5.742 1.123 3.4 3.472.714 6.166-.145 9.758.019 17.607c.137 6.52.965 9.271 3.542 11.768 1.31 1.269 2.658 2 4.73 2.57.846.232 2.73.547 3.56.596.36.021 2.336.048 4.392.06 3.162.018 4.031-.016 5.63-.221 3.915-.504 6.43-1.778 8.234-4.173 1.806-2.396 2.514-5.731 2.516-11.846.001-4.407-.42-7.59-1.278-9.643-1.463-3.501-4.183-5.53-8.394-6.258-1.634-.283-4.823-.475-7.339-.46z" fill="#fff" />
+                        <path d="M16.202 13.758c-.056 0-.11 0-.16.003-.926.031-1.38.172-1.747.538-.42.421-.553.982-.528 2.208.022 1.018.151 1.447.553 1.837.205.198.415.313.739.402.132.036.426.085.556.093.056.003.365.007.686.009.494.003.63-.002.879-.035.611-.078 1.004-.277 1.286-.651.282-.374.392-.895.393-1.85 0-.688-.066-1.185-.2-1.506-.228-.547-.653-.864-1.31-.977a7.91 7.91 0 00-1.147-.072z" fill="#00dace" />
+                    </svg>
+                </a>
 
-            <!-- Navigation Links -->
-            <ul class="flex flex-col space-y-2 mt-12">
-                <li>
-    <a href="{{ route('pos.show', ['id' => $id]) }}" class="flex items-center">
-        <span class="flex items-center justify-center h-12 w-12 rounded-2xl   hover:bg-sky-400
+                <!-- Navigation Links -->
+                <ul class="flex flex-col space-y-2 mt-12">
+                    <li>
+                        <a href="{{ route('pos.show', ['id' => $id]) }}" class="flex items-center">
+                            <span class="flex items-center justify-center h-12 w-12 rounded-2xl   hover:bg-sky-400
                      {{ request()->routeIs('pos.show') ? 'bg-sky-300 shadow-lg text-white ' : 'text-sky-100' }}">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-            </svg>
-        </span>
-    </a>
-</li>
-<li>
-    <a href="{{ route('salesorder.list', ['id' => $id]) }}" class="flex items-center">
-        <span class="flex items-center justify-center h-12 w-12 rounded-2xl 
-                     {{ request()->routeIs('salesorder.list') ? 'bg-sky-300 shadow-lg text-white ' : 'text-sky-100' }}  hover:bg-sky-400">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
-            </svg>
-        </span>
-    </a>
-</li>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                </svg>
+                            </span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('salesorder.index', ['id' => $id]) }}" class="flex items-center">
+                            <span class="flex items-center justify-center h-12 w-12 rounded-2xl 
+                     {{ request()->routeIs('salesorder.index') ? 'bg-sky-300 shadow-lg text-white ' : 'text-sky-100' }}  hover:bg-sky-400">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                                </svg>
+                            </span>
+                        </a>
+                    </li>
 
 
                     <li>
@@ -438,30 +438,30 @@
                         <a href="{{route('dashboard.index')}}"
                             class="flex items-center">
                             <span class="flex items-center justify-center text-sky-100 hover:bg-sky-400 h-12 w-12 rounded-2xl">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-  <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
-</svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+                                </svg>
 
                             </span>
                         </a>
                     </li>
                 </ul>
 
-            <!-- Info Link -->
-            <a href="#" class="mt-auto flex items-center justify-center text-sky-200 hover:text-sky-100 h-10 w-10">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
-                </svg>
-            </a>
+                <!-- Info Link -->
+                <a href="#" class="mt-auto flex items-center justify-center text-sky-200 hover:text-sky-100 h-10 w-10">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                    </svg>
+                </a>
+            </div>
         </div>
-    </div>
 
         @yield('content')
-        </div>
+    </div>
 
-<div id="print-area" class="print-area"></div>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
+    <div id="print-area" class="print-area"></div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
         $(document).ready(function() {
             $('#nav-toggle').click(function() {
                 $('.nav-menu').toggleClass('active');
@@ -471,7 +471,7 @@
 
             // Close menu when clicking outside
             $(document).click(function(event) {
-                if (!$(event.target).closest('.nav-menu').length && 
+                if (!$(event.target).closest('.nav-menu').length &&
                     !$(event.target).closest('#nav-toggle').length) {
                     $('.nav-menu').removeClass('active');
                     $('.toggle-open').removeClass('hidden');
@@ -489,7 +489,8 @@
             });
         });
     </script>
-@stack('js')
+    @stack('js')
 
-</body> 
+</body>
+
 </html>

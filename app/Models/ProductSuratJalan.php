@@ -27,5 +27,9 @@ class ProductSuratJalan extends Model
         return $this->belongsTo(SuratJalan::class);
     }
 
+    public function suratJalans()
+    {
+        return $this->belongsToMany(SuratJalan::class, 'product_surat_jalans')->withPivot('qty', 'unit_price', 'total_price');
+    }
     
 }

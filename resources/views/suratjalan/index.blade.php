@@ -21,6 +21,11 @@
                     <a class="btn inline-flex justify-center btn-dark rounded-[25px] items-center !p-2.5" href="{{ route('suratjalan.index') }}">
                         <iconify-icon icon="mdi:refresh" class="text-xl"></iconify-icon>
                     </a>
+                    @can('suratjalan export')    
+                     <a href="{{ route('suratjalan.export') }}" class="btn btn-success inline-flex justify-center btn-dark rounded-[25px] items-center !p-2.5">
+                         Excel <iconify-icon icon="heroicons-outline:folder-arrow-down" class="ml-3 text-xl"></iconify-icon>
+                     </a>
+                     @endcan
                 </div>
             </header>
 
@@ -32,6 +37,8 @@
                                 <thead class="bg-slate-200 dark:bg-slate-700">
                                     <tr>
                                         <th scope="col" class="table-th">{{ __('Sl No') }}</th>
+                                        <!-- sales order number -->
+                                         <th scope="col" class="table-th">{{ __('Sales Order') }}</th>
                                         <th scope="col" class="table-th">{{ __('Due Date') }}</th>
                                         <th scope="col" class="table-th">{{ __('Packer') }}</th>
                                         <th scope="col" class="table-th">{{ __('Driver') }}</th>
@@ -45,6 +52,7 @@
                                     @forelse ($suratJalan as $order)
                                     <tr>
                                         <td class="table-td"># {{ $order->id }}</td>
+                                        <td class="table-td">{{ $order->salesorder->reference_no ?? '-' }}</td>
                                         <td class="table-td">{{ $order->due_date ? date('d M Y', strtotime($order->due_date)) : '-' }}</td>
                                         <td class="table-td">{{ $order->packer ?? '-' }}</td>
                                         <td class="table-td">{{ $order->driver ?? '-' }}</td>

@@ -1,7 +1,9 @@
 <?php
 
+use App\Exports\ReturnSalesOrderExport;
 use App\Http\Controllers\ChartController;
 use App\Http\Controllers\InoviceController;
+use App\Http\Controllers\InvoicePenagihanExportController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AppsController;
 use App\Http\Controllers\BrandController;
@@ -22,18 +24,26 @@ use App\Http\Controllers\CustomerGroupController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\DatabaseBackupController;
 use App\Http\Controllers\GeneralSettingController;
+use App\Http\Controllers\InvoicePenagihanController;
+use App\Http\Controllers\ListOrderController;
 use App\Http\Controllers\OutletController;
 use App\Http\Controllers\PointOfSalesController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductPriceByCustomer;
 use App\Http\Controllers\PurchaseOrderController;
+use App\Http\Controllers\PurchasePOSController;
+use App\Http\Controllers\ReturnSalesOrderController;
+use App\Http\Controllers\ReturnSalesOrderExportController;
 use App\Http\Controllers\SalesOrderControllre;
+use App\Http\Controllers\SalesOrderExportController;
+use App\Http\Controllers\StockOpNameController;
 use App\Http\Controllers\SuplierController;
 use App\Http\Controllers\SuratJalanController;
+use App\Http\Controllers\SuratJalanExport;
+use App\Http\Controllers\SuratJalanExportController;
 use App\Http\Controllers\TaxController;
 use App\Http\Controllers\UnitController;
 use App\Models\Coupon;
-use App\Models\ProductReturnSalesOrder;
 use App\Models\SalesOrder;
 
 require __DIR__ . '/auth.php';
@@ -65,31 +75,36 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
     // Database Backup
     Route::resource('database-backups', DatabaseBackupController::class);
     Route::get('database-backups-download/{fileName}', [DatabaseBackupController::class, 'databaseBackupDownload'])->name('database-backups.download');
-    
+
     // data master
     Route::resource('category', CategoryController::class);
     Route::resource('brand', BrandController::class);
     Route::resource('customer_group', CustomerGroupController::class);
     Route::resource('customer', CustomerController::class);
     Route::resource('supplier', SuplierController::class);
-    Route::resource('coupon',CouponController::class);
-    Route::resource('tax',TaxController::class);
+    Route::resource('coupon', CouponController::class);
+    Route::resource('tax', TaxController::class);
     // coupon.get
-    Route::get('/this/coupon/get',[CouponController::class,'getCoupon'])->name('coupon.get');
-     Route::resource('unit',UnitController::class);
+    Route::get('/this/coupon/get', [CouponController::class, 'getCoupon'])->name('coupon.get');
+    Route::resource('unit', UnitController::class);
 
     Route::resource('product', ProductController::class);
-    Route::get('product/{id}/customer',[ProductPriceByCustomer::class,'index'])->name('product.customer.index');
-    Route::get('product/{id}/customer/create',[ProductPriceByCustomer::class,'create'])->name('product.customer.create');
-    Route::post('product/{id}/customer',[ProductPriceByCustomer::class,'store'])->name('product.customer.store');
-    Route::get('product/{id}/customer/{customer_id}/edit',[ProductPriceByCustomer::class,'edit'])->name('product.customer.edit');
-    Route::put('product/{id}/customer/{customer_id}',[ProductPriceByCustomer::class,'update'])->name('product.customer.update');
-    Route::delete('product/{id}/customer/{customer_id}',[ProductPriceByCustomer::class,'destroy'])->name('product.customer.destroy');
-    
+    Route::get('product/{id}/customer', [ProductPriceByCustomer::class, 'index'])->name('product.customer.index');
+    Route::get('product/{id}/customer/create', [ProductPriceByCustomer::class, 'create'])->name('product.customer.create');
+    Route::post('product/{id}/customer', [ProductPriceByCustomer::class, 'store'])->name('product.customer.store');
+    Route::get('product/{id}/customer/{customer_id}/edit', [ProductPriceByCustomer::class, 'edit'])->name('product.customer.edit');
+    Route::put('product/{id}/customer/{customer_id}', [ProductPriceByCustomer::class, 'update'])->name('product.customer.update');
+    Route::delete('product/{id}/customer/{customer_id}', [ProductPriceByCustomer::class, 'destroy'])->name('product.customer.destroy');
+
     Route::resource('purchaseorder', PurchaseOrderController::class);
+    // purchasepost.get
+    Route::get('purchasepos', [PurchasePOSController::class, 'index'])->name('purchasepos.index');
+    Route::get('purchasepos/{id}', [PurchasePOSController::class, 'show'])->name('purchasepos.show');
+    Route::post('purchasepos', [PurchasePOSController::class, 'store'])->name('purchasepos.store');
 
 
-Route::get('/sales/order/list', [PointOfSalesController::class, 'index'])->name('pos.index');
+
+    Route::get('/sales/order/list', [PointOfSalesController::class, 'index'])->name('pos.index');
     Route::get('pos/order/{id}', [PointOfSalesController::class, 'show'])->name('pos.show');
     Route::get('/search-products', [PointOfSalesController::class, 'searchProducts'])->name('pos.searchProducts');
     Route::get('/price-by-customer', [PointOfSalesController::class, 'getPriceByCustomer'])->name('pos.getPriceByCustomer');
@@ -97,13 +112,28 @@ Route::get('/sales/order/list', [PointOfSalesController::class, 'index'])->name(
 
 
     // sales order 
-    Route::resource('salesorder',SalesOrderControllre::class);
+    Route::resource('salesorder', SalesOrderControllre::class);
 
     // surat jalan
-    Route::resource('suratjalan',SuratJalanController::class);
+    Route::resource('suratjalan', SuratJalanController::class);
     Route::get('/suratjalan/get-products/{salesOrderId}', [SuratJalanController::class, 'getProducts'])->name('suratjalan.getProducts');
-    Route::resource('invoice',InoviceController::class);
-    Route::resource('returnsalesorder',ProductReturnSalesOrder::class);
+    Route::resource('invoice', InvoicePenagihanController::class);
+    Route::get('/invoice/get-products/{salesOrderId}', [InvoicePenagihanController::class, 'getProducts'])->name('invoice.getProducts');
+    Route::resource('returnsalesorder', ReturnSalesOrderController::class);
+    Route::get('listorder', [ListOrderController::class, 'index'])->name('listorder.index');
+    Route::get('listorder/{id}', [ListOrderController::class, 'show'])->name('listorder.show');
+    Route::resource('stockopname', StockOpNameController::class);
+    Route::get('json/stockopname/{id}', [StockOpNameController::class, 'showStock'])->name('stockopname.showStock');
+    // adjust
+    Route::post('json/stockopname/{id}/adjust', [StockOpNameController::class, 'adjust'])->name('stockopname.adjust');
 
+
+
+    // export
+    Route::get('export/salesorder', [SalesOrderExportController::class, 'export'])->name('salesorder.export');
+    Route::get('export/suratjalan', [SuratJalanExportController::class, 'export'])->name('suratjalan.export');
+    Route::get('export/invoice', [InvoicePenagihanExportController::class, 'export'])->name('invoice.export');
+    Route::get('export/returnsalesorder', [ReturnSalesOrderExportController::class, 'export'])->name('returnsalesorder.export');
+    Route::get('export/listorder', [ListOrderController::class, 'export'])->name('listorder.export');
+    Route::get('export/stockopname', [StockOpNameController::class, 'export'])->name('stockopname.export');
 });
-

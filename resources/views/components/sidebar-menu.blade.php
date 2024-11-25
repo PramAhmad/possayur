@@ -76,7 +76,15 @@
                         <iconify-icon class=" nav-icon" icon="heroicons-outline:shopping-bag"></iconify-icon>
                         <span>{{ __('Purchase Order') }}</span>
                     </span>
+                    <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
+
                 </a>
+                <ul class="sidebar-submenu first-letter:">
+                    <li class="navItem {{ request()->is('purchasepos*') ? 'active' : '' }}">
+                        <a href="{{ route('purchasepos.index') }}">Point Of Sale</a>
+                    </li>
+                   
+                </ul>
                 <ul class="sidebar-submenu first-letter:">
                     <li class="navItem {{ request()->is('purchaseorder*') ? 'active' : '' }}">
                         <a href="{{ route('purchaseorder.index') }}">Purchase Order</a>
@@ -123,6 +131,13 @@
                     }}">
                         <a href="{{ route('returnsalesorder.index') }}">Return Product</a>
                     </li>
+                    <!--list order -->
+                    <li class="navItem {{
+                        request()->is('listorder*') ? 'active' : ''
+                    }}">
+                        <a href="{{ route('listorder.index') }}">List Order</a>
+                    </li>
+
                 </ul>
             </li>   
             <li>
@@ -137,9 +152,33 @@
                 <a href="{{ route('product.index') }}" class="navItem {{ (request()->is('product*')) ? 'active' : '' }}">
                     <span class="flex items-center">
                         <iconify-icon class=" nav-icon" icon="iconoir:gift"></iconify-icon>
-                        <span>{{ __('Product') }}</span>
+                        <span>{{ __('Inventory') }}</span>
                     </span>
+                    <!-- icons arrow -->
+                    <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
                 </a>
+                <!-- ul -->
+                <ul class="sidebar-submenu first-letter:">
+                    <li class="navItem {{
+                        request()->is('product*') ? 'active' : ''
+                    }}">
+                        <a href="{{ route('product.index') }}">Product</a>
+                    </li>
+                <!-- stock opname and log product -->
+                    <li class="navItem {{
+                        request()->is('stockopname*') ? 'active' : ''
+                    }}">
+                   
+                        <a href="{{route('stockopname.index')}}">Stock Opname</a>
+                    </li>
+                    <li class="navItem {{
+                        request()->is('logproduct*') ? 'active' : ''
+                    }}">
+                        <a href="">Log Product</a>
+                    </li>
+                </ul>
+                 
+
             </li>
             <li>
                 <a href="{{ route('database-backups.index') }}" class="navItem {{ (request()->is('database-backups*')) ? 'active' : '' }}">

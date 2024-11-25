@@ -35,6 +35,7 @@ class SalesOrderControllre extends Controller
             $salesOrder = QueryBuilder::for(SalesOrder::class)
                 ->allowedSorts(['reference_no', 'tanggal', 'outlet_id', 'customer_id', 'due_date','grand_total'])
                 ->where('reference_no', 'like', "%$q%")
+                ->orWhere('status', 'like', "%$q%")
                 ->with(['outlet', 'customer'])
                 ->latest()
                 ->paginate($perPage)

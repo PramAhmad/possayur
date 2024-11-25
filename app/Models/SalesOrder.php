@@ -28,7 +28,7 @@ class SalesOrder extends Model
 
     public function customer()
     {
-        return $this->belongsTo(Customer::class);
+    return $this->belongsTo(Customer::class);
     }
 
     public function outlet()
@@ -46,4 +46,22 @@ class SalesOrder extends Model
         return $this->hasMany(ProductSalesOrder::class);
     }   
 
+    public function returnSalesOrder()
+    {
+        return $this->hasOne(ReturnSalesOrder::class);
+    }
+    // invoice
+    public function invoice()
+    {
+        return $this->hasOne(Invoice::class);
+    }
+    public function suratJalan()
+    {
+        return $this->hasOne(SuratJalan::class);
+    }
+    // pivot product
+public function productSalesOrders()
+    {
+        return $this->belongsToMany(Product::class, 'product_sales_orders')->withPivot('qty', 'unit_price', 'total_price', 'discount', 'tax');
+    }
 }
