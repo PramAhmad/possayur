@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Batches;
 use App\Models\Product;
 use App\Models\Outlet;
 use App\Models\Category;
 use App\Models\Brand;
 use App\Models\Unit;
+use App\Models\Variant;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -91,6 +94,7 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request->all());
         $request->validate([
             'name' => 'required|string',
             'barcode' => 'required|string|unique:product,barcode',
@@ -119,7 +123,6 @@ class ProductController extends Controller
             'sku.required' => 'SKU is required',    
             'category_id.required' => 'Category is required',
             'category_id.exists' => 'Category not found',
-            
         ]);
 
         $image = $request->file('image');
@@ -129,27 +132,64 @@ class ProductController extends Controller
             $image->move(public_path('upload/product'), $imageName);
         }
 
-        Product::create([
-            'name' => $request->name,
-            'barcode' => $request->barcode,
-            'slug' => Str::slug($request->name),
-            'cost_price' => $request->cost_price,
-            'selling_price' => $request->selling_price,
-            'qty' => $request->qty,
-            'alert_qty' => $request->alert_qty,
-            'sku' => $request->sku,
-            'image' => $imageName,
-            'description' => $request->description,
-            'is_variant' => $request->has('is_variant') ? "1" : "0",
-            'is_batch' => $request->has('is_batch') ? "1" : "0",
-            'is_difprice' => $request->has('is_difprice') ? "1" : "0",
-            'is_active' => $request->has('is_active') ? "1" : "0",
-            'category_id' => $request->category_id,
-            'brand_id' => $request->brand_id,
-            'outlet_id' => $request->outlet_id,
-        ]);
+        DB::beginTransaction();
+        try{
 
+           $product =  Product::create([
+                'name' => $request->name,
+                'barcode' => $request->barcode,
+                'slug' => Str::slug($request->name),
+                'cost_price' => $request->cost_price,
+                'selling_price' => $request->selling_price,
+                'qty' => $request->qty,
+                'alert_qty' => $request->alert_qty,
+                'sku' => $request->sku,
+                'image' => $imageName,
+                'description' => $request->description,
+                'is_variant' => $request->has('is_variant') ? "1" : "0",
+                'is_batch' => $request->has('is_batch') ? "1" : "0",
+                'is_difprice' => $request->has('is_difprice') ? "1" : "0",
+                'is_active' => $request->has('is_active') ? "1" : "0",
+                'category_id' => $request->category_id,
+                'brand_id' => $request->brand_id,
+                'outlet_id' => $request->outlet_id,
+            ]);
+            if (in_array('variant', $request->product_type)) {
+                $variants = $request->variants ?? [];
+                foreach ($variants as $variant) {
+                    Variant::create([
+                        'product_id' => $product->id,
+                        'item_code' => $variant['item_code'],
+                        'outlet_id' => $request->outlet_id,
+                        'name' => $variant['name'],
+                        'qty' =>  $request->qty,
+                        'additional_price' => $variant['additional_price'],
+                    ]);
+                }
+            }
+        
+            if (in_array('batch', $request->product_type)) {
+                $batches = $request->batches ?? [];
+                foreach ($batches as $batch) {
+                    Batches::create([
+                        'product_id' => $product->id,
+                        'outlet_id' => $request->outlet_id,
+                        'batch_no' => $batch['batch_no'],
+                        'qty' => $batch['qty'],
+                        'price' => $batch['price'],
+                        'expired_date' => $batch['expired_date'],
+                    ]);
+                }
+            }
+            DB::commit();
         return redirect()->route('product.index')->with('success', 'Product created successfully');
+
+        }catch(\Exception $e){
+            return $e->getMessage();
+            DB::rollBack();
+            return redirect()->back()->with('error', $e->getMessage());
+        }
+
     }
 
     /**
@@ -205,49 +245,108 @@ class ProductController extends Controller
     public function update(Request $request, $id)
     {
         $product = Product::findOrFail($id);
-
+    
         $request->validate([
             'name' => 'required|string',
-            'barcode' => 'required|string|unique:product,barcode,' . $id,
-            'slug' => 'required|string|unique:product,slug,' . $id,
+            'barcode' => 'required|string|unique:product,barcode,' . $product->id,
+            'slug' => 'required|string|unique:product,slug,' . $product->id,
             'cost_price' => 'required|integer',
             'selling_price' => 'required|integer',
             'qty' => 'required|integer',
             'alert_qty' => 'required|integer',
             'sku' => 'required|string',
-            'category_id' => 'required|exists:categories,id',
-            'brand_id' => 'required|exists:brands,id',
+            'category_id' => 'required|exists:category,id',
+            'brand_id' => 'nullable|exists:brands,id',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:5048',
         ]);
-
-        $image = $request->file('image');
-        if ($image) {
-            $imageName = time().'.'.$image->getClientOriginalExtension();
+    
+        // Handle image upload
+        if ($request->hasFile('image')) {
+            if ($product->image && file_exists(public_path('upload/product/' . $product->image))) {
+                unlink(public_path('upload/product/' . $product->image)); // Delete old image
+            }
+            $image = $request->file('image');
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
             $image->move(public_path('upload/product'), $imageName);
             $product->image = $imageName;
         }
-
-        $product->update([
-            'name' => $request->name,
-            'barcode' => $request->barcode,
-            'slug' => Str::slug($request->name),
-            'cost_price' => $request->cost_price,
-            'selling_price' => $request->selling_price,
-            'qty' => $request->qty,
-            'alert_qty' => $request->alert_qty,
-            'sku' => $request->sku,
-            'description' => $request->description,
-            'is_variant' => $request->has('is_variant') ? 1 : 0,
-            'is_batch' => $request->has('is_batch') ? 1 : 0,
-            'is_difprice' => $request->has('is_difprice') ? 1 : 0,
-            'is_active' => $request->has('is_active') ? 1 : 0,
-            'category_id' => $request->category_id,
-            'brand_id' => $request->brand_id,
-            'outlet_id' => $request->outlet_id,
-        ]);
-
-        return redirect()->route('product.index')->with('success', 'Product updated successfully');
+    
+        DB::beginTransaction();
+        try {
+            // Update product data
+            $product->update([
+                'name' => $request->name,
+                'barcode' => $request->barcode,
+                'slug' => Str::slug($request->name),
+                'cost_price' => $request->cost_price,
+                'selling_price' => $request->selling_price,
+                'qty' => $request->qty,
+                'alert_qty' => $request->alert_qty,
+                'sku' => $request->sku,
+                'description' => $request->description,
+                'is_variant' => in_array('variant', $request->product_type) ? "1" : "0",
+                'is_batch' => in_array('batch', $request->product_type) ? "1" : "0",
+                'is_difprice' => $request->has('is_difprice') ? "1" : "0",
+                'is_active' => $request->has('is_active') ? "1" : "0",
+                'category_id' => $request->category_id,
+                'brand_id' => $request->brand_id,
+                'outlet_id' => $request->outlet_id,
+            ]);
+    
+            // Handle variants
+            if (in_array('variant', $request->product_type)) {
+                $variantIds = [];
+                foreach ($request->variants ?? [] as $variant) {
+                    $existingVariant = Variant::where('product_id', $product->id)
+                        ->where('item_code', $variant['item_code'])
+                        ->first();
+    
+                    if ($existingVariant) {
+                        $existingVariant->update([
+                            'name' => $variant['name'],
+                            'qty' => $variant['qty'] ?? $product->qty,
+                            'additional_price' => $variant['additional_price'],
+                        ]);
+                        $variantIds[] = $existingVariant->id;
+                    }
+                }
+                // Delete unused variants
+                Variant::where('product_id', $product->id)
+                    ->whereNotIn('id', $variantIds)
+                    ->delete();
+            }
+    
+            // Handle batches
+            if (in_array('batch', $request->product_type)) {
+                $batchIds = [];
+                foreach ($request->batches ?? [] as $batch) {
+                    $existingBatch = Batches::where('product_id', $product->id)
+                        ->where('batch_no', $batch['batch_no'])
+                        ->first();
+    
+                    if ($existingBatch) {
+                        $existingBatch->update([
+                            'qty' => $batch['qty'],
+                            'price' => $batch['price'],
+                            'expired_date' => $batch['expired_date'],
+                        ]);
+                        $batchIds[] = $existingBatch->id;
+                    }
+                }
+                // Delete unused batches
+                Batches::where('product_id', $product->id)
+                    ->whereNotIn('id', $batchIds)
+                    ->delete();
+            }
+    
+            DB::commit();
+            return redirect()->route('product.index')->with('success', 'Product updated successfully');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', $e->getMessage());
+        }
     }
+    
 
     /**
      * Remove the specified product from storage.

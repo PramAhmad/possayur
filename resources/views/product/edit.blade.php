@@ -141,7 +141,7 @@
                                            {{ $product->is_variant ? 'checked' : '' }}>
                                     <label for="is_variant" class="form-label mb-0">{{ __('Is Variant') }}</label>
                                 </div>
-                                <div id="variant_fields" style="display: {{ $product->is_variant ? 'block' : 'none' }};" class="space-y-4">
+                                <div id="variant_fields" style=`display: {{ $product->is_variant ? 'block' : 'none' }};` class="space-y-4">
                                     <div class="input-area">
                                         <label for="variant_name" class="form-label">{{ __('Variant Name') }}</label>
                                         <input name="variant_name" type="text" id="variant_name" class="form-control"
@@ -156,27 +156,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="input-area">
-                                <div class="flex items-center gap-2 mb-4">
-                                    <input type="checkbox" name="is_batch" id="is_batch" value="1"
-                                           class="w-4 h-4 rounded border-slate-400"
-                                           {{ $product->is_batch ? 'checked' : '' }}>
-                                    <label for="is_batch" class="form-label mb-0">{{ __('Is Batch') }}</label>
-                                </div>
-                                <div id="batch_fields" style="display: {{ $product->is_batch ? 'block' : 'none' }};" class="space-y-4">
-                                    <div class="input-area">
-                                        <label for="batch_number" class="form-label">{{ __('Batch Number') }}</label>
-                                        <input name="batch_number" type="text" id="batch_number" class="form-control"
-                                               placeholder="{{ __('Enter batch number') }}"
-                                               value="{{ old('batch_number', $product->batch_number ?? '-') }}">
-                                    </div>
-                                    <div class="input-area">
-                                        <label for="batch_expiry" class="form-label">{{ __('Batch Expiry Date') }}</label>
-                                        <input name="batch_expiry" type="date" id="batch_expiry" class="form-control"
-                                               value="{{ old('batch_expiry', $product->batch_expiry ?? '-') }}">
-                                    </div>
-                                </div>
-                            </div>
+                         
                         </div>
                         <div class="input-area">
                             <label for="is_active" class="form-label">{{ __('Status') }}</label>
@@ -186,32 +166,313 @@
                             </select>
                             <x-input-error :messages="$errors->get('is_active')" class="mt-2"/>
                         </div>
+                                        <!-- Variants and Batch Section for Edit -->
+                <div class="mt-6 bg-slate-50 dark:bg-slate-700 rounded-lg p-4">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="flex items-center gap-2 input-variant">
+                            <input type="checkbox" name="product_type[]" id="variant_checkbox" value="variant" class="w-4 h-4 rounded border-slate-400"
+                                {{ $product->is_variant == 1 ? 'checked' : '' }}>
+                            <label for="variant_checkbox" class="form-label mb-0">{{ __('Variants') }}</label>
+                        </div>
+                        <div class="flex items-center gap-2 input-batch">
+                            <input type="checkbox" name="product_type[]" id="batch_checkbox" value="batch" class="w-4 h-4 rounded border-slate-400"
+                                {{ $product->is_batch == 1 ? 'checked' : '' }}>
+                            <label for="batch_checkbox" class="form-label mb-0">{{ __('Batch') }}</label>
+                        </div>
+                    </div>
+
+                    <!-- Variant Section -->
+                    <div id="variant_section" style=`{{ $product->is_variant == 1 ? 'display: block;' : 'display: none;' }}`>
+                        <table class="min-w-full table-auto" id="variant_table">
+                            <thead>
+                                <tr class="bg-slate-100">
+                                    <th class="text-center">{{ __('Drag') }}</th>
+                                    <th>{{ __('Variant Name') }}</th>
+                                    <th>{{ __('Price') }}</th>
+                                    <th>{{ __('Item Code') }}</th>
+                                    <th class="text-right">{{ __('Actions') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody id="variant_container">
+                                @if($product->is_variant == 1) 
+                                @foreach($product->variants as $index => $variant)
+                                <tr class="variant-row" data-index="{{ $index + 1 }}">
+                                    <td class="text-center">
+                                        <svg class="w-5 h-5 text-gray-500 cursor-move" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                                        </svg>
+                                    </td>
+                                    <td>
+                                        <input type="text" name="variants[{{ $index + 1 }}][name]" class="form-control"
+                                            value="{{ $variant->name }}" placeholder="{{ __('Variant Name') }}" required>
+                                        <input type="hidden" name="variants[{{ $index + 1 }}][id]" value="{{ $variant->id }}">
+                                    </td>
+                                    <td>
+                                        <input type="number" name="variants[{{ $index + 1 }}][additional_price]" class="form-control"
+                                            value="{{ $variant->additional_price }}" placeholder="{{ __('Variant Price') }}" required>
+                                    </td>
+                                    <td>
+                                        <input type="text" name="variants[{{ $index + 1 }}][item_code]" class="form-control"
+                                            value="{{ $variant->item_code }}" placeholder="{{ __('Item Code') }}" required>
+                                    </td>
+                                    <td class="text-right">
+                                        <button type="button" class="btn btn-sm btn-outline-danger remove-variant">
+                                            {{ __('Remove') }}
+                                        </button>
+                                    </td>
+                                </tr>
+                                @endforeach
+                                @endif
+                            </tbody>
+                        </table>
+                        <button type="button" id="add_variant" class="btn btn-outline-dark mt-2">
+                            {{ __('Add Variant') }}
+                        </button>
+                    </div>
+
+                    <!-- Batch Section -->
+                    <div id="batch_section" style="{{ $product->is_batch === 1 ? 'display: block;' : 'display: none;' }}">
+                        <table class="min-w-full table-auto" id="batch_table">
+                            <thead>
+                                <tr class="bg-slate-100">
+                                    <th class="text-center">{{ __('Drag') }}</th>
+                                    <th>{{ __('Batch Number') }}</th>
+                                    <th>{{ __('Expiry Date') }}</th>
+                                    <th>{{ __('Quantity') }}</th>
+                                    <th class="text-right">{{ __('Actions') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody id="batch_container">
+                                @if($product->is_batch == 1)
+                                @foreach($product->batches as $index => $batch)
+                                <tr class="batch-row" data-index="{{ $index + 1 }}">
+                                    <td class="text-center">
+                                        <svg class="w-5 h-5 text-gray-500 cursor-move" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                                        </svg>
+                                    </td>
+                                    <td>
+                                        <input type="text" name="batches[{{ $index + 1 }}][number]" class="form-control"
+                                            value="{{ $batch->number }}" placeholder="{{ __('Batch Number') }}" required>
+                                        <input type="hidden" name="batches[{{ $index + 1 }}][id]" value="{{ $batch->id }}">
+                                    </td>
+                                    <td>
+                                        <input type="date" name="batches[{{ $index + 1 }}][expiry_date]" class="form-control"
+                                            value="{{ $batch->expiry_date }}" required>
+                                    </td>
+                                    <td>
+                                        <input type="number" name="batches[{{ $index + 1 }}][quantity]" class="form-control"
+                                            value="{{ $batch->quantity }}" placeholder="{{ __('Quantity') }}" required>
+                                    </td>
+                                    <td class="text-right">
+                                        <button type="button" class="btn btn-sm btn-outline-danger remove-batch">
+                                            {{ __('Remove') }}
+                                        </button>
+                                    </td>
+                                </tr>
+                                @endforeach
+                                @endif
+                            </tbody>
+                        </table>
+                        <button type="button" id="add_batch" class="btn btn-outline-dark mt-2">
+                            {{ __('Add Batch') }}
+                        </button>
                     </div>
                 </div>
+
                 <button type="submit" class="btn inline-flex justify-center btn-dark mt-4 w-full">
                     {{ __('Update') }}
                 </button>
-            </div>
-        </form>
-    </div>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            $('#is_variant').change(function () {
-                if ($(this).is(':checked')) {
-                    $('#variant_fields').show();
-                } else {
-                    $('#variant_fields').hide();
-                }
-            });
 
-            $('#is_batch').change(function () {
-                if ($(this).is(':checked')) {
-                    $('#batch_fields').show();
-                } else {
-                    $('#batch_fields').hide();
-                }
-            });
-        });
-    </script>
+                @push('scripts')
+                <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+                <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.js"></script>
+                <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+
+                <script>
+                    $(document).ready(function() {
+                        let variantCounter = `{{ $product->variants->count() ?? 0 }}`;
+                        let batchCounter = `{{ $product->batches->count() ?? 0 }}`;
+
+                        // Function to toggle input validation
+                        function toggleInputValidation(sectionId, isRequired) {
+                            $(`#${sectionId} input`).each(function() {
+                                if (isRequired) {
+                                    $(this).prop('required', true);
+                                } else {
+                                    $(this).prop('required', false);
+                                }
+                            });
+                        }
+
+                        // Checkbox change event
+                        $('input[name="product_type[]"]').change(function() {
+                            const isChecked = $(this).is(':checked');
+                            const inputName = $(this).attr('id');
+
+                            if (inputName === 'variant_checkbox') {
+                                $('#variant_section').toggle(isChecked);
+                                toggleInputValidation('variant_section', isChecked);
+
+                                if (isChecked) {
+                                    $('#batch_checkbox, label[for="batch_checkbox"]').hide();
+                                    if ($('#variant_container').children().length === 0) {
+                                        addVariantRow();
+                                    }
+                                } else {
+                                    $('#batch_checkbox, label[for="batch_checkbox"]').show();
+                                }
+                            }
+
+                            if (inputName === 'batch_checkbox') {
+                                $('#batch_section').toggle(isChecked);
+                                toggleInputValidation('batch_section', isChecked);
+
+                                if (isChecked) {
+                                    $('#variant_checkbox, label[for="variant_checkbox"]').hide();
+                                    if ($('#batch_container').children().length === 0) {
+                                        addBatchRow();
+                                    }
+                                } else {
+                                    $('#variant_checkbox, label[for="variant_checkbox"]').show();
+                                }
+                            }
+                        });
+
+                        $('#add_variant').click(addVariantRow);
+                        $('#add_batch').click(addBatchRow);
+
+                        // Remove variant row
+                        $(document).on('click', '.remove-variant', function() {
+                            const row = $(this).closest('.variant-row');
+
+                            // Append a hidden input to mark for deletion
+                            const variantId = row.find('input[name$="[id]"]').val();
+                            if (variantId) {
+                                $('<input>')
+                                    .attr('type', 'hidden')
+                                    .attr('name', 'deleted_variants[]')
+                                    .val(variantId)
+                                    .appendTo(row);
+                            }
+
+                            row.remove();
+                            updateVariantIndices();
+
+                            if ($('#variant_container').children().length === 0) {
+                                $('#variant_checkbox').prop('checked', false);
+                                $('#variant_section').hide();
+                            }
+                        });
+
+                        // Remove batch row
+                        $(document).on('click', '.remove-batch', function() {
+                            const row = $(this).closest('.batch-row');
+
+                            const batchId = row.find('input[name$="[id]"]').val();
+                            if (batchId) {
+                                $('<input>')
+                                    .attr('type', 'hidden')
+                                    .attr('name', 'deleted_batches[]')
+                                    .val(batchId)
+                                    .appendTo(row);
+                            }
+
+                            row.remove();
+                            updateBatchIndices();
+
+                            if ($('#batch_container').children().length === 0) {
+                                $('#batch_checkbox').prop('checked', false);
+                                $('#batch_section').hide();
+                            }
+                        });
+
+                        // Function to add variant row
+                        function addVariantRow() {
+                            variantCounter++;
+                            const newRow = `
+                <tr class="variant-row" data-index="${variantCounter}">
+                    <td class="text-center">
+                        <svg class="w-5 h-5 text-gray-500 cursor-move" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </td>
+                    <td>
+                        <input type="text" name="variants[${variantCounter}][name]" class="form-control" placeholder="{{ __('Variant Name') }}" required>
+                    </td>
+                    <td>
+                        <input type="number" name="variants[${variantCounter}][additional_price]" class="form-control" placeholder="{{ __('Variant Price') }}" required>
+                    </td>
+                    <td>
+                        <input type="number" name="variants[${variantCounter}][item_code]" class="form-control" placeholder="{{ __('Item Code') }}" required>
+                    </td>
+                    <td class="text-right">
+                        <button type="button" class="btn btn-sm btn-outline-danger remove-variant">
+                            {{ __('Remove') }}
+                        </button>
+                    </td>
+                </tr>
+            `;
+
+                            $('#variant_container').append(newRow);
+                            updateVariantIndices();
+                        }
+
+                        // Function to add batch row
+                        function addBatchRow() {
+                            batchCounter++;
+                            const newRow = `
+                <tr class="batch-row" data-index="${batchCounter}">
+                    <td class="text-center">
+                        <svg class="w-5 h-5 text-gray-500 cursor-move" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </td>
+                    <td>
+                        <input type="text" name="batches[${batchCounter}][number]" class="form-control" placeholder="{{ __('Batch Number') }}" required>
+                    </td>
+                    <td>
+                        <input type="date" name="batches[${batchCounter}][expiry_date]" class="form-control" required>
+                    </td>
+                    <td>
+                        <input type="number" name="batches[${batchCounter}][quantity]" class="form-control" placeholder="{{ __('Quantity') }}" required>
+                    </td>
+                    <td class="text-right">
+                        <button type="button" class="btn btn-sm btn-outline-danger remove-batch">
+                            {{ __('Remove') }}
+                        </button>
+                    </td>
+                </tr>
+            `;
+
+                            $('#batch_container').append(newRow);
+                            updateBatchIndices();
+                        }
+
+                        // Update variant indices
+                        function updateVariantIndices() {
+                            $('#variant_container .variant-row').each(function(index) {
+                                const newIndex = index + 1;
+                                $(this).attr('data-index', newIndex);
+                                $(this).find('input').each(function() {
+                                    const name = $(this).attr('name').replace(/\[\d+\]/, `[${newIndex}]`);
+                                    $(this).attr('name', name);
+                                });
+                            });
+                        }
+
+                        // Update batch indices
+                        function updateBatchIndices() {
+                            $('#batch_container .batch-row').each(function(index) {
+                                const newIndex = index + 1;
+                                $(this).attr('data-index', newIndex);
+                                $(this).find('input').each(function() {
+                                    const name = $(this).attr('name').replace(/\[\d+\]/, `[${newIndex}]`);
+                                    $(this).attr('name', name);
+                                });
+                            });
+                        }
+                    });
+                </script>
+                @endpush
 </x-app-layout>

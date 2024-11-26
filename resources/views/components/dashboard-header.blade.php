@@ -11,18 +11,7 @@
                 <button class="sidebarOpenButton text-xl text-slate-900 dark:text-white !ml-0">
                     <iconify-icon icon="ph:arrow-right-bold"></iconify-icon>
                 </button>
-                <x-header-search />
-            </div>
-            <!-- end vertcial -->
-
-            <div class="items-center space-x-4 rtl:space-x-reverse horizental-box">
-                <x-application-logo />
-                <button class="smallDeviceMenuController  open-sdiebar-controller  hidden xl:hidden md:inline-block">
-                    <iconify-icon
-                        class="leading-none bg-transparent relative text-xl top-[2px] text-slate-900 dark:text-white"
-                        icon="heroicons-outline:menu-alt-3"></iconify-icon>
-                </button>
-                <x-header-search />
+             
             </div>
             <!-- end horizontal -->
 

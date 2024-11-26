@@ -47,14 +47,14 @@
                                             <td class="table-td">{{ $tax->name }}</td>
                                             <td class="table-td">{{ number_format($tax->rate, 2) }}%</td>
                                             <td class="table-td">
-                                                <span class="badge {{ $tax->is_active ? 'bg-success-500' : 'bg-danger-500' }}">
+                                                <span class="inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-full bg-opacity-20  {{ $tax->is_active ? 'bg-success-500 text-success-500' : 'bg-danger-500 text-danger-500' }}">
                                                     {{ $tax->is_active ? __('Active') : __('Inactive') }}
                                                 </span>
                                             </td>
-                                            <td class="table-td">{{ $tax->outlet?->nama ?? __('No Outlet') }}</td>
+                                            <td class="table-td">{{ $tax->outlet?->name ?? __('No Outlet') }}</td>
                                             <td class="table-td">
                                                 <div class="flex space-x-3 rtl:space-x-reverse">
-                                                    @can('tax update')
+                                                    @can('tax edit')
                                                         <a class="action-btn" href="{{ route('tax.edit', ['tax' => $tax]) }}">
                                                             <iconify-icon icon="heroicons:pencil-square"></iconify-icon>
                                                         </a>

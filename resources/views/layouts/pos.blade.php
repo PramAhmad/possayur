@@ -9,7 +9,6 @@
     <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
     <!-- <link rel="stylesheet" href="{{asset('style.css')}}"> -->
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
-    <script src="https://unpkg.com/idb/build/iife/index-min.js"></script>
 
     <style>
         /* width */

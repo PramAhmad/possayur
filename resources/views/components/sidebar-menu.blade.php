@@ -189,6 +189,14 @@
                 </a>
             </li>
             <li>
+                <a href="{{ route('history-log.index') }}" class="navItem {{ (request()->is('history-log*')) ? 'active' : '' }}">
+                    <span class="flex items-center">
+                        <iconify-icon class=" nav-icon" icon="heroicons:clock"></iconify-icon>
+                        <span>{{ __('History Log') }}</span>
+                    </span>
+                </a>
+            </li>
+            <li>
                 <a href="{{ route('general-settings.show') }}" class="navItem {{ (request()->is('general-settings*')) || (request()->is('users*')) || (request()->is('roles*')) || (request()->is('profiles*')) || (request()->is('permissions*')) ? 'active' : '' }}">
                     <span class="flex items-center">
                         <iconify-icon class=" nav-icon" icon="material-symbols:settings-outline"></iconify-icon>
@@ -200,14 +208,14 @@
         <div class="bg-slate-900 mb-10 mt-24 p-4 relative text-center rounded-2xl text-white" id="sidebar_bottom_wizard">
             <img src="/images/svg/rabit.svg" alt="" class="mx-auto relative -mt-[73px]">
             <div class="max-w-[160px] mx-auto mt-6">
-                <div class="widget-title font-Inter mb-1">Unlimited Access</div>
+                <div class="widget-title font-Inter mb-1">AstaPOS</div>
                 <div class="text-xs font-light font-Inter">
-                    Upgrade your system to business plan
+                    Upgrade your system to business 
                 </div>
             </div>
             <div class="mt-6">
                 <button class="bg-white hover:bg-opacity-80 text-slate-900 text-sm font-Inter rounded-md w-full block py-2 font-medium">
-                    Upgrade
+                    Point Of Sale
                 </button>
             </div>
         </div>

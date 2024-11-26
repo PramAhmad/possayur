@@ -1,6 +1,4 @@
-@extends('layouts.pos')
-@section('content')
-
+<x-app-layout>
 <div class="flex-grow flex flex-col lg:flex-row">
     <!-- Products Section -->
     <div class="flex flex-col bg-blue-gray-50 w-full h-full py-4">
@@ -47,7 +45,8 @@
             <tbody>
                 @foreach ($products as $product)
                 <tr 
-                    class="border-t cursor-pointer hover:bg-gray-100"
+                 role="button"
+                    class="border-t cursor-pointer hover:bg-gray-100 add-to-cart"
                     data-product-id="{{ $product->id }}"
                     data-product-name="{{ $product->name }}"
                     data-product-price="{{ $product->selling_price }}"
@@ -67,7 +66,24 @@
 
     <!-- Grid View -->
     <div id="gridView" class="h-full overflow-y-auto px-2">
-        <div class="product-grid grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 pb-3">
+        <div class="product-grid grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-4 pb-3">
+            @foreach ($products as $product)
+            <div>
+                <div
+                    role="button"
+                    class="select-none cursor-pointer transition-shadow overflow-hidden rounded-2xl p-2 bg-white shadow hover:shadow-lg add-to-cart"
+                    data-product-id="{{ $product->id }}"
+                    data-product-name="{{ $product->name }}"
+                    data-product-price="{{ $product->selling_price }}"
+                    data-product-image="{{ asset('upload/product/' . $product->image) }}">
+                    <img src="{{ asset('upload/product/' . $product->image) }}" class="object-cover w-full h-24 sm:h-44 lg:h-52" alt="{{ $product->name }}">
+                    <div class="flex flex-col sm:flex-row pb-3 px-3 text-sm mt-3">
+                        <p class="flex-grow truncate mr-1">{{ $product->name }} <span class="font-semibold">( {{ $product->unit->name ?? '-' }} )</span></p>
+                        <p class="nowrap font-semibold">Rp {{ number_format($product->selling_price) }}</p>
+                    </div>
+                </div>
+            </div>
+            @endforeach 
             @foreach ($products as $product)
             <div>
                 <div
@@ -92,7 +108,7 @@
     </div>
 
     <!-- Cart Section -->
-    <div class="w-full lg:w-5/12 flex flex-col bg-blue-gray-50 h-full bg-white p-4">
+    <div class="w-full lg:w-5/12 flex flex-col bg-blue-gray-50 h-full rounded-lg bg-white p-4">
         <div class="bg-white rounded-3xl flex flex-col h-full shadow">
             <!-- Empty Cart State -->
             <div id="empty-cart" class="flex-1 w-full p-4 opacity-25 select-none flex flex-col flex-wrap content-center justify-center">
@@ -186,7 +202,7 @@
 </div>
 
 
-<div id="modalReceipt" class="fixed w-full h-screen left-0 top-0 z-10 flex flex-wrap justify-center content-center p-24" style="display: none;">
+<div id="modalReceipt" class="fixed w-full h-screen left-0 top-0 z-10 flex flex-wrap justify-center content-center p-24 backdrop-blur-sm" style="display: none;">
     <div class="fixed glass w-full h-screen left-0 top-0 z-0" id="modalOverlay"></div>
     <div class="w-96 rounded-3xl bg-white shadow-xl overflow-hidden z-10">
         <div id="receipt-content" class="text-left w-full text-sm p-6 overflow-auto">
@@ -240,7 +256,7 @@
     </div>
 </div>
 
-@push('js')
+@push('scripts')
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -639,5 +655,5 @@
 </script>
 @endpush
 
+</x-app-layout>
 
-@endsection

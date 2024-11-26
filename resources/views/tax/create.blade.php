@@ -5,6 +5,10 @@
             <x-breadcrumb :breadcrumb-items="$breadcrumbItems" :page-title="$pageTitle" />
         </div>
         {{--Breadcrumb end--}}
+        <!-- if session succes -->
+        @if (session('message'))
+        <x-alert :message="session('message')" :type="'success'" />
+        @endif
 
         {{--Create tax form start--}}
         <form method="POST" action="{{ route('tax.store') }}" class="max-w-4xl m-auto">

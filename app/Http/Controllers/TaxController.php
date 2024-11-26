@@ -38,6 +38,7 @@ class TaxController extends Controller
             $taxes = QueryBuilder::for(Tax::class)
                 ->allowedSorts(['name', 'rate', 'is_active'])
                 ->where('name', 'like', "%$q%")
+                ->with('outlet')
                 ->latest()
                 ->paginate($perPage)
                 ->appends(['per_page' => $perPage, 'q' => $q, 'sort' => $sort]);
@@ -118,8 +119,9 @@ class TaxController extends Controller
             'is_active' => $request->is_active,
             'outlet_id' => $request->outlet_id,
         ]);
+     
 
-        return redirect()->back()->with('success', 'Tax berhasil di tambahkan');
+        return redirect()->back()->with('message', 'Tax berhasil di tambahkan');
     }
 
     /**
@@ -157,6 +159,11 @@ class TaxController extends Controller
             ['name' => 'Edit Tax', 'url' => route('tax.edit', $id), 'active' => true]
         ];
 
+        if(auth()->user()->hasRole('super-admin')){
+            $data['outlets'] = Outlet::all();
+        } else {
+            $data['outlets'] = Outlet::where('id', auth()->user()->outlet_id)->get();
+        }
         return view('tax.edit', compact('tax'), $data);
     }
 
@@ -197,7 +204,7 @@ class TaxController extends Controller
             'outlet_id' => $request->outlet_id,
         ]);
 
-        return redirect()->back()->with('success', 'Tax berhasil di update');
+        return redirect()->back()->with('message', 'Tax berhasil di update');
     }
 
     /**
@@ -209,6 +216,6 @@ class TaxController extends Controller
     public function destroy($id)
     {
         Tax::find($id)->delete();
-        return response()->json(['success' => 'Tax berhasil di hapus']);
+        return redirect()->back()->with("message",'Tax berhasil di hapus');
     }
 }

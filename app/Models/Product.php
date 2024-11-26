@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Bus\Batch;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -10,7 +11,17 @@ class Product extends Model
     use HasFactory;
     protected $table = 'product';
     protected $guarded = [];
-    // belongs to category
+
+    // hasVariant
+    
+    public function variants (){
+        return $this->hasMany(Variant::class);
+    }
+    // bacthes
+    public function batches (){
+        return $this->hasMany(Batches::class);
+    }
+
     public function category (){
         return $this->belongsTo(Category::class);
     }

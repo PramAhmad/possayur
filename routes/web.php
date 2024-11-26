@@ -24,6 +24,7 @@ use App\Http\Controllers\CustomerGroupController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\DatabaseBackupController;
 use App\Http\Controllers\GeneralSettingController;
+use App\Http\Controllers\HistoryLogController;
 use App\Http\Controllers\InvoicePenagihanController;
 use App\Http\Controllers\ListOrderController;
 use App\Http\Controllers\OutletController;
@@ -45,6 +46,8 @@ use App\Http\Controllers\TaxController;
 use App\Http\Controllers\UnitController;
 use App\Models\Coupon;
 use App\Models\SalesOrder;
+use Illuminate\Support\Facades\Auth;
+use Spatie\Activitylog\Models\Activity;
 
 require __DIR__ . '/auth.php';
 
@@ -75,7 +78,8 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
     // Database Backup
     Route::resource('database-backups', DatabaseBackupController::class);
     Route::get('database-backups-download/{fileName}', [DatabaseBackupController::class, 'databaseBackupDownload'])->name('database-backups.download');
-
+    // history log
+    Route::get('history-log',[HistoryLogController::class,'index'])->name('history-log.index');
     // data master
     Route::resource('category', CategoryController::class);
     Route::resource('brand', BrandController::class);
@@ -136,4 +140,7 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
     Route::get('export/returnsalesorder', [ReturnSalesOrderExportController::class, 'export'])->name('returnsalesorder.export');
     Route::get('export/listorder', [ListOrderController::class, 'export'])->name('listorder.export');
     Route::get('export/stockopname', [StockOpNameController::class, 'export'])->name('stockopname.export');
+
 });
+
+// test log

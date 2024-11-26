@@ -12,186 +12,343 @@
                         <select name="outlet_id" id="outlet_id" class="form-control">
                             <option value="">{{ __('Select Outlet') }}</option>
                             @foreach ($outlets as $outlet)
-                                <option value="{{ $outlet->id }}">{{ $outlet->name }}</option>
+                            <option value="{{ $outlet->id }}">{{ $outlet->name }}</option>
                             @endforeach
                         </select>
-                        <x-input-error :messages="$errors->get('outlet_id')" class="mt-2"/>
+                        <x-input-error :messages="$errors->get('outlet_id')" class="mt-2" />
                     </div>
                     <div class="input-area">
                         <label for="name" class="form-label">{{ __('Name') }}</label>
-                        <input name="name" type="text" id="name" class="form-control" 
-                               placeholder="{{ __('Enter product name') }}" value="{{ old('name') }}" required>
-                        <x-input-error :messages="$errors->get('name')" class="mt-2"/>
+                        <input name="name" type="text" id="name" class="form-control"
+                            placeholder="{{ __('Enter product name') }}" value="{{ old('name') }}" required>
+                        <x-input-error :messages="$errors->get('name')" class="mt-2" />
                     </div>
                     <div class="input-area">
                         <label for="barcode" class="form-label">{{ __('Barcode') }}</label>
                         <input name="barcode" type="text" id="barcode" class="form-control"
-                               placeholder="{{ __('Enter barcode') }}" value="{{ old('barcode') }}" required>
-                        <x-input-error :messages="$errors->get('barcode')" class="mt-2"/>
+                            placeholder="{{ __('Enter barcode') }}" value="{{ old('barcode') }}" required>
+                        <x-input-error :messages="$errors->get('barcode')" class="mt-2" />
                     </div>
                     <div class="input-area">
                         <label for="slug" class="form-label">{{ __('Slug') }}</label>
                         <input name="slug" type="text" id="slug" class="form-control"
-                               placeholder="{{ __('Enter slug') }}" value="{{ old('slug') }}" required>
-                        <x-input-error :messages="$errors->get('slug')" class="mt-2"/>
+                            placeholder="{{ __('Enter slug') }}" value="{{ old('slug') }}" required>
+                        <x-input-error :messages="$errors->get('slug')" class="mt-2" />
                     </div>
                     <div class="input-area">
                         <label for="cost_price" class="form-label">{{ __('Cost Price') }}</label>
                         <input name="cost_price" type="number" id="cost_price" class="form-control"
-                               placeholder="{{ __('Enter cost price') }}" value="{{ old('cost_price') }}" required>
-                        <x-input-error :messages="$errors->get('cost_price')" class="mt-2"/>
+                            placeholder="{{ __('Enter cost price') }}" value="{{ old('cost_price') }}" required>
+                        <x-input-error :messages="$errors->get('cost_price')" class="mt-2" />
                     </div>
 
                     <div class="input-area">
                         <label for="selling_price" class="form-label">{{ __('Selling Price') }}</label>
                         <input name="selling_price" type="number" id="selling_price" class="form-control"
-                               placeholder="{{ __('Enter selling price') }}" value="{{ old('selling_price') }}" required>
-                        <x-input-error :messages="$errors->get('selling_price')" class="mt-2"/>
+                            placeholder="{{ __('Enter selling price') }}" value="{{ old('selling_price') }}" required>
+                        <x-input-error :messages="$errors->get('selling_price')" class="mt-2" />
                     </div>
 
                     <div class="input-area">
                         <label for="qty" class="form-label">{{ __('Quantity') }}</label>
                         <input name="qty" type="number" id="qty" class="form-control"
-                               placeholder="{{ __('Enter quantity') }}" value="{{ old('qty') }}" required>
-                        <x-input-error :messages="$errors->get('qty')" class="mt-2"/>
+                            placeholder="{{ __('Enter quantity') }}" value="{{ old('qty') }}" required>
+                        <x-input-error :messages="$errors->get('qty')" class="mt-2" />
                     </div>
 
                     <div class="input-area">
                         <label for="alert_qty" class="form-label">{{ __('Alert Quantity') }}</label>
                         <input name="alert_qty" type="number" id="alert_qty" class="form-control"
-                               placeholder="{{ __('Enter alert quantity') }}" value="{{ old('alert_qty') }}" required>
-                        <x-input-error :messages="$errors->get('alert_qty')" class="mt-2"/>
+                            placeholder="{{ __('Enter alert quantity') }}" value="{{ old('alert_qty') }}" required>
+                        <x-input-error :messages="$errors->get('alert_qty')" class="mt-2" />
                     </div>
 
                     <div class="input-area">
                         <label for="sku" class="form-label">{{ __('SKU') }}</label>
                         <input name="sku" type="text" id="sku" class="form-control"
-                               placeholder="{{ __('Enter SKU') }}" value="{{ old('sku') }}" required>
-                        <x-input-error :messages="$errors->get('sku')" class="mt-2"/>
+                            placeholder="{{ __('Enter SKU') }}" value="{{ old('sku') }}" required>
+                        <x-input-error :messages="$errors->get('sku')" class="mt-2" />
                     </div>
 
                     <div class="input-area">
                         <label for="image" class="form-label">{{ __('Image') }}</label>
                         <input name="image" type="file" id="image" class="form-control">
-                        <x-input-error :messages="$errors->get('image')" class="mt-2"/>
+                        <x-input-error :messages="$errors->get('image')" class="mt-2" />
                     </div>
 
                     <div class="input-area">
                         <label for="description" class="form-label">{{ __('Description') }}</label>
                         <textarea name="description" id="description" class="form-control"
-                                  placeholder="{{ __('Enter description') }}">{{ old('description') }}</textarea>
-                        <x-input-error :messages="$errors->get('description')" class="mt-2"/>
+                            placeholder="{{ __('Enter description') }}">{{ old('description') }}</textarea>
+                        <x-input-error :messages="$errors->get('description')" class="mt-2" />
                     </div>
                     <div class="input-area">
                         <label for="category_id" class="form-label">{{ __('Category') }}</label>
                         <select name="category_id" id="category_id" class="form-control" required>
                             <option value="">{{ __('Select Category') }}</option>
                             @foreach ($categories as $category)
-                                <option value="{{ $category->id }}">{{ $category->name }}</option>
+                            <option value="{{ $category->id }}">{{ $category->name }}</option>
                             @endforeach
                         </select>
-                        <x-input-error :messages="$errors->get('category_id')" class="mt-2"/>
+                        <x-input-error :messages="$errors->get('category_id')" class="mt-2" />
                     </div>
 
                     <div class="input-area">
                         <label for="brand_id" class="form-label">{{ __('Brand') }}</label>
-                        <select name="brand_id" id="brand_id" class="form-control" >
+                        <select name="brand_id" id="brand_id" class="form-control">
                             <option value="">{{ __('Select Brand') }}</option>
                             @foreach ($brands as $brand)
-                                <option value="{{ $brand->id }}">{{ $brand->name }}</option>
+                            <option value="{{ $brand->id }}">{{ $brand->name }}</option>
                             @endforeach
                         </select>
-                        <x-input-error :messages="$errors->get('brand_id')" class="mt-2"/>
+                        <x-input-error :messages="$errors->get('brand_id')" class="mt-2" />
                     </div>
-
                     <div class="input-area">
                         <label for="unit_id" class="form-label">{{ __('Unit') }}</label>
-                        <select name="unit_id" id="unit_id" class="form-control" >
+                        <select name="unit_id" id="unit_id" class="form-control">
                             <option value="">{{ __('Select Brand') }}</option>
                             @foreach ($unit as $u)
-                                <option value="{{ $u->id }}">{{ $u->name }}</option>
+                            <option value="{{ $u->id }}">{{ $u->name }}</option>
                             @endforeach
                         </select>
-                        <x-input-error :messages="$errors->get('unit_id')" class="mt-2"/>
+                        <x-input-error :messages="$errors->get('unit_id')" class="mt-2" />
                     </div>
                 </div>
                 <div class="grid sm:grid-cols-2 gap-x-8 gap-y-4">
                     <div class="sm:col-span-2">
-                        <div class="grid sm:grid-cols-3 gap-x-8 gap-y-4 p-4 bg-slate-50 dark:bg-slate-700 rounded-lg">
-                            <div class="input-area">
-                                <div class="flex items-center gap-2 mb-4">
-                                    <input type="checkbox" name="is_variant" id="is_variant" value="1"
-                                           class="w-4 h-4 rounded border-slate-400" 
-                                           {{ old('is_variant') ? 'checked' : '' }}>
-                                    <label for="is_variant" class="form-label mb-0">{{ __('Is Variant') }}</label>
-                                </div>
-                                <div id="variant_fields" style="display: none;" class="space-y-4">
-                                    <div class="input-area">
-                                        <label for="variant_name" class="form-label">{{ __('Variant Name') }}</label>
-                                        <input name="variant_name" type="text" id="variant_name" class="form-control"
-                                               placeholder="{{ __('Enter variant name') }}">
-                                    </div>
-                                    <div class="input-area">
-                                        <label for="variant_price" class="form-label">{{ __('Variant Price') }}</label>
-                                        <input name="variant_price" type="number" id="variant_price" class="form-control"
-                                               placeholder="{{ __('Enter variant price') }}">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="input-area">
-                                <div class="flex items-center gap-2 mb-4">
-                                    <input type="checkbox" name="is_batch" id="is_batch" value="1"
-                                           class="w-4 h-4 rounded border-slate-400"
-                                           {{ old('is_batch') ? 'checked' : '' }}>
-                                    <label for="is_batch" class="form-label mb-0">{{ __('Is Batch') }}</label>
-                                </div>
-                                <div id="batch_fields" style="display: none;" class="space-y-4">
-                                    <div class="input-area">
-                                        <label for="batch_number" class="form-label">{{ __('Batch Number') }}</label>
-                                        <input name="batch_number" type="text" id="batch_number" class="form-control"
-                                               placeholder="{{ __('Enter batch number') }}">
-                                    </div>
-                                    <div class="input-area">
-                                        <label for="batch_expiry" class="form-label">{{ __('Batch Expiry Date') }}</label>
-                                        <input name="batch_expiry" type="date" id="batch_expiry" class="form-control">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+
                         <div class="input-area">
                             <label for="is_active" class="form-label">{{ __('Status') }}</label>
                             <select name="is_active" id="is_active" class="form-control">
                                 <option value="0">{{ __('Inactive') }}</option>
                                 <option value="1">{{ __('Active') }}</option>
                             </select>
-                            <x-input-error :messages="$errors->get('is_active')" class="mt-2"/>
+                            <x-input-error :messages="$errors->get('is_active')" class="mt-2" />
                         </div>
                     </div>
                 </div>
+                <!-- Variants and Batch Section -->
+                <div class="mt-6 bg-slate-50 dark:bg-slate-700 rounded-lg p-4">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="flex items-center gap-2 input-variant">
+                            <input type="checkbox" name="product_type[]" id="variant_checkbox" value="variant" class="w-4 h-4 rounded border-slate-400">
+                            <label for="variant_checkbox" class="form-label mb-0">{{ __('Variants') }}</label>
+                        </div>
+                        <div class="flex items-center gap-2 input-batch">
+                            <input type="checkbox" name="product_type[]" id="batch_checkbox" value="batch" class="w-4 h-4 rounded border-slate-400">
+                            <label for="batch_checkbox" class="form-label mb-0">{{ __('Batch') }}</label>
+                        </div>
+                    </div>
+
+                    <!-- Variant Section -->
+                    <div id="variant_section" style="display: none;">
+                        <table class="min-w-full table-auto" id="variant_table">
+                            <thead>
+                                <tr class="bg-slate-100">
+                                    <th class="text-center">{{ __('Drag') }}</th>
+                                    <th>{{ __('Variant Name') }}</th>
+                                    <th>{{ __('Price') }}</th>
+                                    <th>{{ __('Item Code') }}</th>
+
+                                    <th class="text-right">{{ __('Actions') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody id="variant_container">
+                            </tbody>
+                        </table>
+                        <button type="button" id="add_variant" class="btn btn-outline-dark mt-2">
+                            {{ __('Add Variant') }}
+                        </button>
+                    </div>
+
+                    <div id="batch_section" style="display: none;">
+                        <table class="min-w-full table-auto" id="batch_table">
+                            <thead>
+                                <tr class="bg-slate-100">
+                                    <th class="text-center">{{ __('Drag') }}</th>
+                                    <th>{{ __('Batch Number') }}</th>
+                                    <th>{{ __('Expiry Date') }}</th>
+                                    <th>{{ __('Quantity') }}</th>
+                                    <th class="text-right">{{ __('Actions') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody id="batch_container">
+                            </tbody>
+                        </table>
+                        <button type="button" id="add_batch" class="btn btn-outline-dark mt-2">
+                            {{ __('Add Batch') }}
+                        </button>
+                    </div>
+                </div>
+
                 <button type="submit" class="btn inline-flex justify-center btn-dark mt-4 w-full">
                     {{ __('Save') }}
                 </button>
-            </div>
-        </form>
-    </div>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            $('#is_variant').change(function () {
-                if ($(this).is(':checked')) {
-                    $('#variant_fields').show();
-                } else {
-                    $('#variant_fields').hide();
-                }
-            });
+                @push('scripts')
 
-            $('#is_batch').change(function () {
-                if ($(this).is(':checked')) {
-                    $('#batch_fields').show();
-                } else {
-                    $('#batch_fields').hide();
-                }
-            });
-        });
-    </script>
+                <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+                <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.js"></script>
+                <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+
+                <script>
+                    $(document).ready(function() {
+                        let variantCounter = 0;
+                        let batchCounter = 0;
+
+                        // Tambahkan fungsi untuk menambah/menghapus validasi pada input
+                        function toggleInputValidation(sectionId, isRequired) {
+                            $(`#${sectionId} input`).each(function() {
+                                if (isRequired) {
+                                    $(this).prop('required', true);
+                                } else {
+                                    $(this).prop('required', false);
+                                }
+                            });
+                        }
+                        $('input[name="product_type[]"]').change(function() {
+                            const isChecked = $(this).is(':checked');
+                            const inputName = $(this).attr('id'); 
+
+                            if (inputName === 'variant_checkbox') {
+                                $('#variant_section').toggle(isChecked);
+                                toggleInputValidation('variant_section', isChecked);
+
+                                if (isChecked) {
+                                    $('#batch_checkbox, label[for="batch_checkbox"]').hide();
+                                    if ($('#variant_container').children().length === 0) {
+                                        addVariantRow();
+                                    }
+                                } else {
+                                    $('#batch_checkbox, label[for="batch_checkbox"]').show();
+                                }
+                            }
+
+                            if (inputName === 'batch_checkbox') {
+                                $('#batch_section').toggle(isChecked);
+                                toggleInputValidation('batch_section', isChecked);
+
+                                if (isChecked) {
+                                    $('#variant_checkbox, label[for="variant_checkbox"]').hide();
+                                    if ($('#batch_container').children().length === 0) {
+                                        addBatchRow();
+                                    }
+                                } else {
+                                    $('#variant_checkbox, label[for="variant_checkbox"]').show();
+                                }
+                            }
+                        });
+
+
+
+                        $('#add_variant').click(addVariantRow);
+                        $('#add_batch').click(addBatchRow);
+
+                        $(document).on('click', '.remove-variant', function() {
+                            $(this).closest('.variant-row').remove();
+                            updateVariantIndices();
+
+                            // Sembunyikan section jika tidak ada variant
+                            if ($('#variant_container').children().length === 0) {
+                                $('#variant_checkbox').prop('checked', false);
+                                $('#variant_section').hide();
+                            }
+                        });
+
+                        $(document).on('click', '.remove-batch', function() {
+                            $(this).closest('.batch-row').remove();
+                            updateBatchIndices();
+
+                            // Sembunyikan section jika tidak ada batch
+                            if ($('#batch_container').children().length === 0) {
+                                $('#batch_checkbox').prop('checked', false);
+                                $('#batch_section').hide();
+                            }
+                        });
+
+                        function addVariantRow() {
+                            variantCounter++;
+                            const newRow = `
+            <tr class="variant-row" data-index="${variantCounter}">
+                <td class="text-center">
+                    <svg class="w-5 h-5 text-gray-500 cursor-move" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </td>
+                <td>
+                    <input type="text" name="variants[${variantCounter}][name]" class="form-control" placeholder="{{ __('Variant Name') }}" required>
+                </td>
+                <td>
+                    <input type="number" name="variants[${variantCounter}][additional_price]" class="form-control" placeholder="{{ __('Variant Price') }}" required>
+                </td>
+                 <td>
+                    <input type="number" name="variants[${variantCounter}][item_code]" class="form-control" placeholder="{{ __('Variant Price') }}" required>
+                </td>
+                <td class="text-right">
+                    <button type="button" class="btn btn-sm btn-outline-danger remove-variant">
+                        {{ __('Remove') }}
+                    </button>
+                </td>
+            </tr>
+        `;
+
+                            $('#variant_container').append(newRow);
+                            updateVariantIndices();
+                        }
+
+                        function addBatchRow() {
+                            batchCounter++;
+                            const newRow = `
+            <tr class="batch-row" data-index="${batchCounter}">
+                <td class="text-center">
+                    <svg class="w-5 h-5 text-gray-500 cursor-move" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </td>
+                <td>
+                    <input type="text" name="batches[${batchCounter}][number]" class="form-control" placeholder="{{ __('Batch Number') }}" required>
+                </td>
+                <td>
+                    <input type="date" name="batches[${batchCounter}][expiry_date]" class="form-control" required>
+                </td>
+                <td>
+                    <input type="number" name="batches[${batchCounter}][quantity]" class="form-control" placeholder="{{ __('Quantity') }}" required>
+                </td>
+                <td class="text-right">
+                    <button type="button" class="btn btn-sm btn-outline-danger remove-batch">
+                        {{ __('Remove') }}
+                    </button>
+                </td>
+            </tr>
+        `;
+
+                            $('#batch_container').append(newRow);
+                            updateBatchIndices();
+                        }
+
+                        function updateVariantIndices() {
+                            $('#variant_container .variant-row').each(function(index) {
+                                const newIndex = index + 1;
+                                $(this).attr('data-index', newIndex);
+                                $(this).find('input').each(function() {
+                                    const name = $(this).attr('name').replace(/\[\d+\]/, `[${newIndex}]`);
+                                    $(this).attr('name', name);
+                                });
+                            });
+                        }
+
+                        function updateBatchIndices() {
+                            $('#batch_container .batch-row').each(function(index) {
+                                const newIndex = index + 1;
+                                $(this).attr('data-index', newIndex);
+                                $(this).find('input').each(function() {
+                                    const name = $(this).attr('name').replace(/\[\d+\]/, `[${newIndex}]`);
+                                    $(this).attr('name', name);
+                                });
+                            });
+                        }
+                    });
+                </script>
+
+                @endpush
+
 </x-app-layout>
