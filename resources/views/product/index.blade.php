@@ -10,8 +10,87 @@
             <x-alert :message="session('message')" :type="'success'" />
         @endif
         {{-- Alert end --}}
+        <div class="space-y-5">
+            <div class="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-4">
+                <div class="card">
+                    <div class="card-body pt-4 pb-3 px-4">
+                        <div class="flex space-x-3 rtl:space-x-reverse">
+                            <div class="flex-none">
+                                <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-[#EAE6FF] dark:bg-slate-900	 text-indigo-500">
+                                    <iconify-icon icon=heroicons:gift-top></iconify-icon>
+                                </div>
+                            </div>
+                            <div class="flex-1">
+                                <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
+                                    Totel Product
+                                </div>
+                                <div class="text-slate-900 dark:text-white text-lg font-medium">
+                                    {{$products->count()}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ltr:ml-auto rtl:mr-auto max-w-[124px]">
+                            <div id="spae-line3"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body pt-4 pb-3 px-4">
+                        <div class="flex space-x-3 rtl:space-x-reverse">
+                            <div class="flex-none">
+                                <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-[#E5F9FF] dark:bg-slate-900	 text-info-500">
+                                    <iconify-icon icon=heroicons:currency-dollar></iconify-icon>
+                                </div>
+                            </div>
+                            <div class="flex-1">
+                                <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
+                                    Totel Product Sales (QTY)
+                                </div>
+                                <div class="text-slate-900 dark:text-white text-lg font-medium">
+                                    @php
+                                    $productSalesCount = App\Models\SalesOrder::With('products')->get()->pluck('products')->flatten()->sum('qty');
+                                    @endphp
+                                    {{
+                                        $productSalesCount
+                                    }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ltr:ml-auto rtl:mr-auto max-w-[124px]">
+                            <div id="spae-line1"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body pt-4 pb-3 px-4">
+                        <div class="flex space-x-3 rtl:space-x-reverse">
+                            <div class="flex-none">
+                                <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-[#FFEDE6] dark:bg-slate-900 text-orange-500">
+                                    <iconify-icon icon=heroicons:shopping-cart></iconify-icon>
+                                </div>
+                            </div>
+                            <div class="flex-1">
+                                <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
+                                    Growth rate (Last Month)
+                                </div>
+                                <div class="text-slate-900 dark:text-white text-lg font-medium">
+                             
 
-        <div class="card">
+                               
+                                0
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ltr:ml-auto rtl:mr-auto max-w-[124px]">
+                            <div id="spae-line2"></div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+        <div class="card mt-4">
             <header class="card-header noborder">
                 <div class="justify-end flex gap-3 items-center flex-wrap">
                     {{-- Create Button start --}}
@@ -119,6 +198,8 @@
     </div>
 
     @push('scripts')
+    <script src="{{ asset('js/rt-plugins.js') }}"></script>
+
         <script>
             function sweetAlertDelete(event, formId) {
                 event.preventDefault();

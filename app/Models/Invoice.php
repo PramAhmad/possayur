@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Models\Activity;
 
 class Invoice extends Model
 {
@@ -21,6 +23,19 @@ class Invoice extends Model
          'grandtotal',
          'note',
     ];
+    public function tapActivity(Activity $activity, string $eventName)
+    {
+        $activity->description = auth()->user();
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logAll()
+            ->logUnguarded()
+            ->logOnlyDirty()
+            ->useLogName('Invoice');
+    }
 
     public function outlet()
     {

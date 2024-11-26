@@ -60,11 +60,20 @@
                                         <td class="table-td">{{ $order->returnSalesOrder->return_number ?? '-' }}</td>
 
                                         <td class="table-td">
-                                            <ul class="list-disc list-inside">
-                                                @foreach ($order->products as $product)
-                                                <li>{{ $product->product->name }}</li>
-                                                @endforeach
-                                            </ul>
+                                        <ul class="list-disc list-inside">
+    @foreach ($order->products as $product)
+        <li>
+            {{ $product->product->name }}
+            @if ($product->variant_id)
+                - Variant: {{ $product->variant->name }}
+            @endif
+            @if ($product->batch_id)
+                - Batch: {{ $product->batch->name }}
+            @endif
+        </li>
+    @endforeach
+</ul>
+
                                         </td>
                                         <td class="table-td">
                                             @php

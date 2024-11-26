@@ -73,6 +73,15 @@
                             <tr>
                                 <td class="px-4 py-3 text-sm text-slate-500 dark:text-slate-300">
                                     {{ $product->product->name }}
+                                    @if ($product->variant)
+
+                                    <p class="text-xs text-slate-400 dark:text-slate-500">Variant:
+                                        {{ $product->variant->name ?? 'Default' }}</p>
+                                    @endif
+                                    @if ($product->batch)
+                                    <p class="text-xs text-slate-400 dark:text-slate-500">Batch:
+                                        {{ $product->batch->batch_no }}</p>
+                                    @endif
                                 </td>
                                 <td class="px-4 py-3 text-sm text-slate-500 dark:text-slate-300">
                                     <div class="flex justify-between">

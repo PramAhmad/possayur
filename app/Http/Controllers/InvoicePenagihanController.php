@@ -12,6 +12,7 @@ use App\Models\SalesOrder;
 use App\Models\SuratJalan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class InvoicePenagihanController extends Controller
@@ -35,6 +36,7 @@ class InvoicePenagihanController extends Controller
 
         $query = QueryBuilder::for(Invoice::class)
             ->allowedSorts(['reference_number', 'created-at'])
+            ->with(['salesorder', 'outlet'])
             ->when($q, function ($query, $q) {
                 return $query->where('no_invoice', 'like', "%$q%");
             })
@@ -86,13 +88,32 @@ class InvoicePenagihanController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+
     public function store(Request $request)
     {
-        // dd($request->all());
+        // Validate the incoming request
+        $request->validate([
+            'sales_order_id' => 'required|exists:sales_orders,id',
+            'total_qty' => 'required|numeric',
+            'grandtotal' => 'required|numeric',
+            'note' => 'nullable|string',
+            'products' => 'required|array',
+            'products.*.product_id' => 'required|exists:product,id',
+            'products.*.invoice_qty' => 'required|numeric',
+            'returns' => 'nullable|array',
+            'returns.total_qty' => 'nullable|numeric',
+            'returns.total_grandtotal' => 'nullable|numeric',
+            'returns.products' => 'nullable|array',
+            'returns.products.*.product_id' => 'required|exists:product,id',
+            'returns.products.*.return_qty' => 'required|numeric',
+        ]);
+    
         DB::beginTransaction();
         try {
             $salesOrder = SalesOrder::findOrFail($request->sales_order_id);
             $suratJalan = SuratJalan::where('sales_order_id', $salesOrder->id)->first();
+            
+            // Create Invoice
             $invoice = Invoice::create([
                 'reference_number' => 'INV/' . date('Ymd') . '/' . $salesOrder->id,
                 'sales_order_id' => $salesOrder->id,
@@ -102,6 +123,8 @@ class InvoicePenagihanController extends Controller
                 'grandtotal' => $request->grandtotal,
                 'note' => $request->note,
             ]);
+            
+            // Create ProductInvoice records
             foreach ($request->products as $product) {
                 ProductInvoice::create([
                     'invoice_id' => $invoice->id,
@@ -109,46 +132,63 @@ class InvoicePenagihanController extends Controller
                     'qty' => $product['invoice_qty'],
                     'price' => $product['price'],
                     'total' => $product['price'] * $product['invoice_qty'],
+                    'variant_id' => $product['variant_id'] ?? null,
+                    'batch_id' => $product['batch_id'] ?? null,
                 ]);
             }
-
+    
+            // Update SalesOrder status
             $salesOrder->update([
                 'status' => 'completed'
             ]);
-            $returnSalesOrder = ReturnSalesOrder::create([
-                'return_number' => 'RET/' . date('Ymd') . '/' . $salesOrder->id,
-                'return_date' => date('Y-m-d'),
-                'sales_order_id' => $salesOrder->id,
-                'outlet_id' => $salesOrder->outlet_id,
-                'user_id' => auth()->user()->id,
-                'total_qty' => $request->returns['total_qty'],
-                'grand_total' => $request->returns['total_grandtotal'],
-            ]);
-            foreach ($request->returns['products'] as $product) {
-                ProductReturnSalesOrder::create([
-                    'return_sales_order_id' => $returnSalesOrder->id,
-                    'product_id' => $product['product_id'],
-                    'qty' => $product['return_qty'],
-                    'price' => $product['price'],
-                    'total' => $product['subtotal'],
+            
+            // Create ReturnSalesOrder if returns exist
+            if ($request->has('returns') && !empty($request->returns['products'])) {
+                $returnSalesOrder = ReturnSalesOrder::create([
+                    'return_number' => 'RET/' . date('Ymd') . '/' . $salesOrder->id,
+                    'return_date' => date('Y-m-d'),
+                    'sales_order_id' => $salesOrder->id,
+                    'outlet_id' => $salesOrder->outlet_id,
+                    'user_id' => auth()->user()->id,
+                    'total_qty' => $request->returns['total_qty'],
+                    'grand_total' => $request->returns['total_grandtotal'],
                 ]);
+                
+                // Create ProductReturnSalesOrder records
+                foreach ($request->returns['products'] as $product) {
+                    ProductReturnSalesOrder::create([
+                        'return_sales_order_id' => $returnSalesOrder->id,
+                        'product_id' => $product['product_id'],
+                        'qty' => $product['return_qty'],
+                        'price' => $product['price'],
+                        'total' => $product['subtotal'],
+                        'variant_id' => $product['variant_id'] ?? null,
+                        'batch_id' => $product['batch_id'] ?? null,
+                    ]);
+                }
             }
-
+    
+            // Commit transaction
             DB::commit();
+    
             return redirect()->route('invoice.index')->with('success', 'Invoice berhasil dibuat');
         } catch (\Exception $e) {
-            dd($e->getMessage());
+            return $e->getMessage();
+            Log::error('Error in store method: ' . $e->getMessage());
+    
+            // Rollback transaction and return error response
             DB::rollBack();
-            return redirect()->back()->with('error', $e->getMessage());
+            return redirect()->back()->with('error', 'An error occurred while processing your request.');
         }
     }
+    
 
     /**
      * Display the specified resource.
      */
     public function show(string $id)
     {
-        $invoice = Invoice::with(['salesorder','suratJalan','salesorder.customer','salesorder.products','suratJalan.productSuratJalans','salesorder.returnSalesOrder','salesorder.returnSalesOrder.productReturnSalesOrder', 'outlet', 'productInvoices', 'productInvoices.product'])
+        $invoice = Invoice::with(['salesorder','suratJalan','salesorder.customer','salesorder.products','suratJalan.productSuratJalans','salesorder.returnSalesOrder','salesorder.returnSalesOrder.productReturnSalesOrder', 'outlet', 'productInvoices', 'productInvoices.product','productInvoices.variant','productInvoices.batch'])
             ->findOrFail($id);
             // return $invoice;
 
@@ -203,30 +243,42 @@ class InvoicePenagihanController extends Controller
     }
     public function getProducts($salesOrderId)
     {
-        $salesOrder = SalesOrder::with(['products', 'products.product'])
-            ->findOrFail($salesOrderId);
-
-        $suratJalanProducts =   ProductSuratJalan::whereHas('suratJalan', function ($query) use ($salesOrderId) {
+        $salesOrder = SalesOrder::with([
+            'products', 
+            'products.product', 
+            'products.variant', 
+            'products.batch',
+        ])->findOrFail($salesOrderId);
+    
+        $suratJalanProducts = ProductSuratJalan::whereHas('suratJalan', function ($query) use ($salesOrderId) {
             $query->where('sales_order_id', $salesOrderId);
-        })->get(['product_id', 'qty as surat_jalan_qty']);
+        })->get();
 
         $products = $salesOrder->products->map(function ($item) use ($suratJalanProducts) {
-            $suratJalanProduct = $suratJalanProducts->where('product_id', $item->product_id)->first();
+            $suratJalanProduct = $suratJalanProducts
+                ->where('product_id', $item->product_id)
+                ->where('variant_id', $item->variant_id)
+                ->where('batch_id', $item->batch_id)
+                ->first();
+    
             return [
                 'product_id' => $item->product_id,
+                'variant_id' => $item->variant_id,
+                'batch_id' => $item->batch_id,
                 'product' => $item->product,
+                'variant' => $item->variant,
+                'batch' => $item->batch,    
                 'unit_price' => $item->unit_price,
                 'qty' => $item->qty,
-                'surat_jalan_qty' => $suratJalanProduct ? $suratJalanProduct->surat_jalan_qty : 0
+                'surat_jalan_qty' => $suratJalanProduct ? $suratJalanProduct->qty : 0
             ];
         });
-
+    
         return response()->json([
             'products' => $products,
             'salesorder' => $salesOrder,
             'total_qty' => $salesOrder->total_qty,
             'outlet_id' => $salesOrder->outlet_id,
-            'grandtotal' => $salesOrder->grandtotal
         ]);
     }
 }

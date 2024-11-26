@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Models\Activity;
 
 class ProductSalesOrder extends Model
 {
@@ -20,6 +22,19 @@ class ProductSalesOrder extends Model
         'discount',
         'tax',
     ];
+    public function tapActivity(Activity $activity, string $eventName)
+    {
+        $activity->description = auth()->user();
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logAll()
+            ->logUnguarded()
+            ->logOnlyDirty()
+            ->useLogName('ProductSalesOrder');
+    }
 
     public function salesOrder()
     {

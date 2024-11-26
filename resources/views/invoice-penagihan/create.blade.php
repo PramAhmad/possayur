@@ -78,187 +78,203 @@
     </div>
 
     @push('scripts')
-    <script>
-        $(document).ready(function() {
-            function formatCurrency(amount) {
-                return new Intl.NumberFormat('id-ID', {
-                    style: 'currency',
-                    currency: 'IDR'
-                }).format(amount);
-            }
+ <script>
+    $(document).ready(function() {
+    function formatCurrency(amount) {
+        return new Intl.NumberFormat('id-ID', {
+            style: 'currency',
+            currency: 'IDR'
+        }).format(amount);
+    }
 
-            function updateTotals() {
-                let totalInvoiceQty = 0;
-                let totalAmount = 0;
+    function updateTotals() {
+        let totalInvoiceQty = 0;
+        let totalAmount = 0;
 
-                $('#products-table-body tr').each(function() {
-                    const price = parseFloat($(this).data('price'));
-                    const invoiceQty = parseFloat($(this).find('input[name="invoice_quantities[]"]').val() || 0);
+        $('#products-table-body tr').each(function() {
+            const price = parseFloat($(this).data('price'));
+            const invoiceQty = parseFloat($(this).find('input[name="invoice_quantities[]"]').val() || 0);
 
-                    totalInvoiceQty += invoiceQty;
-                    totalAmount += price * invoiceQty;
-                });
+            totalInvoiceQty += invoiceQty;
+            totalAmount += price * invoiceQty;
+        });
 
-                const discount = parseFloat($('#discount').val() || 0);
-                const grandTotal = totalAmount - discount;
+        $('#total-invoice-qty').text(totalInvoiceQty);
+        $('#total-amount').text(formatCurrency(totalAmount));
+    }
 
-                $('#total-invoice-qty').text(totalInvoiceQty);
-                $('#total-amount').text(formatCurrency(totalAmount));
-                $('#grandtotal').val(formatCurrency(grandTotal));
-            }
+    function updateSubtotal(row) {
+        const price = parseFloat(row.data('price'));
+        const quantity = parseFloat(row.find('.qty-input').val() || 0);
+        const subtotal = price * quantity;
 
-            function updateSubtotal(row) {
-                const price = parseFloat(row.data('price')); 
-                const quantity = parseFloat(row.find('.qty-input').val() || 0); // Invoice Qty
-                const subtotal = price * quantity;
+        row.find('.adjusted-subtotal').text(formatCurrency(subtotal));
+    }
 
-                row.find('.adjusted-subtotal').text(formatCurrency(subtotal));
-            }
+    $('#sales_order_id').change(function() {
+        const salesOrderId = $(this).val();
+        if (salesOrderId) {
+            $.ajax({
+                url: `/invoice/get-products/${salesOrderId}`,
+                type: 'GET',
+                success: function(response) {
+                    $('#outlet_id').val(response.outlet_id);
+                    $('#outlet_name').val(response.outlet_name);
+                    const tableBody = $('#products-table-body');
+                    tableBody.empty();
+                    $('#products-list').removeClass('hidden');
 
+                    response.products.forEach(function(item) {
+                        const suratJalanQty = item.surat_jalan_qty || 0;
+                        let variantInfo = '';
+                        let batchInfo = '';
+                        let variantId = null;
+                        let batchId = null;
 
-            $('#sales_order_id').change(function() {
-                const salesOrderId = $(this).val();
-                if (salesOrderId) {
-                    $.ajax({
-                        url: `/invoice/get-products/${salesOrderId}`,
-                        type: 'GET',
-                        success: function(response) {
-                            $('#outlet_id').val(response.outlet_id);
-                            $('#outlet_name').val(response.outlet_name);
-                            const tableBody = $('#products-table-body');
-                            tableBody.empty();
-                            $('#products-list').removeClass('hidden');
-
-                            response.products.forEach(function(item) {
-                                const suratJalanQty = item.surat_jalan_qty || 0;
-
-                                const row = `
-        <tr data-price="${item.unit_price}" data-product-id="${item.product.id}">
-            <td>${item.product.name}</td>
-            <td>${formatCurrency(item.unit_price)}</td>
-            <td>${item.qty}</td>
-            <td>${suratJalanQty}</td>
-            <td>
-                <input type="number" 
-                       name="invoice_quantities[]" 
-                       class="form-control qty-input" 
-                       value="${suratJalanQty}" 
-                       min="0"
-                       max="${item.qty}">
-            </td>
-            <td class="adjusted-subtotal">
-                ${formatCurrency(item.unit_price * suratJalanQty)}
-            </td>
-        </tr>`;
-                                tableBody.append(row);
-                            });
-                            updateTotals();
-
-                            $('.qty-input').on('input', function() {
-                                const row = $(this).closest('tr');
-                                const maxQty = parseFloat(row.find('td:nth-child(3)').text()); // Order Qty
-                                const suratJalanQty = parseFloat(row.find('td:nth-child(4)').text()); // Surat Jalan Qty
-                                const enteredQty = parseFloat($(this).val() || 0);
-
-                                if (enteredQty > Math.min(maxQty, suratJalanQty)) {
-                                    alert('Invoice Qty cannot exceed Order Qty or Surat Jalan Qty.');
-                                    $(this).val(Math.min(maxQty, suratJalanQty));
-                                }
-
-                                updateSubtotal(row);
-                                updateTotals();
-                            });
-
-
-                            $('#discount').on('input', updateTotals);
-                        },
-                        error: function(xhr) {
-                            console.error('Error fetching Sales Order details:', xhr);
-                            alert('Error fetching details. Please try again.');
+                        if (item.variant) {
+                            variantInfo = `Variant: ${item.variant.name}`;
+                            variantId = item.variant.id;
                         }
+
+                        if (item.batch) {
+                            batchInfo = `Batch: ${item.batch.batch_no}`;
+                            batchId = item.batch.id;
+                        }
+
+                        const row = `
+                            <tr 
+                                data-price="${item.unit_price}" 
+                                data-product-id="${item.product.id}"
+                                data-variant-id="${variantId}"
+                                data-batch-id="${batchId}"
+                            >
+                                <td>
+                                    ${item.product.name}
+                                    <div class="text-sm text-gray-500 mt-1">
+                                        ${variantInfo} ${batchInfo ? ' | ' + batchInfo : ''}
+                                    </div>
+                                </td>
+                                <td>${formatCurrency(item.unit_price)}</td>
+                                <td>${item.qty}</td>
+                                <td>${suratJalanQty}</td>
+                                <td>
+                                    <input type="number" 
+                                           name="invoice_quantities[]" 
+                                           class="form-control qty-input" 
+                                           value="${suratJalanQty}" 
+                                           min="0"
+                                           max="${item.qty}">
+                                </td>
+                                <td class="adjusted-subtotal">
+                                    ${formatCurrency(item.unit_price * suratJalanQty)}
+                                </td>
+                            </tr>`;
+                        tableBody.append(row);
                     });
-                } else {
-                    $('#products-list').addClass('hidden');
+
+                    updateTotals();
+
+                    $('.qty-input').on('input', function() {
+                        const row = $(this).closest('tr');
+                        const maxQty = parseFloat(row.find('td:nth-child(3)').text());
+                        const suratJalanQty = parseFloat(row.find('td:nth-child(4)').text());
+                        const enteredQty = parseFloat($(this).val() || 0);
+
+                        if (enteredQty > Math.min(maxQty, suratJalanQty)) {
+                            alert('Invoice Qty cannot exceed Order Qty or Surat Jalan Qty.');
+                            $(this).val(Math.min(maxQty, suratJalanQty));
+                        }
+
+                        updateSubtotal(row);
+                        updateTotals();
+                    });
+                },
+                error: function(xhr) {
+                    console.error('Error fetching Sales Order details:', xhr);
+                    alert('Error fetching details. Please try again.');
                 }
             });
+        } else {
+            $('#products-list').addClass('hidden');
+        }
+    });
 
+    $('#invoiceForm').submit(function(e) {
+        e.preventDefault();
+        let grandTotal = 0;
+        const productDetails = [];
+        const returnDetails = [];
+        let totalReturnQty = 0;
+        let totalReturnGrandtotal = 0;
 
-            $('#invoiceForm').submit(function(e) {
-                e.preventDefault();
-                let grandTotal = 0;
-                const productDetails = [];
-                const returnDetails = [];
-                let totalReturnQty = 0;
-                let totalReturnGrandtotal = 0;
-                $('#products-table-body tr').each(function() {
+        $('#products-table-body tr').each(function() {
+            const $row = $(this);
+            const orderQty = parseFloat($row.find('td:nth-child(3)').text());
+            const suratJalanQty = parseFloat($row.find('td:nth-child(4)').text());
+            const invoiceQty = parseFloat($row.find('.qty-input').val() || 0);
 
-                    const $row = $(this);
-                    const orderQty = parseFloat($row.find('td:nth-child(3)').text());
-                    const suratJalanQty = parseFloat($row.find('td:nth-child(4)').text());
-                    const invoiceQty = parseFloat($row.find('.qty-input').val() || 0);
+            const productDetail = {
+                product_id: $row.data('product-id'),
+                variant_id: $row.data('variant-id'),
+                batch_id: $row.data('batch-id'),
+                price: parseFloat($row.data('price')),
+                order_qty: orderQty,
+                surat_jalan_qty: suratJalanQty,
+                invoice_qty: invoiceQty,
+                subtotal: parseFloat($row.data('price')) * invoiceQty
+            };
 
-                    const productDetail = {
-                        product_id: $row.data('product-id'),
-                        price: parseFloat($row.data('price')),
-                        order_qty: orderQty,
-                        surat_jalan_qty: suratJalanQty,
-                        invoice_qty: invoiceQty,
-                        subtotal: parseFloat($row.data('price')) * invoiceQty
-                    };
-                    
+            const returnQty = orderQty - invoiceQty;
+            const returnGrandTotal = returnQty * parseFloat($row.data('price'));
+            grandTotal += productDetail.subtotal;
 
-                // return qty per product
-                    const returnQty = orderQty - invoiceQty;
-                    
-                    console.log('return qty', returnQty);
-                    const returnGrandTotal = returnQty * parseFloat($row.data('price'));
-                    grandTotal += productDetail.subtotal;
-
-                    if (returnQty > 0) {
-                        const returnItem = {
-                            product_id: $row.data('product-id'),
-                            return_qty: returnQty,
-                            price: parseFloat($row.data('price')),
-                            subtotal: returnQty * parseFloat($row.data('price'))
-                        };
-                        returnDetails.push(returnItem);
-                        totalReturnGrandtotal += returnGrandTotal;
-                        totalReturnQty += returnQty;
-                    }
-
-                    productDetails.push(productDetail);
-                });
-                const formData = {
-                    sales_order_id: $('#sales_order_id').val(),
-                    outlet_id: $('#outlet_id').val(),
-                    note: $('#note').val(),
-                    total_qty: $('#total-invoice-qty').text(),
-                    grandtotal: grandTotal,
-                    products: productDetails,
-                    returns: {
-                        total_qty: totalReturnQty,
-                        total_grandtotal: totalReturnGrandtotal,
-                        products: returnDetails
-                    },
-                    _token: $('input[name="_token"]').val()
+            if (returnQty > 0) {
+                const returnItem = {
+                    product_id: $row.data('product-id'),
+                    variant_id: $row.data('variant-id'),
+                    batch_id: $row.data('batch-id'),
+                    return_qty: returnQty,
+                    price: parseFloat($row.data('price')),
+                    subtotal: returnQty * parseFloat($row.data('price'))
                 };
+                returnDetails.push(returnItem);
+                totalReturnGrandtotal += returnGrandTotal;
+                totalReturnQty += returnQty;
+            }
 
-                $.ajax({
-                    url: "{{ route('invoice.store') }}",
-                    type: 'POST',
-                    data: JSON.stringify(formData),
-                    contentType: 'application/json',
-                    success: function(response) {
-                        alert('Invoice created successfully.');
-                       
-                    },
-                    error: function(xhr) {
-                        console.error('Error creating invoice:', xhr);
-                        alert('Error occurred. Please try again.');
-                    }
-                });
-            });
+            productDetails.push(productDetail);
         });
-    </script>
+
+        const formData = {
+            sales_order_id: $('#sales_order_id').val(),
+            outlet_id: $('#outlet_id').val(),
+            note: $('#note').val(),
+            total_qty: $('#total-invoice-qty').text(),
+            grandtotal: grandTotal,
+            products: productDetails,
+            returns: {
+                total_qty: totalReturnQty,
+                total_grandtotal: totalReturnGrandtotal,
+                products: returnDetails
+            },
+            _token: $('input[name="_token"]').val()
+        };
+
+        $.ajax({
+            url: "{{ route('invoice.store') }}",
+            type: 'POST',
+            data: JSON.stringify(formData),
+            contentType: 'application/json',
+            success: function(response) {
+                alert('Invoice created successfully.');
+            },
+            error: function(xhr) {
+                console.error('Error creating invoice:', xhr);
+                alert('Error occurred. Please try again.');
+            }
+        });
+    });
+});
+ </script>
     @endpush
 </x-app-layout>

@@ -1,6 +1,4 @@
-@extends('layouts.pos')
-@section('content')
- 
+<x-app-layout>
 <div class="flex-grow flex flex-col lg:flex-row">
     <!-- Products Section -->
     <div class="flex flex-col bg-blue-gray-50 w-full h-full py-4">
@@ -45,48 +43,147 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($products as $product)
-                <tr 
-                    class="border-t cursor-pointer hover:bg-gray-100"
-                    data-product-id="{{ $product->id }}"
-                    data-product-name="{{ $product->name }}"
-                    data-product-price="{{ $product->cost_price }}"
-                    data-product-image="{{ asset('upload/product/' . $product->image) }}"
-                >
-                    <td class="px-4 py-2">
-                        <img src="{{ asset('upload/product/' . $product->image) }}" class="w-16 h-16 object-cover rounded-md" alt="{{ $product->name }}">
-                    </td>
-                    <td class="px-4 py-2">{{ $product->name }}</td>
-                    <td class="px-4 py-2">Rp {{ number_format($product->cost_price) }}</td>
-                    <td class="px-4 py-2">{{ $product->unit->name ?? '-' }}</td>
-                </tr>
-                @endforeach
+            @foreach ($products as $product)
+<tr 
+    class="border-t cursor-pointer hover:bg-gray-100"
+    data-product-id="{{ $product->id }}"
+    data-product-name="{{ $product->name }}"
+    data-product-price="{{ $product->cost_price }}"
+    data-product-image="{{ asset('upload/product/' . $product->image) }}"
+>
+    <td class="px-4 py-2">
+        <img src="{{ asset('upload/product/' . $product->image) }}" class="w-16 h-16 object-cover rounded-md" alt="{{ $product->name }}">
+    </td>
+    <td class="px-4 py-2 font-semibold">{{ $product->name }}</td>
+    <td class="px-4 py-2">Rp {{ number_format($product->cost_price) }}</td>
+    <td class="px-4 py-2">{{ $product->unit->name ?? '-' }}</td>
+</tr>
+
+<!-- Variants -->
+@if ($product->variants->isNotEmpty())
+    @foreach ($product->variants as $variant)
+    <tr 
+        class="border-t cursor-pointer hover:bg-gray-50 bg-gray-50"
+        data-product-id="{{ $variant->id }}"
+        data-product-name="{{ $product->name }} - {{ $variant->name }}"
+        data-product-price="{{ $product->cost_price + $variant->additional_price }}"
+    >
+        <td class="px-6 py-2">—</td>
+        <td class="px-4 py-2 text-gray-600">{{ $variant->name }}</td>
+        <td class="px-4 py-2 text-gray-600">Rp {{ number_format($product->cost_price + $variant->additional_price) }}</td>
+        <td class="px-4 py-2 text-gray-600">Varian</td>
+    </tr>
+    @endforeach
+@endif
+
+<!-- Batch -->
+@if ($product->batches->isNotEmpty())
+    @foreach ($product->batches as $batch)
+    <tr 
+        class="border-t cursor-pointer hover:bg-gray-50 bg-gray-100"
+        data-batch-id="{{ $batch->id }}"
+        data-batch-name="{{ $batch->name }}"
+    >
+        <td class="px-6 py-2">—</td>
+        <td class="px-4 py-2 text-gray-600">Batch: {{ $batch->name }}</td>
+        <td class="px-4 py-2 text-gray-600">Stok: {{ $batch->qty }}</td>
+        <td class="px-4 py-2 text-gray-600">{{ $batch->expiration_date ?? '—' }}</td>
+    </tr>
+    @endforeach
+@endif
+@endforeach
+
             </tbody>
         </table>
     </div>
 
     <!-- Grid View -->
     <div id="gridView" class="h-full overflow-y-auto px-2">
-        <div class="product-grid grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 pb-3">
-            @foreach ($products as $product)
-            <div>
-                <div
-                    role="button"
-                    class="select-none cursor-pointer transition-shadow overflow-hidden rounded-2xl p-2 bg-white shadow hover:shadow-lg add-to-cart"
-                    data-product-id="{{ $product->id }}"
-                    data-product-name="{{ $product->name }}"
-                    data-product-price="{{ $product->cost_price }}"
-                    data-product-image="{{ asset('upload/product/' . $product->image) }}">
-                    <img src="{{ asset('upload/product/' . $product->image) }}" class="object-cover w-full h-24 sm:h-44 lg:h-52" alt="{{ $product->name }}">
-                    <div class="flex flex-col sm:flex-row pb-3 px-3 text-sm mt-3">
-                        <p class="flex-grow truncate mr-1">{{ $product->name }} <span class="font-semibold">( {{ $product->unit->name ?? '-' }} )</span></p>
-                        <p class="nowrap font-semibold">Rp {{ number_format($product->cost_price) }}</p>
+                    <div class="product-grid grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-4 pb-3">
+                        @foreach ($products as $product)
+                        <div>
+                            <div
+                                role="button"
+                                class="select-none cursor-pointer transition-shadow overflow-hidden rounded-2xl p-2 bg-white shadow hover:shadow-lg add-to-cart"
+                                data-product-id="{{ $product->id }}"
+                                data-product-name="{{ $product->name }}"
+                                data-product-price="{{ $product->cost_price }}"
+                                data-product-image="{{ asset('upload/product/' . $product->image) }}"
+                                data-variant-id=""
+                                data-batch-id="">
+                                <img src="{{ asset('upload/product/' . $product->image) }}"
+                                    class="object-cover w-full h-24 sm:h-44 lg:h-52"
+                                    alt="{{ $product->name }}">
+                                <div class="flex flex-col sm:flex-row pb-3 px-3 text-sm mt-3">
+                                    <p class="flex-grow truncate mr-1">
+                                        {{ $product->name }}
+                                        <span class="font-semibold">( {{ $product->unit->name ?? '-' }} )</span>
+                                    </p>
+                                    <p class="nowrap font-semibold">
+                                        Rp {{ number_format($product->cost_price) }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        @if ($product->variants->count() > 0)
+                        @foreach ($product->variants as $variant)
+                        <div>
+                            <div
+                                role="button"
+                                class="select-none cursor-pointer transition-shadow overflow-hidden rounded-2xl p-2 bg-white shadow hover:shadow-lg add-to-cart"
+                                data-product-id="{{ $product->id }}"
+                                data-product-name="{{ $variant->name }}"
+                                data-product-price="{{ $variant->additional_price }}"
+                                data-product-image="{{ asset('upload/product/' . ($variant->image ?? $product->image)) }}"
+                                data-variant-id="{{ $variant->id }}"
+                                data-batch-id=""> <img src="{{ asset('upload/product/' . ($variant->image ?? $product->image)) }}"
+                                    class="object-cover w-full h-24 sm:h-44 lg:h-52"
+                                    alt="{{ $variant->name }}">
+                                <div class="flex flex-col sm:flex-row pb-3 px-3 text-sm mt-3">
+                                    <p class="flex-grow truncate mr-1">
+                                        {{ $variant->name }}
+                                        <span class="font-semibold">( {{ $variant->unit->name ?? $product->unit->name ?? '-' }} )</span>
+                                    </p>
+                                    <p class="nowrap font-semibold">
+                                        Rp {{ number_format($variant->additional_price) }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        @endforeach
+                        @endif
+                        @if ($product->batches->count() > 0 )
+                        @foreach ($product->batches as $batch)
+                        <div>
+                            <div
+                                role="button"
+                                class="select-none cursor-pointer transition-shadow overflow-hidden rounded-2xl p-2 bg-white shadow hover:shadow-lg add-to-cart"
+                                data-product-id="{{ $product->id }}"
+                                data-product-name="{{ $batch->batch_no }}"
+                                data-product-price="{{ $batch->price }}"
+                                data-product-image="{{ asset('upload/product/' . ($batch->image ?? $product->image)) }}"
+                                data-variant-id=""
+                                data-batch-id="{{ $batch->id }}"><img src="{{ asset('upload/product/' . ($batch->image ?? $product->image)) }}"
+                                    class="object-cover w-full h-24 sm:h-44 lg:h-52"
+                                    alt="{{ $batch->batch_no }}">
+                                <div class="flex flex-col sm:flex-row pb-3 px-3 text-sm mt-3">
+                                    <p class="flex-grow truncate mr-1">
+                                        {{ $batch->batch_no }}
+                                        <span class="font-semibold">( {{ $batch->unit->name ?? $product->unit->name ?? '-' }} )</span>
+                                    </p>
+                                    <p class="nowrap font-semibold">
+                                        Rp {{ number_format($batch->additional_price) }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        @endforeach
+                        @endif
+                        @endforeach
                     </div>
                 </div>
-            </div>
-            @endforeach 
-        </div>
-    </div>
+
 </div>
 
     </div>
@@ -240,150 +337,170 @@
     </div>
 </div>
 
-@push('js')
+@push('scripts')
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    $(document).ready(function() {
-        function loadCart() {
-            const cart = JSON.parse(localStorage.getItem('pochart')) || [];
-            updateCartUI(cart);
-        }
+   $(document).ready(function() {
+    const CART_KEY = 'pochart';
 
-        function updateCart(cart) {
-            localStorage.setItem('pochart', JSON.stringify(cart));
-            updateCartUI(cart);
-        }
+    function loadCart() {
+        const cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
+        updateCartUI(cart);
+    }
 
-        function updateCartUI(cart) {
-            if (cart.length === 0) {
-                $("#empty-cart").show();
-                $("#cart-items").hide();
-                $("#total-price").text("Rp 0");
-                $("#cart-count").text(0);
-            } else {
-                $("#empty-cart").hide();
-                $("#cart-items").show();
+    function updateCart(cart) {
+        localStorage.setItem(CART_KEY, JSON.stringify(cart));
+        updateCartUI(cart);
+    }
 
-                let cartItemsHtml = '';
-                let totalPrice = 0;
-                cart.forEach(function(item) {
-                    totalPrice += item.price * item.qty ;
-                    cartItemsHtml += `
-                    <div class="select-none mb-3 bg-blue-gray-50 rounded-lg w-full text-blue-gray-700 py-3 px-2 flex justify-center">
-                        <img src="${item.image}" alt="" class="rounded-lg h-12 w-12 bg-white shadow mr-2 mt-2">
-                        <div class="flex-grow">
-                            <h5 class="text-base font-medium mb-2">${item.name}</h5>
-                            <div class="flex items-center space-x-3">
-                                <div class="flex items-center">
-                                    <input 
-                                        type="number" 
-                                        class="qty-edit w-16 h-8 text-sm bg-gray-50 rounded border border-gray-100 px-2" 
-                                        value="${item.qty}" 
-                                        min="1"
-                                        data-product-id="${item.id}"
-                                    >
-                                    <span class="text-sm ml-1">pcs</span>
-                                </div>
-                                <div class="flex items-center">
-                                    <span class="text-sm mr-1">Rp</span>
-                                    <input 
-                                        type="number" 
-                                        class="price-edit w-24 h-8 text-sm bg-gray-50 rounded border border-gray-100 px-2" 
-                                        value="${item.price}" 
-                                        min="0"
-                                        data-product-id="${item.id}"
-                                    >
-                                </div>
+    function updateCartUI(cart) {
+        if (cart.length === 0) {
+            $("#empty-cart").show();
+            $("#cart-items").hide();
+            $("#total-price").text("Rp 0");
+            $("#cart-count").text(0);
+        } else {
+            $("#empty-cart").hide();
+            $("#cart-items").show();
+
+            let cartItemsHtml = '';
+            let totalPrice = 0;
+            cart.forEach(function(item) {
+                totalPrice += item.price * item.qty;
+                cartItemsHtml += `
+                <div class="select-none mb-3 bg-blue-gray-50 rounded-lg w-full text-blue-gray-700 py-3 px-2 flex justify-center">
+                    <img src="${item.image}" alt="" class="rounded-lg h-12 w-12 bg-white shadow mr-2 mt-2">
+                    <div class="flex-grow">
+                        <h5 class="text-base font-medium mb-2">${item.name}</h5>
+                        <div class="flex items-center space-x-3">
+                            <div class="flex items-center">
+                                <input 
+                                    type="number" 
+                                    class="qty-edit w-16 h-8 text-sm bg-gray-50 rounded border border-gray-100 px-2" 
+                                    value="${item.qty}" 
+                                    min="1"
+                                    data-product-id="${item.id}"
+                                >
+                                <span class="text-sm ml-1">pcs</span>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="text-sm mr-1">Rp</span>
+                                <input 
+                                    type="number" 
+                                    class="price-edit w-24 h-8 text-sm bg-gray-50 rounded border border-gray-100 px-2" 
+                                    value="${item.price}" 
+                                    min="0"
+                                    data-product-id="${item.id}"
+                                >
                             </div>
                         </div>
-                        <div class="flex items-center pl-2">
-                            <button class="delete-item rounded-lg text-center p-2 text-white bg-red-500 hover:bg-red-600 focus:outline-none" data-product-id="${item.id}">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                </svg>
-                            </button>
-                        </div>
                     </div>
+                    <div class="flex items-center pl-2">
+                        <button class="delete-item rounded-lg text-center p-2 text-white bg-red-500 hover:bg-red-600 focus:outline-none" data-product-id="${item.id}">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
                 `;
-                });
-                $("#cart-items-list").html(cartItemsHtml);
-                $("#total-price").text("Rp " + Intl.NumberFormat().format(totalPrice));
-                $("#cart-count").text(cart.length);
-            }
+            });
+            $("#cart-items-list").html(cartItemsHtml);
+            $("#total-price").text("Rp " + Intl.NumberFormat().format(totalPrice));
+            $("#cart-count").text(cart.length);
         }
+    }
 
-        $(".add-to-cart").click(function() {
-            const productId = $(this).data("product-id");
-            const name = $(this).data("product-name");
-            const price = $(this).data("product-price");
-            const image = $(this).data("product-image");
+    // Add to cart method - use consistent cart key and improve duplicate checking
+    $(".add-to-cart").click(function() {
+        const productId = $(this).data("product-id");
+        const name = $(this).data("product-name");
+        const price = $(this).data("product-price");
+        const image = $(this).data("product-image");
+        const variantId = $(this).data("variant-id") || null;
+        const batchId = $(this).data("batch-id") || null;
 
-            let cart = JSON.parse(localStorage.getItem('pochart')) || [];
-            const index = cart.findIndex(item => item.id === productId);
-            if (index >= 0) {
-                cart[index].qty += 1;
-            } else {
-                cart.push({
-                    id: productId,
-                    name,
-                    price,
-                    image,
-                    qty: 1
-                });
-            }
+        let cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
+        const existingItemIndex = cart.findIndex(
+            (item) =>
+            item.id === productId &&
+            item.variantId === variantId &&
+            item.batchId === batchId
+        );
+
+        if (existingItemIndex >= 0) {
+            // Update quantity if item already exists
+            cart[existingItemIndex].qty += 1;
+        } else {
+            // Add new item to cart
+            cart.push({
+                id: productId,
+                variantId,
+                batchId,
+                name,
+                price,
+                image,
+                qty: 1
+            });
+        }
+        updateCart(cart);
+    });
+
+    // Delete item method - use consistent cart key and improved error handling
+    $(document).on("click", ".delete-item", function() {
+        const productId = $(this).data("product-id");
+        let cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
+        
+        // Use filter to remove item instead of splice
+        cart = cart.filter(item => item.id !== productId);
+        
+        updateCart(cart);
+    });
+
+    // Quantity edit method - improved validation and error handling
+    $(document).on("change", ".qty-edit", function() {
+        const productId = $(this).data("product-id");
+        let newQty = parseInt($(this).val()) || 1;
+
+        // Ensure quantity is at least 1
+        newQty = Math.max(1, newQty);
+        $(this).val(newQty);
+
+        let cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
+        const index = cart.findIndex(item => item.id === productId);
+        
+        if (index >= 0) {
+            cart[index].qty = newQty;
             updateCart(cart);
-        });
+        }
+    });
 
-        $(document).on("click", ".delete-item", function() {
-            const productId = $(this).data("product-id");
-            let cart = JSON.parse(localStorage.getItem('pochart')) || [];
-            const index = cart.findIndex(item => item.id === productId);
-            if (index >= 0) {
-                cart.splice(index, 1);
-                updateCart(cart);
-            }
-        });
+    // Price edit method - improved validation and error handling
+    $(document).on("change", ".price-edit", function() {
+        const productId = $(this).data("product-id");
+        let newPrice = parseInt($(this).val()) || 0;
 
-        $(document).on("change", ".qty-edit", function() {
-            const productId = $(this).data("product-id");
-            let newQty = parseInt($(this).val()) || 1;
+        // Ensure price is not negative
+        newPrice = Math.max(0, newPrice);
+        $(this).val(newPrice);
 
-            if (newQty < 1) {
-                newQty = 1;
-                $(this).val(1);
-            }
+        let cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
+        const index = cart.findIndex(item => item.id === productId);
+        
+        if (index >= 0) {
+            cart[index].price = newPrice;
+            updateCart(cart);
+        }
+    });
 
-            let cart = JSON.parse(localStorage.getItem('pochart')) || [];
-            const index = cart.findIndex(item => item.id === productId);
-            if (index >= 0) {
-                cart[index].qty = newQty;
-                updateCart(cart);
-            }
-        });
+    // Clear cart method
+    $("#clear-cart").click(function() {
+        localStorage.removeItem(CART_KEY);
+        loadCart();
+    });
 
-        $(document).on("change", ".price-edit", function() {
-            const productId = $(this).data("product-id");
-            let newPrice = parseInt($(this).val()) || 0;
-
-            if (newPrice < 0) {
-                newPrice = 0;
-                $(this).val(0);
-            }
-
-            let cart = JSON.parse(localStorage.getItem('pochart')) || [];
-            const index = cart.findIndex(item => item.id === productId);
-            if (index >= 0) {
-                cart[index].price = newPrice;
-                updateCart(cart);
-            }
-        });
-
-        $("#clear-cart").click(function() {
-            localStorage.removeItem("pochart");
-            loadCart();
-        });
 
         // change price by custpm
      
@@ -606,6 +723,4 @@
 
 </script>
 @endpush
-
-
-@endsection
+</x-app-layout>

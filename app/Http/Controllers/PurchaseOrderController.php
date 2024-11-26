@@ -195,8 +195,8 @@ class PurchaseOrderController extends Controller
     public function show($id)
     {
 
-        $data['purchase'] = PurchaseOrder::with('supplier', 'user', 'outlet', 'products')->findOrFail($id);
-        // return $data;
+    $data['purchase'] = PurchaseOrder::with('supplier', 'user', 'outlet', 'products','productPurchase.product','productPurchase.variant','productPurchase.batch')->findOrFail($id);
+    // return $data;
         return view('purchaseorder.show',$data);
     }
 

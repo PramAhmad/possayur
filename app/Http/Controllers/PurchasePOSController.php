@@ -77,6 +77,8 @@ class PurchasePOSController extends Controller
                     // 'tax' => $item['tax'] ?? 0,
                     'net_cost' => $item['qty'] * $item['price'],
                     'total_cost' => $item['qty'] * $item['price'],
+                    'variant_id' => $item['variantId'] ?? null,
+                    'batch_id' => $item['batchId'] ?? null,
                 ]);
                 $product = Product::find($item['id']);
                 // penambahan stock
@@ -107,7 +109,7 @@ class PurchasePOSController extends Controller
         ];
 
         $pageTitle = 'Point of Sales';
-        $products = Product::where('outlet_id', $id)->with('unit')->get();
+        $products = Product::where('outlet_id', $id)->with('unit','variants','batches')->get();
         $outlet = Outlet::find($id);
        if(auth()->user()->hasRole('super-admin')){
             $suppliers = Suplier::all();

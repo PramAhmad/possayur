@@ -133,7 +133,16 @@
                                     <tr>
                                         <td class="table-td">{{ $loop->iteration }}</td>
                                         <td class="table-td">{{ $productId }}</td>
-                                        <td class="table-td">{{ $data['product_name'] ?? "-" }}</td>
+                                        <td class="table-td">
+                                            {{ $data['product_name'] ?? "-" }}
+                                            @if (!empty($data['variant_name']))
+                                            <br><small>Variant: {{ $data['variant_name'] }}</small>
+                                            @endif
+                                            @if (!empty($data['batch_name']))
+                                            <br><small>Batch: {{ $data['batch_name'] }}</small>
+                                            @endif
+                                        </td>
+
                                         <td class="table-td">{{ number_format($data['so_qty']) ?? 0 }}</td>
                                         <td class="table-td">{{ number_format($data['so_price']) ?? 0 }}</td>
                                         <td class="table-td">{{ number_format($data['so_total']) ?? 0 }}</td>
@@ -155,7 +164,7 @@
                     </div>
                 </div>
                 <div class="tab-pane fade" id="tabs-profile-withIcon" role="tabpanel" aria-labelledby="tabs-profile-withIcon-tab">
-                <div class="card-body px-6 pb-6">
+                    <div class="card-body px-6 pb-6">
                         <div class="overflow-x-auto">
                             <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
                                 <thead class="bg-slate-200 dark:bg-slate-700">
@@ -166,7 +175,7 @@
                                         <th class="table-th" style="min-width: 100px;">SO Qty</th>
                                         <th class="table-th" style="min-width: 150px;">SO Price</th>
                                         <th class="table-th" style="min-width: 150px;">SO Total</th>
-                                        
+
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -174,11 +183,20 @@
                                     <tr>
                                         <td class="table-td">{{ $loop->iteration }}</td>
                                         <td class="table-td">{{ $productId }}</td>
-                                        <td class="table-td">{{ $data['product_name'] ?? "-" }}</td>
+                                        <td class="table-td">
+                                            {{ $data['product_name'] ?? "-" }}
+                                            @if (!empty($data['variant_name']))
+                                            <br><small>Variant: {{ $data['variant_name'] }}</small>
+                                            @endif
+                                            @if (!empty($data['batch_name']))
+                                            <br><small>Batch: {{ $data['batch_name'] }}</small>
+                                            @endif
+                                        </td>
+
                                         <td class="table-td">{{ number_format($data['so_qty']) ?? 0 }}</td>
                                         <td class="table-td">{{ number_format($data['so_price']) ?? 0 }}</td>
                                         <td class="table-td">{{ number_format($data['so_total']) ?? 0 }}</td>
-                                       
+
                                     </tr>
                                     @endforeach
                                 </tbody>
@@ -188,7 +206,7 @@
                     </div>
                 </div>
                 <div class="tab-pane fade" id="suratjalan" role="tabpanel" aria-labelledby="suratjalan-tab">
-                <div class="card-body px-6 pb-6">
+                    <div class="card-body px-6 pb-6">
                         <div class="overflow-x-auto">
                             <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
                                 <thead class="bg-slate-200 dark:bg-slate-700">
@@ -206,7 +224,16 @@
                                     <tr>
                                         <td class="table-td">{{ $loop->iteration }}</td>
                                         <td class="table-td">{{ $productId }}</td>
-                                        <td class="table-td">{{ $data['product_name'] ?? "-" }}</td>
+                                        <td class="table-td">
+                                            {{ $data['product_name'] ?? "-" }}
+                                            @if (!empty($data['variant_name']))
+                                            <br><small>Variant: {{ $data['variant_name'] }}</small>
+                                            @endif
+                                            @if (!empty($data['batch_name']))
+                                            <br><small>Batch: {{ $data['batch_name'] }}</small>
+                                            @endif
+                                        </td>
+
                                         <td class="table-td">{{ number_format($data['sj_qty']) ?? 0 }}</td>
                                         <td class="table-td">{{ number_format($data['sj_price']) ?? 0 }}</td>
                                         <td class="table-td">{{ number_format($data['sj_total']) ?? 0 }}</td>
@@ -219,7 +246,7 @@
                     </div>
                 </div>
                 <div class="tab-pane fade" id="invoice" role="tabpanel" aria-labelledby="invoice-tab">
-                <div class="card-body px-6 pb-6">
+                    <div class="card-body px-6 pb-6">
                         <div class="overflow-x-auto">
                             <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
                                 <thead class="bg-slate-200 dark:bg-slate-700">
@@ -237,7 +264,16 @@
                                     <tr>
                                         <td class="table-td">{{ $loop->iteration }}</td>
                                         <td class="table-td">{{ $productId }}</td>
-                                        <td class="table-td">{{ $data['product_name'] ?? "-" }}</td>
+                                        <td class="table-td">
+                                            {{ $data['product_name'] ?? "-" }}
+                                            @if (!empty($data['variant_name']))
+                                            <br><small>Variant: {{ $data['variant_name'] }}</small>
+                                            @endif
+                                            @if (!empty($data['batch_name']))
+                                            <br><small>Batch: {{ $data['batch_name'] }}</small>
+                                            @endif
+                                        </td>
+
                                         <td class="table-td">{{ number_format($data['inv_qty']) ?? 0 }}</td>
                                         <td class="table-td">{{ number_format($data['inv_price']) ?? 0 }}</td>
                                         <td class="table-td">{{ number_format($data['inv_total']) ?? 0 }}</td>
@@ -250,7 +286,7 @@
                     </div>
                 </div>
                 <div class="tab-pane fade" id="return" role="tabpanel" aria-labelledby="return-tab">
-                <div class="card-body px-6 pb-6">
+                    <div class="card-body px-6 pb-6">
                         <div class="overflow-x-auto">
                             <table class="min-w-full divide-y divide-slate-100 table-fixed dark:divide-slate-700">
                                 <thead class="bg-slate-200 dark:bg-slate-700">
@@ -268,7 +304,16 @@
                                     <tr>
                                         <td class="table-td">{{ $loop->iteration }}</td>
                                         <td class="table-td">{{ $productId }}</td>
-                                        <td class="table-td">{{ $data['product_name'] ?? "-" }}</td>
+                                        <td class="table-td">
+                                            {{ $data['product_name'] ?? "-" }}
+                                            @if (!empty($data['variant_name']))
+                                            <br><small>Variant: {{ $data['variant_name'] }}</small>
+                                            @endif
+                                            @if (!empty($data['batch_name']))
+                                            <br><small>Batch: {{ $data['batch_name'] }}</small>
+                                            @endif
+                                        </td>
+
                                         <td class="table-td">{{ number_format($data['return_qty']) ?? 0 }}</td>
                                         <td class="table-td">{{ number_format($data['return_price']) ?? 0 }}</td>
                                         <td class="table-td">{{ number_format($data['return_total']) ?? 0 }}</td>

@@ -9,6 +9,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use ProtoneMedia\LaravelVerifyNewEmail\MustVerifyNewEmail;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Models\Activity;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Permission\Traits\HasRoles;
@@ -38,6 +40,19 @@ class User extends Authenticatable implements MustVerifyEmail, HasMedia
         'photo',
         'outlet_id',
     ];
+    public function tapActivity(Activity $activity, string $eventName)
+    {
+        $activity->description = auth()->user();
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logAll()
+            ->logUnguarded()
+            ->logOnlyDirty()
+            ->useLogName('User');
+    }
 
     /**
      * The attributes that should be hidden for serialization.

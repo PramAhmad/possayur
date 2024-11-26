@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Models\Activity;
 
 class PurchaseOrder extends Model
 {
@@ -31,6 +33,20 @@ class PurchaseOrder extends Model
         'note',
     ];
 
+    public function tapActivity(Activity $activity, string $eventName)
+    {
+        $activity->description = auth()->user();
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logAll()
+            ->logUnguarded()
+            ->logOnlyDirty()
+            ->useLogName('PurchaseOrder');
+    }
+   
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -46,8 +62,7 @@ class PurchaseOrder extends Model
         return $this->belongsTo(Outlet::class);
 }
         public function productPurchase()
-    {
-        return $this->hasMany(ProductPurchase::class);
+    {return $this->hasMany(ProductPurchase::class, 'purchase_id', 'id');
     }
     public function products()
     {
