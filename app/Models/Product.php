@@ -28,9 +28,7 @@ class Product extends Model
     public function outlet (){
         return $this->belongsTo(Outlet::class);
     }
-    public function variant (){
-        return $this->belongsTo(Variant::class);
-    }
+ 
     public function brand (){
         return $this->belongsTo(Brand::class);
     }

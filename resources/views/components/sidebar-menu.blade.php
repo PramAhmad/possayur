@@ -16,7 +16,7 @@
     <div class="sidebar-menus bg-white dark:bg-slate-800 py-2 px-4 h-[calc(100%-80px)] z-50" id="sidebar_menus">
         <ul class="sidebar-menu">
             <li class="sidebar-menu-title">{{ __('MENU') }}</li>
-    
+
             <li>
                 <a href="{{ route('dashboard.index') }}" class="navItem {{ (request()->is('dashboard*')) ? 'active' : '' }}">
                     <span class="flex items-center">
@@ -83,63 +83,54 @@
                     <li class="navItem {{ request()->is('purchasepos*') ? 'active' : '' }}">
                         <a href="{{ route('purchasepos.index') }}">Point Of Sale</a>
                     </li>
-                   
+
                 </ul>
                 <ul class="sidebar-submenu first-letter:">
                     <li class="navItem {{ request()->is('purchaseorder*') ? 'active' : '' }}">
                         <a href="{{ route('purchaseorder.index') }}">Purchase Order</a>
                     </li>
-                   
-                </ul>
-            </li>   
-            <li>
-                <a href="{{ route('salesorder.index') }}" class="navItem {{ (request()->is('salesorder*')) ? 'active' : '' }}">
-                    <span class="flex items
-                    -center">
-                        <iconify-icon class=" nav-icon" icon="heroicons-outline:shopping-cart"></iconify-icon>
-                        <span>{{ __('Sales Order') }}</span>
-                    </span>
-                    <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
-
-                </a>
-                <ul class="sidebar-submenu first-letter:">
-                <li class="navItem {{
-                        request()->is('pos*') ? 'active' : ''
-                    }}">
-                        <a href="/sales/order/list">Point Of Sales</a>
-                    </li>
-                    <li class="navItem {{ request()->is('salesorder*') ? 'active' : '' }}">
-                        <a href="{{ route('salesorder.index') }}">Sales Order</a>
-                    </li>
-                    
-                   
-                    <!-- surat jalan -->
-                    <li class="navItem {{
-                        request()->is('suratjalan*') ? 'active' : ''
-                    }}">
-                        <a href="{{ route('suratjalan.index') }}">Surat Jalan</a>
-                    </li>
-                    <!-- invoice -->
-                    <li class="navItem {{
-                        request()->is('invoice*') ? 'active' : ''
-                    }}">
-                        <a href="{{ route('invoice.index') }}">Invoice</a>
-                    </li>
-                    <!-- return product -->
-                    <li class="navItem {{
-                        request()->is('returnsalesorder*') ? 'active' : ''
-                    }}">
-                        <a href="{{ route('returnsalesorder.index') }}">Return Product</a>
-                    </li>
-                    <!--list order -->
-                    <li class="navItem {{
-                        request()->is('listorder*') ? 'active' : ''
-                    }}">
-                        <a href="{{ route('listorder.index') }}">List Order</a>
-                    </li>
 
                 </ul>
-            </li>   
+            </li>
+            <li class="{{ request()->routeIs('salesorder.index') || 
+            request()->routeIs('pos.index') || 
+            request()->routeIs('suratjalan.index') || 
+            request()->routeIs('invoice.index') || 
+            request()->routeIs('returnsalesorder.index') || 
+            request()->routeIs('listorder.index') ? 'active' : '' }}">
+    <a href="#" class="navItem">
+        <span class="flex items-center">
+            <iconify-icon class="nav-icon" icon="heroicons-outline:shopping-cart"></iconify-icon>
+            <span>{{ __('Sales Order') }}</span>
+        </span>
+        <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
+    </a>
+    <ul class="sidebar-submenu first-letter:">
+        <li class="navItem {{ request()->routeIs('pos.index') ? 'active' : '' }}">
+            <a href="{{ route('pos.index') }}">Point Of Sales</a>
+        </li>
+        <li class="navItem {{ request()->routeIs('salesorder.index') ? 'active' : '' }}">
+            <a href="{{ route('salesorder.index') }}">Sales Order</a>
+        </li>
+        <!-- Surat Jalan -->
+        <li class="navItem {{ request()->routeIs('suratjalan.index') ? 'active' : '' }}">
+            <a href="{{ route('suratjalan.index') }}">Surat Jalan</a>
+        </li>
+        <!-- Invoice -->
+        <li class="navItem {{ request()->routeIs('invoice.index') ? 'active' : '' }}">
+            <a href="{{ route('invoice.index') }}">Invoice</a>
+        </li>
+        <!-- Return Product -->
+        <li class="navItem {{ request()->routeIs('returnsalesorder.index') ? 'active' : '' }}">
+            <a href="{{ route('returnsalesorder.index') }}">Return Product</a>
+        </li>
+        <!-- List Order -->
+        <li class="navItem {{ request()->routeIs('listorder.index') ? 'active' : '' }}">
+            <a href="{{ route('listorder.index') }}">List Order</a>
+        </li>
+    </ul>
+</li>
+
             <li>
                 <a href="{{ route('suratjalan.index') }}" class="navItem {{ (request()->is('suratjalan*')) ? 'active' : '' }}">
                     <span class="flex items-center">
@@ -164,11 +155,11 @@
                     }}">
                         <a href="{{ route('product.index') }}">Product</a>
                     </li>
-                <!-- stock opname and log product -->
+                    <!-- stock opname and log product -->
                     <li class="navItem {{
                         request()->is('stockopname*') ? 'active' : ''
                     }}">
-                   
+
                         <a href="{{route('stockopname.index')}}">Stock Opname</a>
                     </li>
                     <li class="navItem {{
@@ -177,7 +168,7 @@
                         <a href="">Log Product</a>
                     </li>
                 </ul>
-                 
+
 
             </li>
             <li>
@@ -210,7 +201,7 @@
             <div class="max-w-[160px] mx-auto mt-6">
                 <div class="widget-title font-Inter mb-1">AstaPOS</div>
                 <div class="text-xs font-light font-Inter">
-                    Upgrade your system to business 
+                    Upgrade your system to business
                 </div>
             </div>
             <div class="mt-6">

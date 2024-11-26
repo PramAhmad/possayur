@@ -10,6 +10,8 @@ class ProductSalesOrder extends Model
     use HasFactory;
     protected $fillable = [
         'sales_order_id',
+        'variant_id',
+        'batch_id',
         'product_id',
         'quantity',
         'unit_price',
@@ -27,6 +29,14 @@ class ProductSalesOrder extends Model
     public function product()
     {
         return $this->belongsTo(Product::class);
+    }
+    public function variant()
+    {
+        return $this->belongsTo(Variant::class);
+    }
+    public function batch()
+    {
+        return $this->belongsTo(Batches::class);
     }
     public function salesOrders()
 {

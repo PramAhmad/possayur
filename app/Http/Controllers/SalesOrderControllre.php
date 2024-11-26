@@ -81,7 +81,29 @@ class SalesOrderControllre extends Controller
      */
     public function show($id)
     {
-        //
+        $breadcrumbItems = [
+            [
+                'name' => 'Dashboard',
+                'url' => route('dashboard.index'),
+                'active' => false
+            ],
+            [
+                'name' => 'Sales Order',
+                'url' => route('salesorder.index'),
+                'active' => false
+            ],
+            [
+                'name' => 'Detail Sales Order',
+                'url' => route('salesorder.show', $id),
+                'active' => true
+            ],
+        ];
+        $salesOrder = SalesOrder::with('outlet', 'customer', 'products', 'products.product', 'returnSalesOrder', 'invoice','products.variant','products.batch')->find($id);
+        return view('salesorder.show', [
+            'salesOrder' => $salesOrder,
+            'breadcrumbItems' => $breadcrumbItems,
+            'pageTitle' => 'Detail Sales Order',
+        ]);
     }
 
     /**

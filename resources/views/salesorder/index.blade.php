@@ -1,6 +1,6 @@
 <x-app-layout>
     @push('styles')
-        <link rel="stylesheet" href="{{asset('css/rt-plugins.css')}}">
+    <link rel="stylesheet" href="{{asset('css/rt-plugins.css')}}">
     @endpush
     <div>
         <div class="mb-6">
@@ -22,10 +22,10 @@
                             </div>
                             <div class="flex-1">
                                 <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
-                                    Totel revenue
+                                    Totel sales order
                                 </div>
                                 <div class="text-slate-900 dark:text-white text-lg font-medium">
-                                    3,564
+                                    {{$salesOrders->count()}}
                                 </div>
                             </div>
                         </div>
@@ -47,7 +47,7 @@
                                     Totel revenue
                                 </div>
                                 <div class="text-slate-900 dark:text-white text-lg font-medium">
-                                    3,564
+                                    {{number_format($salesOrders->sum('grandtotal'), 0)}}
                                 </div>
                             </div>
                         </div>
@@ -60,16 +60,39 @@
                     <div class="card-body pt-4 pb-3 px-4">
                         <div class="flex space-x-3 rtl:space-x-reverse">
                             <div class="flex-none">
-                                <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-[#FFEDE6] dark:bg-slate-900	 text-orange-500">
+                                <div class="h-12 w-12 rounded-full flex flex-col items-center justify-center text-2xl bg-[#FFEDE6] dark:bg-slate-900 text-orange-500">
                                     <iconify-icon icon=heroicons:shopping-cart></iconify-icon>
                                 </div>
                             </div>
                             <div class="flex-1">
                                 <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
-                                    Totel revenue
+                                    Growth rate (Last Month)
                                 </div>
                                 <div class="text-slate-900 dark:text-white text-lg font-medium">
-                                    3,564
+                                @php
+                                 
+                                    $now = Carbon\Carbon::now();
+                                    $startOfCurrentMonth = $now->copy()->startOfMonth();
+                                    $startOfPreviousMonth = $startOfCurrentMonth->copy()->subMonth();
+                                    $endOfPreviousMonth = $startOfCurrentMonth->copy()->subSecond();
+
+                                    // Revenue for the current month
+                                    $currentRevenue = $salesOrders->whereBetween('created_at', [$startOfCurrentMonth, $now])
+                                    ->sum('grandtotal');
+
+                                    // Revenue for the previous month
+                                    $previousRevenue = $salesOrders->whereBetween('created_at', [$startOfPreviousMonth, $endOfPreviousMonth])
+                                    ->sum('grandtotal');
+                                    
+                                    // Growth rate
+                                    $growthRate = $previousRevenue !== 0 ? (($currentRevenue - $previousRevenue) / $previousRevenue) * 100 : null;
+                                @endphp
+
+                                @if($growthRate !== null)
+                                    {{ number_format($growthRate, 2) }}%
+                                @else
+                                0
+                                @endif
                                 </div>
                             </div>
                         </div>
@@ -78,6 +101,8 @@
                         </div>
                     </div>
                 </div>
+
+
             </div>
         </div>
 
@@ -136,7 +161,7 @@
                                         </td>
                                         <td class="table-td">
                                             <div class="flex space-x-3 rtl:space-x-reverse">
-                                                <a href="{{ route('pos.show', $order->id) }}" class="action-btn" data-tippy-content="View">
+                                                <a href="{{ route('salesorder.show', $order->id) }}" class="action-btn" data-tippy-content="View">
                                                     <iconify-icon icon="heroicons:eye"></iconify-icon>
                                                 </a>
                                                 @can('salesorder edit')

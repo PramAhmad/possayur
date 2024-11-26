@@ -94,6 +94,8 @@ class PointOfSalesController extends Controller
                     'discount' => $item['discount'] ?? 0,
                     'tax' => $item['tax'] ?? 0,
                     'total_price' => $item['qty'] * $item['price'],
+                    'variant_id' => $item['variantId'] ?? null,
+                    'batch_id' => $item['batchId'] ?? null,
                 ]);
                 $product = Product::find($item['id']);
                 $product->update(['qty' => $product->qty - $item['qty']]);
@@ -127,14 +129,14 @@ class PointOfSalesController extends Controller
         ];
 
         $pageTitle = 'Point of Sales';
-        $products = Product::where('outlet_id', $id)->with('unit')->get();
+        $products = Product::where('outlet_id', $id)->with('unit','variants','batches')->get();
         $outlet = Outlet::find($id);
         $customer = Customer::whereHas('user', function ($query) use ($id) {
             $query->where('outlet_id', $id);
         })->with('user')->get();
         $coupon = Coupon::where('outlet_id', $id)->get();
         // return $customer;
-        return view('salesorder.show', [
+        return view('pos.show', [
             'breadcrumbItems' => $breadcrumbItems,
             'pageTitle' => $pageTitle,
             'outlet' => $outlet,

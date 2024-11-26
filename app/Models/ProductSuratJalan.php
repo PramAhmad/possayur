@@ -15,6 +15,8 @@ class ProductSuratJalan extends Model
         'qty',
         'unit_price',
         'total_price',
+        'variant_id',
+        'batch_id',
     ];
 
     public function product()
@@ -25,6 +27,16 @@ class ProductSuratJalan extends Model
     public function suratJalan()
     {
         return $this->belongsTo(SuratJalan::class);
+    }
+
+    public function variant()
+    {
+        return $this->belongsTo(Variant::class);
+    }
+
+    public function batch()
+    {
+        return $this->belongsTo(Batches::class);
     }
 
     public function suratJalans()
