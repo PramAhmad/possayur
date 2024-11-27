@@ -24,7 +24,7 @@ class SuratJalan extends Model
             ->logAll()
             ->logUnguarded()
             ->logOnlyDirty()
-            ->useLogName('SuratJalan');
+            ->useLogName('surat_jalans');
     }
 
     public function salesorder()

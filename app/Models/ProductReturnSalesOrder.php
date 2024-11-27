@@ -45,4 +45,14 @@ class ProductReturnSalesOrder extends Model
     {
         return $this->belongsTo(Product::class);
     }
+
+    public function variant()
+    {
+        return $this->belongsTo(Variant::class);
+    }
+
+    public function batch()
+    {
+        return $this->belongsTo(Batches::class);
+    }
 }

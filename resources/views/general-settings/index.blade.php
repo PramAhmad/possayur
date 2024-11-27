@@ -24,7 +24,7 @@
                             <a href="{{ route('general-settings.edit') }}"
                                 class="inline-flex items-center space-x-3 rtl:space-x-reverse text-sm capitalize font-medium text-slate-600
                                     dark:text-slate-300">
-                                <span>Chnage Settings</span>
+                                <span>Change Settings</span>
                                 <iconify-icon icon="heroicons:arrow-right"></iconify-icon>
                             </a>
                         </div>
@@ -72,7 +72,7 @@
                             <a href="{{ route('roles.index') }}"
                                 class="inline-flex items-center space-x-3 rtl:space-x-reverse text-sm capitalize font-medium text-slate-600
                                     dark:text-slate-300">
-                                <span>Chnage Settings</span>
+                                <span>Change Settings</span>
                                 <iconify-icon icon="heroicons:arrow-right"></iconify-icon>
                             </a>
                         </div>
@@ -96,7 +96,7 @@
                             <a href="{{ route('permissions.index') }}"
                                 class="inline-flex items-center space-x-3 rtl:space-x-reverse text-sm capitalize font-medium text-slate-600
                                     dark:text-slate-300">
-                                <span>Chnage Settings</span>
+                                <span>Change Settings</span>
                                 <iconify-icon icon="heroicons:arrow-right"></iconify-icon>
                             </a>
                         </div>
@@ -120,7 +120,7 @@
                                 href="{{ route('profiles.index') }}"
                                 class="inline-flex items-center space-x-3 rtl:space-x-reverse text-sm capitalize font-medium text-slate-600
                                     dark:text-slate-300">
-                                <span>Chnage Settings</span>
+                                <span>Change Settings</span>
                                 <iconify-icon icon="heroicons:arrow-right"></iconify-icon>
                             </a>
                         </div>
@@ -138,13 +138,61 @@
                                 </div>
                             </div>
                             <div class="text-slate-600 dark:text-slate-300 text-sm">
-                                Manage Outlet (Add, Edit, Delete Outlet)
+                                Manage Outlet (Add, Edit, Delete Curency)
                             </div>
                             <a
                                 href="{{ route('outlets.index') }}"
                                 class="inline-flex items-center space-x-3 rtl:space-x-reverse text-sm capitalize font-medium text-slate-600
                                     dark:text-slate-300">
-                                <span>Chnage Settings</span>
+                                <span>Change Settings</span>
+                                <iconify-icon icon="heroicons:arrow-right"></iconify-icon>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body p-6">
+                        <div class="space-y-6">
+                            <div class="flex space-x-3 rtl:space-x-reverse items-center">
+                                <div class="flex-none h-8 w-8 rounded-full bg-slate-800 text-white flex flex-col items-center justify-center text-lg">
+                                    <iconify-icon icon="heroicons:building-storefront"></iconify-icon>
+                                </div>
+                                <div class="flex-1 text-base text-slate-900 dark:text-white font-medium">
+                                    Curency
+                                </div>
+                            </div>
+                            <div class="text-slate-600 dark:text-slate-300 text-sm">
+                                Manage Curency (Add, Edit, Delete Outlet)
+                            </div>
+                            <a
+                                href="{{ route('outlets.index') }}"
+                                class="inline-flex items-center space-x-3 rtl:space-x-reverse text-sm capitalize font-medium text-slate-600
+                                    dark:text-slate-300">
+                                <span>Change Settings</span>
+                                <iconify-icon icon="heroicons:arrow-right"></iconify-icon>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body p-6">
+                        <div class="space-y-6">
+                            <div class="flex space-x-3 rtl:space-x-reverse items-center">
+                                <div class="flex-none h-8 w-8 rounded-full bg-slate-800 text-white flex flex-col items-center justify-center text-lg">
+                                    <iconify-icon icon="heroicons:building-storefront"></iconify-icon>
+                                </div>
+                                <div class="flex-1 text-base text-slate-900 dark:text-white font-medium">
+                                    Tax
+                                </div>
+                            </div>
+                            <div class="text-slate-600 dark:text-slate-300 text-sm">
+                                Manage Curency (Add, Edit, Delete Outlet)
+                            </div>
+                            <a
+                                href="{{ route('outlets.index') }}"
+                                class="inline-flex items-center space-x-3 rtl:space-x-reverse text-sm capitalize font-medium text-slate-600
+                                    dark:text-slate-300">
+                                <span>Change Settings</span>
                                 <iconify-icon icon="heroicons:arrow-right"></iconify-icon>
                             </a>
                         </div>

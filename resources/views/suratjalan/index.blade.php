@@ -94,6 +94,11 @@
                                                     <iconify-icon icon="heroicons:eye"></iconify-icon>
                                                 </a>
                                                 @endcan
+                                                @can('suratjalan export')
+                                                <a href="{{ route('suratJalan.pdf', $order->id) }}" class="action-btn" data-tippy-content="Download PDF">
+                                                    <iconify-icon icon="heroicons:arrow-down-tray"></iconify-icon>
+                                                </a>
+                                                @endcan
 
                                                 @can('suratjalan edit')
                                                 <a class="action-btn" href="{{ route('suratjalan.edit', ['suratjalan' => $order]) }}">

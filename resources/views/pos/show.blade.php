@@ -52,7 +52,7 @@
                                 data-product-price="{{ $product->selling_price }}"
                                 data-product-image="{{ asset('upload/product/' . $product->image) }}">
                                 <td class="px-4 py-2">
-                                    <img src="{{ asset('upload/product/' . $product->image) }}" class="w-16 h-16 object-cover rounded-md" alt="{{ $product->name }}">
+                                    <img src="{{ asset('upload/product/' . $product->image) }}" class="w-10 h-10 object-cover rounded-md" alt="{{ $product->name }}">
                                 </td>
                                 <td class="px-4 py-2">{{ $product->name }}</td>
                                 <td class="px-4 py-2">Rp {{ number_format($product->selling_price) }}</td>

@@ -42,7 +42,6 @@
                                         <!-- return -->
                                         <th scope="col" class="table-th">{{ __('Return Order') }}</th>
                                         <th scope="col" class="table-th">{{ __('Invoice') }}</th>
-                                        <th scope="col" class="table-th">{{ __('Product') }}</th>
                                         <th scope="col" class="table-th">{{ __('Status') }}</th>
                                         <th scope="col" class="table-th w-20">{{ __('Action') }}</th>
                                     </tr>
@@ -58,23 +57,6 @@
 
                                         <td class="table-td">{{ $order->invoice->reference_number ?? '-' }}</td>
                                         <td class="table-td">{{ $order->returnSalesOrder->return_number ?? '-' }}</td>
-
-                                        <td class="table-td">
-                                        <ul class="list-disc list-inside">
-    @foreach ($order->products as $product)
-        <li>
-            {{ $product->product->name }}
-            @if ($product->variant_id)
-                - Variant: {{ $product->variant->name }}
-            @endif
-            @if ($product->batch_id)
-                - Batch: {{ $product->batch->name }}
-            @endif
-        </li>
-    @endforeach
-</ul>
-
-                                        </td>
                                         <td class="table-td">
                                             @php
                                             switch ($order->status) {
@@ -140,71 +122,7 @@
             </div>
         </div>
     </div>
-    <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="export" tabindex="-1" aria-labelledby="export" aria-hidden="true">
-    <div class="modal-dialog top-1/2 !-translate-y-1/2 relative w-auto pointer-events-none">
-        <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
-            <div class="relative bg-white rounded-lg shadow dark:bg-slate-700">
-                <!-- Modal header -->
-                <div class="flex items-center justify-between p-5 border-b rounded-t dark:border-slate-600 bg-black-500">
-                    <h3 class="text-xl font-medium text-white dark:text-white capitalize">
-                        Pilih menu yang akan diexport
-                    </h3>
-                    <button type="button" class="text-slate-400 bg-transparent hover:text-slate-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-slate-600 dark:hover:text-white" data-bs-dismiss="modal">
-                        <svg aria-hidden="true" class="w-5 h-5" fill="#ffffff" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-                        </svg>
-                        <span class="sr-only">Close modal</span>
-                    </button>
-                </div>
-                <!-- Modal body -->
-                <section class="py-4">
-                    <div class="card border border-slate-200">
-                        <div class="p-4">
-                            <ul>
-                                <li>
-                                    <label class="flex items-center gap-x-2">
-                                        <input type="checkbox" name="export_options[]" value="salesorder" class="checkbox-export">
-                                        Sales Order
-                                    </label>
-                                </li>
-                                <li>
-                                    <label class="flex items-center gap-x-2">
-                                        <input type="checkbox" name="export_options[]" value="suratjalan" class="checkbox-export">
-                                        Surat Jalan
-                                    </label>
-                                </li>
-                                <li>
-                                    <label class="flex items-center gap-x-2">
-                                        <input type="checkbox" name="export_options[]" value="invoice" class="checkbox-export">
-                                        Invoice
-                                    </label>
-                                </li>
-                                <li>
-                                    <label class="flex items-center gap-x-2">
-                                        <input type="checkbox" name="export_options[]" value="returnsalesorder" class="checkbox-export">
-                                        Return Sales Order
-                                    </label>
-                                </li>
-                                <!-- semua informasi -->
-                                <li>
-                                    <label class="flex items-center gap-x-2">
-                                        <input type="checkbox" name="export_options[]" value="listorder" class="checkbox-export">
-                                        All
-                                    </label>
-                                </li>
-
-                            </ul>
-                        </div>
-                    </div>
-                </section>
-                <!-- Modal footer -->
-                <div class="flex items-center justify-end p-6 space-x-2 border-t border-slate-200 rounded-b dark:border-slate-600">
-                    <button id="export-button" class="btn inline-flex justify-center text-white bg-black-500">Export</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+   
 
 
     @push('scripts')

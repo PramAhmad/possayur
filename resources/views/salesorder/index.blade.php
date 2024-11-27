@@ -164,11 +164,13 @@
                                                 <a href="{{ route('salesorder.show', $order->id) }}" class="action-btn" data-tippy-content="View">
                                                     <iconify-icon icon="heroicons:eye"></iconify-icon>
                                                 </a>
-                                                @can('salesorder edit')
-                                                <a href="{{ route('salesorder.edit', $order->id) }}" class="action-btn" data-tippy-content="Edit">
-                                                    <iconify-icon icon="heroicons:pencil-square"></iconify-icon>
+                                                <!-- can export dwonload pdf -->
+                                                @can('salesorder export')
+                                                <a href="{{ route('salesorder.pdf', $order->id) }}" class="action-btn" data-tippy-content="Download PDF">
+                                                    <iconify-icon icon="heroicons:arrow-down-tray"></iconify-icon>
                                                 </a>
                                                 @endcan
+                                              
                                             </div>
                                         </td>
                                     </tr>

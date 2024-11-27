@@ -68,6 +68,12 @@
                                                     <iconify-icon icon="heroicons:eye"></iconify-icon>
                                                 </a>
                                                 @endcan
+                                                <!-- dwonload -->
+                                                @can('invoice export')
+                                                <a href="{{ route('invoice.pdf', $invoice->id) }}" class="action-btn" data-tippy-content="Download PDF">
+                                                    <iconify-icon icon="heroicons:arrow-down-tray"></iconify-icon>
+                                                </a>
+                                                @endcan
 
                                                 @can('invoice edit')
                                                 <a class="action-btn" href="{{ route('invoice.edit', ['invoice' => $invoice]) }}">

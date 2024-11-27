@@ -67,6 +67,11 @@
                                                     <iconify-icon icon="heroicons:eye"></iconify-icon>
                                                 </a>
                                                 @endcan
+                                                @can('returnsalesorder export')
+                                                <a href="{{ route('returnsalesorder.pdf', $r->id) }}" class="action-btn" data-tippy-content="Download PDF">
+                                                    <iconify-icon icon="heroicons:arrow-down-tray"></iconify-icon>
+                                                </a>
+                                                @endcan
 
                                                 @can('returnsalesorder edit')
                                                 <a class="action-btn" href="{{ route('returnsalesorder.edit', ['returnsalesorder' => $r]) }}">

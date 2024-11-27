@@ -141,6 +141,14 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
     Route::get('export/listorder', [ListOrderController::class, 'export'])->name('listorder.export');
     Route::get('export/stockopname', [StockOpNameController::class, 'export'])->name('stockopname.export');
 
+    // pdf
+    Route::get('pdf/salesorder/{id}', [SalesOrderExportController::class, 'pdf'])->name('salesorder.pdf');
+    Route::get('pdf/suratjalan/{id}', [SuratJalanExportController::class, 'pdf'])->name('suratJalan.pdf');
+    Route::get('pdf/invoice/{id}', [InvoicePenagihanExportController::class, 'pdf'])->name('invoice.pdf');
+Route::get('pdf/returnsalesorder/{id}', [ReturnSalesOrderExportController::class, 'pdf'])->name('returnsalesorder.pdf');
+    Route::get('pdf/listorder', [ListOrderController::class, 'pdf'])->name('listorder.pdf');
+
+
 });
 
 // test log
