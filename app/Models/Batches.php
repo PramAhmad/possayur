@@ -6,10 +6,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Models\Activity;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Batches extends Model
 {
     use HasFactory;
+    use LogsActivity;
+
     protected $table = 'batches';
     protected $fillable = [
         'product_id',

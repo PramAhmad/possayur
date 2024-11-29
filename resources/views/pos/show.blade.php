@@ -1,9 +1,86 @@
 <x-app-layout>
+    @push('styles')
+    <style>
+        .hs-select {
+            width: 100%;
+        }
+
+        .truncate {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding-left: 1rem;
+            margin-top: 0.6rem;
+            color: #9ca3af;
+        }
+    </style>
+    @endpush
     <div class="flex-grow flex flex-col lg:flex-row">
         <!-- Products Section -->
         <div class="flex flex-col bg-blue-gray-50 w-full h-full py-4">
-            <!-- Search Bar -->
-            <div class="flex px-2 flex-row relative">
+            <div class="flex px-2 w-full flex-row relative" id="search-table">
+                <div class="absolute left-5 top-3 z-10 px-2 py-2 rounded-full bg-sky-500 text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </div>
+
+                <!-- Product Search Select -->
+                <select id="product-select" data-hs-select='{
+        "hasSearch": true,
+        "searchPlaceholder": "Search products...",
+        "placeholder": "Choose a product",
+        "toggleClasses": "bg-white rounded-3xl shadow text-lg w-full h-16 py-4 pl-12 pr-9 transition-shadow focus:shadow-2xl focus:outline-none",
+        "dropdownClasses": "mt-2 max-h-72 w-full overflow-y-auto bg-white border rounded-lg z-20",
+        "optionClasses": "py-2 px-4 hover:bg-gray-100 cursor-pointer flex items-center",
+        "optionTemplate": "<div class=\"flex items-center\"><div class=\"mr-3\" data-icon></div><div class=\"text-gray-800\" data-title></div></div>"
+    }' class="w-full px-10">
+                    <option value="">Choose a product</option>
+
+                    @foreach ($products as $product)
+                    <option value="{{ $product->id }}"
+                        data-price="{{ $product->selling_price }}"
+                        data-image="{{ asset('upload/product/' . $product->image) }}"
+                        data-hs-select-option='{
+                "icon": "<img class=\"inline-block size-4 rounded-full\" src=\"{{ asset('upload/product/' . $product->image) }}\" alt=\"{{ addslashes($product->name) }}\" style=\"width: 30px; height: 30px;\" />"
+            }'
+                        role="button">
+                        {{ $product->name }}
+                    </option>
+
+                    @if ($product->variants->count() > 0)
+                    @foreach ($product->variants as $variant)
+                    <option value="{{ $variant->id }}" data-price="{{ $variant->additional_price }}"
+                        data-hs-select-option='{
+                "icon": "<img class=\"inline-block size-4 rounded-full\" src=\"{{ asset('upload/product/' . $product->image) }}\" alt=\"{{ addslashes($product->name) }}\" style=\"width: 30px; height: 30px;\" />"
+            }'
+                        data-image="{{ asset('upload/product/' . ($variant->image ?? $product->image)) }}
+        ">
+                        {{ $variant->name }} - Rp {{ number_format($variant->additional_price) }}
+                    </option>
+                    @endforeach
+                    @endif
+
+                    @if ($product->batches->count() > 0)
+                    @foreach ($product->batches as $batch)
+                    <option value="{{ $batch->id }}" data-price="{{ $batch->price }}"
+                        data-hs-select-option='{
+                "icon": "<img class=\"inline-block size-4 rounded-full\" src=\"{{ asset('upload/product/' . $product->image) }}\" alt=\"{{ addslashes($product->name) }}\" style=\"width: 30px; height: 30px;\" />"
+            }'
+                        data-image="{{ asset('upload/product/' . ($batch->image ?? $product->image)) }}">
+                        {{ $batch->batch_no }} - Rp {{ number_format($batch->price) }}
+                    </option>
+                    @endforeach
+                    @endif
+                    @endforeach
+                </select>
+            </div>
+
+
+
+            <!-- End Select -->
+
+            <div class="flex px-2 flex-row relative" id="search-grid">
                 <div class="absolute left-5 top-3 px-2 py-2 rounded-full bg-sky-500 text-white">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -13,7 +90,7 @@
                     type="text"
                     id="search-input"
                     class="bg-white rounded-3xl shadow text-lg w-full h-16 py-4 pl-16 transition-shadow focus:shadow-2xl focus:outline-none"
-                    placeholder="Cari menu ..." />
+                    placeholder="Search Product ..." />
             </div>
 
             <!-- mode table / gird badge -->
@@ -31,8 +108,8 @@
 
             <!-- Products Section -->
             <div class="h-full overflow-hidden mt-4">
-                <!-- Table View -->
-                <div id="tableView" class="hidden px-5">
+                <!-- card mode table view -->
+                <div id="chart-table" class="hidden px-5">
                     <table class="table-auto w-full bg-white rounded-lg shadow ">
                         <thead>
                             <tr class="bg-gray-200 text-gray-700">
@@ -42,29 +119,14 @@
                                 <th class="px-4 py-2">Unit</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            @foreach ($products as $product)
-                            <tr
-                                role="button"
-                                class="border-t cursor-pointer hover:bg-gray-100 add-to-cart"
-                                data-product-id="{{ $product->id }}"
-                                data-product-name="{{ $product->name }}"
-                                data-product-price="{{ $product->selling_price }}"
-                                data-product-image="{{ asset('upload/product/' . $product->image) }}">
-                                <td class="px-4 py-2">
-                                    <img src="{{ asset('upload/product/' . $product->image) }}" class="w-10 h-10 object-cover rounded-md" alt="{{ $product->name }}">
-                                </td>
-                                <td class="px-4 py-2">{{ $product->name }}</td>
-                                <td class="px-4 py-2">Rp {{ number_format($product->selling_price) }}</td>
-                                <td class="px-4 py-2">{{ $product->unit->name ?? '-' }}</td>
-                            </tr>
-                            @endforeach
+                        <tbody class="items-chart-table">
+                            <!-- display chart from products -->
                         </tbody>
                     </table>
                 </div>
 
                 <!-- Grid View -->
-                <div id="gridView" class="h-full overflow-y-auto px-2">
+                <div id="product-grid" class="h-full overflow-y-auto px-2">
                     <div class="product-grid grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-4 pb-3">
                         @foreach ($products as $product)
                         <div>
@@ -154,7 +216,7 @@
         </div>
 
         <!-- Cart Section -->
-        <div class="w-full lg:w-5/12 flex flex-col bg-blue-gray-50 h-full rounded-lg bg-white p-4">
+        <div class="w-full lg:w-5/12 flex flex-col bg-blue-gray-50 h-full rounded-lg bg-white p-4" id="chart-grid">
             <div class="bg-white rounded-3xl flex flex-col h-full shadow">
                 <!-- Empty Cart State -->
                 <div id="empty-cart" class="flex-1 w-full p-4 opacity-25 select-none flex flex-col flex-wrap content-center justify-center">
@@ -306,33 +368,82 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
     <script>
         $(document).ready(function() {
+            let currentDiscount = 0;
+            $('#search-table').hide();
+            $('#tableMode, #gridMode').on('click', function() {
+                let mode = $(this).attr('id').replace('Mode', '').toLowerCase();
+
+                // Remove active state from all mode buttons
+                $('#tableMode, #gridMode').removeClass('bg-sky-500 text-white').addClass('bg-white text-blue-gray-500');
+
+                // Add active state to clicked button
+                $(this).removeClass('bg-white text-blue-gray-500').addClass('bg-sky-500 text-white');
+
+                if (mode === 'table') {
+                    $('#search-table').show();
+                    $('#search-grid').hide();
+                    $('#product-grid').hide();
+                    $('#chart-grid').removeClass('lg:w-5/12').addClass('lg:w-5/12');
+                    $('#chart-table').show();
+                } else {
+                    $('#search-grid').show();
+                    $('#search-table').hide();
+                    $('#product-grid').show();
+                    $('#chart-grid').removeClass('lg:w-5/12').addClass('lg:w-5/12');
+                    $('#chart-table').hide();
+                }
+
+                updateCartUI(JSON.parse(localStorage.getItem('cart')) || [], mode);
+            });
+
+            function getCurrentMode() {
+                return $('#tableMode').hasClass('bg-sky-500') ? 'table' : 'grid';
+            }
+
             function loadCart() {
                 const cart = JSON.parse(localStorage.getItem('cart')) || [];
-                updateCartUI(cart);
+                updateCartUI(cart, getCurrentMode());
             }
 
             function updateCart(cart) {
                 localStorage.setItem('cart', JSON.stringify(cart));
-                updateCartUI(cart);
+                updateCartUI(cart, getCurrentMode());
+
+
             }
 
-            function updateCartUI(cart) {
-                if (cart.length === 0) {
-                    $("#empty-cart").show();
-                    $("#cart-items").hide();
-                    $("#total-price").text("Rp 0");
-                    $("#cart-count").text(0);
-                } else {
-                    $("#empty-cart").hide();
-                    $("#cart-items").show();
 
-                    let cartItemsHtml = '';
-                    let totalPrice = 0;
-                    cart.forEach(function(item) {
-                        totalPrice += item.price * item.qty;
-                        cartItemsHtml += `
+
+
+            function updateCartUI(cart, mode) {
+                let totalPrice = 0;
+                let discount = 0;
+                console.log(cart);
+                console.log('ini adalah mode ' + mode);
+                if (mode === 'grid') {
+                    $('#cart-items-list').show();
+                    if (cart.length === 0) {
+                        console.log('cart empty');
+                        $("#empty-cart").show();
+                        $("#cart-items").hide();
+                        $("#total-price").text("Rp 0");
+                        $("#cart-count").text(0);
+
+
+
+                    } else {
+                        console.log('cart not empty');
+                        $("#empty-cart").hide();
+                        $("#cart-items").show();
+                        console.log('cart empty di table');
+                        let cartItemsHtml = '';
+                        cart.forEach(function(item) {
+                            totalPrice += item.price * item.qty;
+                            cartItemsHtml += `
                     <div class="select-none mb-3 bg-blue-gray-50 rounded-lg w-full text-blue-gray-700 py-3 px-2 flex justify-center">
                         <img src="${item.image}" alt="" class="rounded-lg h-12 w-12 bg-white shadow mr-2 mt-2">
                         <div class="flex-grow">
@@ -369,15 +480,56 @@
                         </div>
                     </div>
                 `;
-                    });
-                    $("#cart-items-list").html(cartItemsHtml);
-                    $("#total-price").text("Rp " + Intl.NumberFormat().format(totalPrice));
-                    $("#cart-count").text(cart.length);
-                }
-            }
+                        });
+                        $("#cart-items-list").html(cartItemsHtml);
+                    }
+                } else if (mode === 'table') {
+                    console.log(mode)
+                    $('#cart-items-list').hide();
+                    if (cart.length === 0) {
+                        $("#chart-table tbody").append(`
+                           <tr class="border border-slate-100 dark:border-slate-900 relative">
+            <td class="table-cell text-center" colspan="8">
+                <img src="{{asset('images/result-not-found.svg')}}" alt="page not found" class="w-64 m-auto" />
+                <h2 class="text-xl text-slate-700 mb-8 -mt-4">Cart Empty.</h2>
+            </td>
+        </tr>
+                        `);
 
+                    } else {
+
+                        $("#chart-table tbody").html('');
+                        cart.forEach(function(item) {
+                            totalPrice += item.price * item.qty;
+                            const rowHtml = `
+                    <tr>
+                        <td class="px-4 py-2">
+                            <img src="${item.image}" class="w-12 h-12 object-cover rounded-lg" alt="${item.name}">
+                        </td>
+                        <td class="px-4 py-2">${item.name}</td>
+                        <td class="px-4 py-2">Rp ${Intl.NumberFormat().format(item.price)}</td>
+                        <td class="px-4 py-2">
+                            <input 
+                                type="number" 
+                                class="qty-edit-table w-16 h-8 text-sm bg-gray-50 rounded border border-gray-100 px-2" 
+                                value="${item.qty}" 
+                                min="1"
+                                data-product-id="${item.id}"
+                            >
+                        </td>
+                    </tr>
+                `;
+                            $("#chart-table tbody").append(rowHtml);
+                        });
+                    }
+                }
+                updateSubtotalAndDiscount(totalPrice, currentDiscount);
+                $("#total-price").text("Rp " + Intl.NumberFormat().format(totalPrice - currentDiscount));
+                $("#cart-count").text(cart.length);
+            }
+            // Tambahkan item ke keranjang
             $(".add-to-cart").click(function() {
-                const productId = $(this).data("product-id");
+                let productId = $(this).data("product-id");
                 const name = $(this).data("product-name");
                 const price = $(this).data("product-price");
                 const image = $(this).data("product-image");
@@ -391,6 +543,7 @@
                     item.variantId === variantId &&
                     item.batchId === batchId
                 );
+                productId = parseInt(productId);
                 if (index >= 0) {
                     cart[index].qty += 1;
                 } else {
@@ -404,8 +557,85 @@
                         qty: 1
                     });
                 }
-                updateCart(cart);
+                localStorage.setItem('cart', JSON.stringify(cart));
+                updateCart(cart)
+                updateCartUI(cart, getCurrentMode());
             });
+
+            $("#product-select").change(function() {
+                const selectedOptions = $(this).find(":selected");
+                let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+                selectedOptions.each(function() {
+                    let productId = $(this).val();
+                    const name = $(this).text();
+                    const price = $(this).data("price");
+                    const image = $(this).data("image");
+                    const variantId = $(this).data("variant-id") || null;
+                    const batchId = $(this).data("batch-id") || null;
+
+                    const index = cart.findIndex(
+                        (item) =>
+                        item.productId === productId &&
+                        item.variantId === variantId &&
+                        item.batchId === batchId
+                    );
+                    productId = parseInt(productId);
+                    if (index >= 0) {
+                        cart[index].qty += 1;
+                    } else {
+                        cart.push({
+                            id: productId,
+                            variantId,
+                            batchId,
+                            name,
+                            price,
+                            image,
+                            qty: 1,
+                        });
+                    }
+                });
+
+                localStorage.setItem("cart", JSON.stringify(cart));
+                updateCartUI(cart, getCurrentMode());
+            });
+
+
+            // search in  grid mode
+            $('#search-grid #search-input').on('input', function() {
+                const searchTerm = $(this).val().toLowerCase();
+                $('.product-grid > div').each(function() {
+                    const $productCard = $(this).find('.add-to-cart');
+                    const productName = $productCard.data('product-name').toLowerCase();
+                    if (productName.includes(searchTerm)) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            });
+
+
+
+            // search in table mode
+            $('#search-table #search-input').on('input', function() {
+                const searchTerm = $(this).val().toLowerCase();
+                $('#chart-table tbody tr').each(function() {
+                    const productName = $(this).find('td:nth-child(2)').text().toLowerCase();
+                    if (productName.includes(searchTerm)) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            });
+
+            // reset search handler
+            $('#tableMode, #gridMode').on('click', function() {
+                $('#search-grid #search-input, #search-table #search-input').val('');
+                $('.product-grid > div, #chart-table tbody tr').show();
+            });
+
 
             $(document).on("click", ".delete-item", function() {
                 const productId = $(this).data("product-id");
@@ -432,6 +662,26 @@
                     cart[index].qty = newQty;
                     updateCart(cart);
                 }
+
+            });
+            // qty-edit-table
+            $(document).on("change", ".qty-edit-table", function() {
+                const productId = $(this).data("product-id");
+                let newQty = parseInt($(this).val()) || 1;
+
+                if (newQty < 1) {
+                    newQty = 1;
+                    $(this).val(1);
+                }
+
+                let cart = JSON.parse(localStorage.getItem('cart')) || [];
+                const index = cart.findIndex(item => item.id === productId);
+                if (index >= 0) {
+                    cart[index].qty = newQty;
+                    updateCart(cart, 'table');
+                    updateCartUI(cart, 'table');
+                }
+
             });
 
             $(document).on("change", ".price-edit", function() {
@@ -447,7 +697,8 @@
                 const index = cart.findIndex(item => item.id === productId);
                 if (index >= 0) {
                     cart[index].price = newPrice;
-                    updateCart(cart);
+                    updateCart(cart, getCurrentMode());
+                    updateCartUI(cart, getCurrentMode());
                 }
             });
 
@@ -481,7 +732,8 @@
 
                             localStorage.setItem("cart", JSON.stringify(cart));
 
-                            updateCart(cart);
+                            updateCart(cart, getCurrentMode());
+
                         },
 
                         error: function(xhr, status, error) {
@@ -590,12 +842,60 @@
                 });
 
             });
+            // dynamix update total
 
+            $("#coupon").change(function() {
+                const couponId = $(this).val();
+                const cart = JSON.parse(localStorage.getItem('cart')) || [];
+                let subtotal = 0;
+                cart.forEach(item => {
+                    subtotal += item.price * item.qty;
+                });
+
+                // reset if no coupon
+                currentDiscount = 0;
+
+                if (couponId) {
+                    $.ajax({
+                        url: `{{ route('coupon.get') }}`,
+                        type: "GET",
+                        data: {
+                            coupon_id: couponId
+                        },
+                        success: function(response) {
+                            console.log(response);
+                            if (response.type === 'percentage') {
+                                currentDiscount = subtotal * (response.value / 100);
+                            } else {
+                                currentDiscount = response.amount;
+                            }
+
+                            updateSubtotalAndDiscount(subtotal, currentDiscount);
+                            updateCart(cart, getCartMode());
+                        },
+                        error: function(xhr, status, error) {
+                            console.error(error);
+                        }
+                    });
+                } else {
+                    updateSubtotalAndDiscount(subtotal, 0);
+                }
+            });
+
+            function updateSubtotalAndDiscount(subtotal, discount) {
+                currentDiscount = discount; 
+                const total = subtotal - discount;
+                console.log(total)
+                $("#subtotal").text("Rp " + subtotal);
+                $("#discount").text("Rp " + discount);
+                $("#total-price").text("Rp " + total);
+            }   
             loadCart();
         });
     </script>
     <script>
         $(document).ready(function() {
+            let subtotal = 0;
             $('#search-input').on('keyup', function() {
                 let keyword = $(this).val();
                 $.ajax({
@@ -638,74 +938,14 @@
                 });
             });
 
-            $("#coupon").change(function() {
-                const couponId = $(this).val();
-                const cart = JSON.parse(localStorage.getItem('cart')) || [];
-                let subtotal = 0;
 
-                // Calculate subtotal
-                cart.forEach(item => {
-                    subtotal += item.price * item.qty;
-                });
-
-                // Apply coupon discount
-                let discount = 0;
-                if (couponId) {
-                    $.ajax({
-                        url: `{{ route('coupon.get') }}`,
-                        type: "GET",
-                        data: {
-                            coupon_id: couponId
-                        },
-                        success: function(response) {
-                            console.log(response);
-                            if (response.type === 'percentage') {
-                                discount = subtotal * (response.value / 100);
-                            } else {
-                                discount = response.amount
-                            }
-                            updateSubtotalAndDiscount(subtotal, discount);
-                        },
-                        error: function(xhr, status, error) {
-                            console.error(error);
-                        }
-                    });
-                } else {
-                    updateSubtotalAndDiscount(subtotal, 0);
-                }
-            });
-
-            function updateSubtotalAndDiscount(subtotal, discount) {
-                $("#subtotal").text("Rp " + subtotal);
-                $("#discount").text("Rp " + discount);
-                $("#total-price").text("Rp " + (subtotal - discount));
-            }
 
         });
     </script>
     <!-- js tampilan mode product -->
-    <script>
-        const tableView = document.getElementById('tableView');
-        const gridView = document.getElementById('gridView');
-        const tableMode = document.getElementById('tableMode');
-        const gridMode = document.getElementById('gridMode');
-
-        // default grid
-        tableView.classList.add('hidden');
-        tableMode.addEventListener('click', () => {
-            tableView.classList.remove('hidden');
-            gridView.classList.add('hidden');
-            tableMode.classList.add('bg-white', 'text-blue-gray-500');
-            gridMode.classList.remove('bg-white', 'text-blue-gray-500');
-        });
-
-        gridMode.addEventListener('click', () => {
-            tableView.classList.add('hidden');
-            gridView.classList.remove('hidden');
-            tableMode.classList.remove('bg-white', 'text-blue-gray-500');
-            gridMode.classList.add('bg-white', 'text-blue-gray-500');
-        });
-    </script>
+    <script src="{{asset('js/preline.js')}}"></script>
+    <!-- change using laravel -->
+    <script src="{{ asset('js/app.js') }}"></script>
     @endpush
 
 </x-app-layout>

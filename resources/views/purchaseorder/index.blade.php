@@ -61,7 +61,7 @@
                                             <!-- using carbon created at 29 oktober 2023 -->
                                              {{Carbon\Carbon::parse($purchaseOrder->created_at)->format('d M Y')}}
                                         </td>
-                                        <td class="table-td">{{ number_format($purchaseOrder->grand_total, 2) }}</td>
+                                        <td class="table-td">{{ currency($purchaseOrder->grand_total) }}</td>
                                         <td class="table-td text-center">
                                             <div class="flex justify-center items-center">
                                                 <a href="#" class="action-btn text-center" onclick="showProductModal({{ $purchaseOrder->id }})" data-products='@json($purchaseOrder->products)'>

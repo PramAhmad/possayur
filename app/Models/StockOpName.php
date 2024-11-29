@@ -6,16 +6,20 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Models\Activity;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class StockOpName extends Model
 {
     use HasFactory;
+    use LogsActivity;
+
     protected $fillable = [
         'product_id',
         'outlet_id',
         'opname_date',
         'initial_qty',
         'actual_qty',
+        'status',
         'difference',
         'note',
     ];
@@ -27,10 +31,18 @@ class StockOpName extends Model
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-            ->logAll()
+            ->logOnly([
+                'product_id',
+                'outlet_id',
+                'opname_date',
+                'initial_qty',
+                'actual_qty',
+                'difference',
+                'note',
+            ])
             ->logUnguarded()
             ->logOnlyDirty()
-            ->useLogName('StockOpName');
+            ->useLogName('stock_op_names');
     }
 
     public function product()

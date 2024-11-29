@@ -1,10 +1,21 @@
 <?php
 
+use App\Models\Curency;
 use App\Settings\GeneralSettings;
 
 function getSettings($key)
 {
     return app(GeneralSettings::class)->$key ?? null;
+}
+if (!function_exists('currency')) {
+    function currency($amount)
+    {
+        $currency = Curency::where('is_active', true)->first();
+        $symbol = $currency->symbol;
+        $code = $currency->code;
+
+        return $code . ' '  . ' ' . number_format($amount);
+    }
 }
 
 

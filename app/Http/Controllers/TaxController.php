@@ -18,7 +18,7 @@ class TaxController extends Controller
     {
         $breadcrumbItems = [
             [
-                'name' => 'Dashboard',
+                'name' => 'Setting',
                 'url' => route('dashboard.index'),
                 'active' => false
             ],
@@ -39,6 +39,7 @@ class TaxController extends Controller
                 ->allowedSorts(['name', 'rate', 'is_active'])
                 ->where('name', 'like', "%$q%")
                 ->with('outlet')
+                ->orderBy('is_active', 'desc')
                 ->latest()
                 ->paginate($perPage)
                 ->appends(['per_page' => $perPage, 'q' => $q, 'sort' => $sort]);
@@ -48,6 +49,8 @@ class TaxController extends Controller
                 ->allowedSorts(['name', 'rate', 'is_active'])
                 ->where('name', 'like', "%$q%")
                 ->where('outlet_id', auth()->user()->outlet_id)
+                ->with('outlet')
+                ->orderBy('is_active', 'desc')
                 ->latest()
                 ->paginate($perPage)
                 ->appends(['per_page' => $perPage, 'q' => $q, 'sort' => $sort]);
@@ -95,7 +98,6 @@ class TaxController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'rate' => 'required|numeric|min:0|max:100',
-            'is_active' => 'required|boolean',
             'outlet_id' => 'required|exists:outlets,id',    
         ], [
             'name.required' => 'Name wajib di isi',
@@ -105,8 +107,6 @@ class TaxController extends Controller
             'rate.numeric' => 'Rate harus berupa angka',
             'rate.min' => 'Rate minimal 0',
             'rate.max' => 'Rate maksimal 100',
-            'is_active.required' => 'Status wajib di isi',
-            'is_active.boolean' => 'Status harus berupa boolean',
             'outlet_id.required' => 'Outlet wajib di isi',
             'outlet_id.exists' => 'Outlet tidak ditemukan',
 
@@ -116,7 +116,7 @@ class TaxController extends Controller
             
             'name' => $request->name,
             'rate' => $request->rate,
-            'is_active' => $request->is_active,
+            'is_active' => false,
             'outlet_id' => $request->outlet_id,
         ]);
      
@@ -200,7 +200,7 @@ class TaxController extends Controller
         $tax->update([
             'name' => $request->name,
             'rate' => $request->rate,
-            'is_active' => $request->is_active,
+            'is_active' => 0,
             'outlet_id' => $request->outlet_id,
         ]);
 
@@ -217,5 +217,19 @@ class TaxController extends Controller
     {
         Tax::find($id)->delete();
         return redirect()->back()->with("message",'Tax berhasil di hapus');
+    }
+
+    public function makeActive(Request $request)
+    {
+        // dd($request->all());
+        $tax = Tax::find($request->id)->update([
+            'is_active' => true
+        ]);
+      
+        Tax::where('id', '!=', $request->id)->update([
+            'is_active' => false
+        ]);
+
+        return redirect()->back()->with('message', 'Tax berhasil di update');
     }
 }

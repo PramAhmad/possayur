@@ -6,10 +6,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Models\Activity;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Category extends Model
 {
     use HasFactory;
+    use LogsActivity;
     protected $fillable = ['name', 'slug', 'description', 'image'];
     protected $table = 'category';
     public function tapActivity(Activity $activity, string $eventName)

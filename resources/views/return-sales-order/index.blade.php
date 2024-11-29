@@ -58,7 +58,7 @@
                                         }}</td>
                                         <td class="table-td">{{ $r->total_qty }}</td>
                                         <td class="table-td">
-                                            {{ number_format($r->grand_total, 2) }}
+                                            {{ currency($r->grand_total) }}
                                         </td>
                                         <td class="table-td">
                                             <div class="flex space-x-3 rtl:space-x-reverse">

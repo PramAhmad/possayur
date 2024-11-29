@@ -9,7 +9,7 @@ use App\Models\Product;
 use App\Models\ProductPriceByCustomer;
 use App\Models\ProductSalesOrder;
 use App\Models\SalesOrder;
-use Illuminate\Http\Request;
+use Illuminate\Http\Request;    
 use Illuminate\Support\Facades\DB;
 
 class PointOfSalesController extends Controller

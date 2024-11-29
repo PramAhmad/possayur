@@ -100,12 +100,12 @@
     
     <!-- Net Cost -->
     <td class="text-slate-900 dark:text-slate-300 text-sm font-normal ltr:text-left px-6 py-4">
-        {{ number_format($item->net_cost) }}
+        {{ currency($item->net_cost) }}
     </td>
     
     <!-- Total Cost -->
     <td class="text-slate-900 dark:text-slate-300 text-sm font-normal ltr:text-left px-6 py-4">
-        {{ number_format($item->total_cost) }}
+        {{ currency($item->total_cost) }}
     </td>
 </tr>
 @empty
@@ -121,7 +121,7 @@
                                   <div class="flex-none min-w-[270px] space-y-3">
                                     <div class="flex justify-between">
                                       <span class="font-medium text-slate-600 text-xs dark:text-slate-300 uppercase">subtotal:</span>
-                                      <span class="text-slate-900 dark:text-slate-300">{{number_format($purchase->total_cost)}}</span>
+                                      <span class="text-slate-900 dark:text-slate-300">{{currency($purchase->total_cost)}}</span>
                                     </div>
                                     <div class="flex justify-between">
                                       <span class="font-medium text-slate-600 text-xs dark:text-slate-300 uppercase">order tax {{$purchase->order_tax_rate}}:</span>

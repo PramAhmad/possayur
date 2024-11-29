@@ -59,7 +59,7 @@
                                             @php
                                                 $discountedTotal = $invoice->grandtotal - ($invoice->discount ?? 0);
                                             @endphp
-                                            {{ number_format($discountedTotal, 2) }}
+                                            {{ currency($discountedTotal) }}
                                         </td>
                                         <td class="table-td">
                                             <div class="flex space-x-3 rtl:space-x-reverse">

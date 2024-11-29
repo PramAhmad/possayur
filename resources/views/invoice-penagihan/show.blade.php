@@ -213,11 +213,11 @@
                                 <td class="px-4 py-3 text-sm text-slate-500 dark:text-slate-300">
                                     <div class="flex justify-between">
                                         <span>Qty: {{ $product->qty }}</span>
-                                        <span>Price: {{ number_format($product->price, 0, ',', '.') }}</span>
+                                        <span>Price: {{ currency($product->price) }}</span>
                                     </div>
                                 </td>
                                 <td class="px-4 py-3 text-right text-sm text-slate-500 dark:text-slate-300">
-                                    {{ number_format($product->total, 0, ',', '.') }}
+                                    {{ currency($product->total) }}
                                 </td>
                             </tr>
                             @endforeach
@@ -226,7 +226,7 @@
                             <tr class="font-bold">
                                 <td colspan="2" class="px-4 py-3 text-right text-slate-900 dark:text-slate-300">Grand Total</td>
                                 <td class="px-4 py-3 text-right text-slate-900 dark:text-slate-300">
-                                    {{ number_format($invoice->productInvoices->sum('total'), 0, ',', '.') }}
+                                    {{ currency($invoice->productInvoices->sum('total')) }}
                                 </td>
                             </tr>
                         </tbody>

@@ -284,8 +284,8 @@ class ProductController extends Controller
                 'alert_qty' => $request->alert_qty,
                 'sku' => $request->sku,
                 'description' => $request->description,
-                'is_variant' => in_array('variant', $request->product_type) ? "1" : "0",
-                'is_batch' => in_array('batch', $request->product_type) ? "1" : "0",
+                'is_variant' => $request->has('is_variant') ? "1" : "0",
+                'is_batch' => $request->has('is_batch') ? "1" : "0",
                 'is_difprice' => $request->has('is_difprice') ? "1" : "0",
                 'is_active' => $request->has('is_active') ? "1" : "0",
                 'category_id' => $request->category_id,
@@ -294,49 +294,64 @@ class ProductController extends Controller
             ]);
     
             // Handle variants
-            if (in_array('variant', $request->product_type)) {
-                $variantIds = [];
-                foreach ($request->variants ?? [] as $variant) {
-                    $existingVariant = Variant::where('product_id', $product->id)
-                        ->where('item_code', $variant['item_code'])
-                        ->first();
-    
-                    if ($existingVariant) {
-                        $existingVariant->update([
-                            'name' => $variant['name'],
-                            'qty' => $variant['qty'] ?? $product->qty,
-                            'additional_price' => $variant['additional_price'],
-                        ]);
-                        $variantIds[] = $existingVariant->id;
+            if($request->is_variant == 1){
+                $request->validate([
+                    'variants.*.item_code' => 'required|string',
+                    'variants.*.name' => 'required|string',
+                    'variants.*.additional_price' => 'required|integer',
+                ]);
+                if (in_array('variant', $request->product_type)) {
+                    $variantIds = [];
+                    foreach ($request->variants ?? [] as $variant) {
+                        $existingVariant = Variant::where('product_id', $product->id)
+                            ->where('item_code', $variant['item_code'])
+                            ->first();
+        
+                        if ($existingVariant) {
+                            $existingVariant->update([
+                                'name' => $variant['name'],
+                                'qty' => $variant['qty'] ?? $product->qty,
+                                'additional_price' => $variant['additional_price'],
+                            ]);
+                            $variantIds[] = $existingVariant->id;
+                        }
                     }
+                    // Delete unused variants
+                    Variant::where('product_id', $product->id)
+                        ->whereNotIn('id', $variantIds)
+                        ->delete();
                 }
-                // Delete unused variants
-                Variant::where('product_id', $product->id)
-                    ->whereNotIn('id', $variantIds)
-                    ->delete();
             }
     
             // Handle batches
-            if (in_array('batch', $request->product_type)) {
-                $batchIds = [];
-                foreach ($request->batches ?? [] as $batch) {
-                    $existingBatch = Batches::where('product_id', $product->id)
-                        ->where('batch_no', $batch['batch_no'])
-                        ->first();
-    
-                    if ($existingBatch) {
-                        $existingBatch->update([
-                            'qty' => $batch['qty'],
-                            'price' => $batch['price'],
-                            'expired_date' => $batch['expired_date'],
-                        ]);
-                        $batchIds[] = $existingBatch->id;
+            if($request->is_batch == 1){
+                $request->validate([
+                    'batches.*.batch_no' => 'required|string',
+                    'batches.*.qty' => 'required|integer',
+                    'batches.*.price' => 'required|integer',
+                    'batches.*.expired_date' => 'required|date',
+                ]);
+                if (in_array('batch', $request->product_type)) {
+                    $batchIds = [];
+                    foreach ($request->batches ?? [] as $batch) {
+                        $existingBatch = Batches::where('product_id', $product->id)
+                            ->where('batch_no', $batch['batch_no'])
+                            ->first();
+        
+                        if ($existingBatch) {
+                            $existingBatch->update([
+                                'qty' => $batch['qty'],
+                                'price' => $batch['price'],
+                                'expired_date' => $batch['expired_date'],
+                            ]);
+                            $batchIds[] = $existingBatch->id;
+                        }
                     }
+                    // Delete unused batches
+                    Batches::where('product_id', $product->id)
+                        ->whereNotIn('id', $batchIds)
+                        ->delete();
                 }
-                // Delete unused batches
-                Batches::where('product_id', $product->id)
-                    ->whereNotIn('id', $batchIds)
-                    ->delete();
             }
     
             DB::commit();

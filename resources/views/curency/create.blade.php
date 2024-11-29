@@ -10,8 +10,8 @@
         <x-alert :message="session('message')" :type="'success'" />
         @endif
 
-        {{--Create tax form start--}}
-        <form method="POST" action="{{ route('tax.store') }}" class="max-w-4xl m-auto">
+        {{--Create curency form start--}}
+        <form method="POST" action="{{ route('curency.store') }}" class="max-w-4xl m-auto">
             @csrf
             <div class="bg-white dark:bg-slate-800 rounded-md p-5 pb-6">
 
@@ -33,18 +33,26 @@
                     <div class="input-area">
                         <label for="name" class="form-label">{{ __('Name') }}</label>
                         <input name="name" type="text" id="name" class="form-control" 
-                               placeholder="{{ __('Enter tax name') }}" value="{{ old('name') }}" required>
+                               placeholder="{{ __('Enter curency name') }}" value="{{ old('name') }}" required>
                         <x-input-error :messages="$errors->get('name')" class="mt-2"/>
                     </div>
 
-                    {{--Rate input--}}
+                    {{-- symbol--}}
                     <div class="input-area">
-                        <label for="rate" class="form-label">{{ __('Rate (%)') }}</label>
-                        <input name="rate" type="number" id="rate" class="form-control" 
-                               placeholder="{{ __('Enter tax rate') }}" value="{{ old('rate') }}" 
-                               step="0.01" min="0" max="100" required>
-                        <x-input-error :messages="$errors->get('rate')" class="mt-2"/>
+                        <label for="symbol" class="form-label">{{ __('Symbol') }}</label>
+                        <input name="symbol" type="text" id="symbol" class="form-control" 
+                               placeholder="{{ __('Enter curency symbol') }}" value="{{ old('symbol') }}" required>
+                        <x-input-error :messages="$errors->get('symbol')" class="mt-2"/>
                     </div>
+                    <!-- code -->
+                    <div class="input-area">
+                        <label for="code" class="form-label">{{ __('Code') }}</label>
+                        <input name="code" type="text" id="code" class="form-control" 
+                               placeholder="{{ __('Enter curency code') }}" value="{{ old('code') }}" required>
+                        <x-input-error :messages="$errors->get('code')" class="mt-2"/>
+                    </div>
+                    
+                   
 
                 </div>
 

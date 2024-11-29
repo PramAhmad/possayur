@@ -149,17 +149,17 @@
                 </td>
                 <td>{{ $product->qty }}</td>
                 <td>{{ $product->product->unit->name }}</td>
-                <td>{{ number_format($product->unit_price, 0, ',', '.') }}</td>
+                <td>{{ currency($product->unit_price) }}</td>
 
                 <td class="text-right">
-                    {{ number_format($product->total_price, 0, ',', '.') }}
+                    {{ currency($product->total_price) }}
                 </td>
             </tr>
             @endforeach
             <tr class="font-bold">
                 <td colspan="4" class="text-right">Grand Total</td>
                 <td class="text-right">
-        {{ number_format($suratJalan->productSuratJalans->sum('total_price'), 0, ',', '.') }}
+        {{ currency($suratJalan->productSuratJalans->sum('total_price')) }}
     </td>
             </tr>
         </tbody>

@@ -77,21 +77,20 @@
                                         <td class="table-td">{{ $item->actual_qty }}</td>
                                         <td class="table-td">
                                             <!-- staus kalo diff minus need adjuctment gitu -->
-                                            @if($item->difference < 0)
-                                                <span class="inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-full bg-opacity-20 text-danger-500 bg-danger-500">Not Balance</span>
-                                                @else
-                                                <span class="badge badge-success">Need Adjusment</span>
-                                                @endif
+                                            @if($item->status == true)
+                                            <span class="inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-full bg-opacity-20 bg-success-500 text-success-500">{{ __('Match') }}</span>  
+                                            @else
+                                            <span class="inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-full bg-opacity-20 bg-danger-500 text-danger-500">{{ __('Adjustment Required') }}</span>
+                                            @endif
                                         </td>
                                         <td class="table-td">
                                             <div class="flex space-x-3 rtl:space-x-reverse">
                                                 <!-- if dif < 0 open modal button for adjust -->
-                                                @if($item->difference < 0)
+                                                
                                                     <button data-id="{{ $item->id }}" class="action-btn open-modal" data-bs-toggle="modal" data-bs-target="#adjust">
                                                     <iconify-icon icon="heroicons:check"></iconify-icon>
                                                     </button>
 
-                                                    @endif
                                                     @can('stockopname view')
                                                     <a href="{{ route('stockopname.show', $item->id) }}" class="action-btn" data-tippy-content="View">
                                                         <iconify-icon icon="heroicons:eye"></iconify-icon>
@@ -164,8 +163,10 @@
     @push('scripts')
     <script>
         $(document).ready(function() {
+            let currentStockOpnameId = null;
             $('.open-modal').on('click', function() {
                 const id = $(this).data('id');
+                currentStockOpnameId = $(this).data('id');
                 const modalTitle = $('#adjustLabel');
                 const modalBody = $('#adjust .modal-body');
                 modalBody.html('<p>Loading...</p>');
@@ -199,42 +200,24 @@
                     }
                 });
             });
-        });
-    </script>
 
-    <script>
-        document.querySelector('select[name="product_id"]').addEventListener('change', function() {
-            document.getElementById('searchForm').submit();
-        });
-
-        function sweetAlertDelete(event, formId) {
-            event.preventDefault();
-            let form = document.getElementById(formId);
-            Swal.fire({
-                title: `@lang('
-                Are you sure ? ')`,
-                icon: 'question',
-                showDenyButton: true,
-                confirmButtonText: `@lang('
-                Delete ')`,
-                denyButtonText: `@lang('
-                Cancel ')`,
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    form.submit();
-                }
-            })
-        }
-    </script>
-    <!-- adjust button confirm post ajax -->
-    <script>
-        $(document).ready(function() {
             $('#adjust-button').on('click', function() {
-                const id = $('.open-modal').data('id');
+                if (!currentStockOpnameId) {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'No stock opname item selected',
+                        icon: 'error',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    return;
+                }
+
                 $.ajax({
-                    url: `json/stockopname/${id}/adjust`,
+                    url: `json/stockopname/${currentStockOpnameId}/adjust`,
                     method: 'POST',
                     data: {
+
                         _token: '{{ csrf_token() }}'
                     },
                     success: function(data) {
@@ -264,7 +247,32 @@
                 });
             });
         });
-
     </script>
+
+    <script>
+        document.querySelector('select[name="product_id"]').addEventListener('change', function() {
+            document.getElementById('searchForm').submit();
+        });
+
+        function sweetAlertDelete(event, formId) {
+            event.preventDefault();
+            let form = document.getElementById(formId);
+            Swal.fire({
+                title: `@lang('
+                Are you sure ? ')`,
+                icon: 'question',
+                showDenyButton: true,
+                confirmButtonText: `@lang('
+                Delete ')`,
+                denyButtonText: `@lang('
+                Cancel ')`,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            })
+        }
+    </script>
+
     @endpush
 </x-app-layout>

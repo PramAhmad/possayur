@@ -47,7 +47,7 @@
                                     Totel revenue
                                 </div>
                                 <div class="text-slate-900 dark:text-white text-lg font-medium">
-                                    {{number_format($salesOrders->sum('grandtotal'), 0)}}
+                                    {{currency($salesOrders->sum('grandtotal'), 0)}}
                                 </div>
                             </div>
                         </div>
@@ -89,7 +89,7 @@
                                 @endphp
 
                                 @if($growthRate !== null)
-                                    {{ number_format($growthRate, 2) }}%
+                                    {{ number_format($growthRate) }}%
                                 @else
                                 0
                                 @endif
@@ -153,9 +153,9 @@
                                         <td class="table-td">{{ $order->created_at }}</td>
                                         <td class="table-td">{{ $order->customer->name }}</td>
                                         <td class="table-td">{{ $order->total_qty }}</td>
-                                        <td class="table-td">{{ number_format($order->grandtotal, 2) }}</td>
+                                        <td class="table-td">{{ currency($order->grandtotal) }}</td>
                                         <td class="table-td">
-                                            <span class="badge badge-{{ $order->status === 'paid' ? 'success' : 'warning' }}">
+                                            <span class="{{ $order->status === 'paid' ? 'success' : 'warning' }}">
                                                 {{ ucfirst($order->status) }}
                                             </span>
                                         </td>

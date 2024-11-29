@@ -6,10 +6,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Models\Activity;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Curency extends Model
 {
     use HasFactory;
+    use LogsActivity;
+
+    protected $table = 'curencys';
+    protected $fillable = ['name', 'symbol', 'code', 'is_active', 'outlet_id']; 
     public function tapActivity(Activity $activity, string $eventName)
     {
         $activity->description = auth()->user();
@@ -21,6 +26,11 @@ class Curency extends Model
             ->logAll()
             ->logUnguarded()
             ->logOnlyDirty()
-            ->useLogName('Curency');
+            ->useLogName('curencys');
     }
+
+    public function outlet()
+    {
+        return $this->belongsTo(Outlet::class);
+}
 }

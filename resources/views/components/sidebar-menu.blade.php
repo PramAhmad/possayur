@@ -139,7 +139,13 @@
                     </span>
                 </a>
             </li>
-            <li>
+            <li class="
+                {{
+                    request()->is('stock*') ||
+                    request()->is('stockopname*') ||
+                    request()->is('logproduct*') ? 'active' : ''
+                }}
+            ">
                 <a href="{{ route('product.index') }}" class="navItem {{ (request()->is('product*')) ? 'active' : '' }}">
                     <span class="flex items-center">
                         <iconify-icon class=" nav-icon" icon="iconoir:gift"></iconify-icon>

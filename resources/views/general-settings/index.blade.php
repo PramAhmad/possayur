@@ -155,17 +155,17 @@
                         <div class="space-y-6">
                             <div class="flex space-x-3 rtl:space-x-reverse items-center">
                                 <div class="flex-none h-8 w-8 rounded-full bg-slate-800 text-white flex flex-col items-center justify-center text-lg">
-                                    <iconify-icon icon="heroicons:building-storefront"></iconify-icon>
+                                    <iconify-icon icon="heroicons:currency-dollar"></iconify-icon>
                                 </div>
                                 <div class="flex-1 text-base text-slate-900 dark:text-white font-medium">
                                     Curency
                                 </div>
                             </div>
                             <div class="text-slate-600 dark:text-slate-300 text-sm">
-                                Manage Curency (Add, Edit, Delete Outlet)
+                                Manage Curency (Add, Edit, Delete Tax)
                             </div>
                             <a
-                                href="{{ route('outlets.index') }}"
+                                href="{{ route('curency.index') }}"
                                 class="inline-flex items-center space-x-3 rtl:space-x-reverse text-sm capitalize font-medium text-slate-600
                                     dark:text-slate-300">
                                 <span>Change Settings</span>
@@ -179,17 +179,17 @@
                         <div class="space-y-6">
                             <div class="flex space-x-3 rtl:space-x-reverse items-center">
                                 <div class="flex-none h-8 w-8 rounded-full bg-slate-800 text-white flex flex-col items-center justify-center text-lg">
-                                    <iconify-icon icon="heroicons:building-storefront"></iconify-icon>
+                                    <iconify-icon icon="heroicons:credit-card"></iconify-icon>
                                 </div>
                                 <div class="flex-1 text-base text-slate-900 dark:text-white font-medium">
                                     Tax
                                 </div>
                             </div>
                             <div class="text-slate-600 dark:text-slate-300 text-sm">
-                                Manage Curency (Add, Edit, Delete Outlet)
+                                Manage Tax (Add, Edit, Delete Tax)
                             </div>
                             <a
-                                href="{{ route('outlets.index') }}"
+                                href="{{ route('tax.index') }}"
                                 class="inline-flex items-center space-x-3 rtl:space-x-reverse text-sm capitalize font-medium text-slate-600
                                     dark:text-slate-300">
                                 <span>Change Settings</span>

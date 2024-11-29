@@ -11,13 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('curencys', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-            $table->string('name');
-            $table->string('symbol');
-            $table->string('code');
-            $table->boolean('is_active')->default(false);
+        Schema::table('curencys', function (Blueprint $table) {
+            $table->foreignId('outlet_id')->nullable()->after('id');
+
         });
     }
 
@@ -26,6 +22,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('curencies');
+        Schema::table('curencys', function (Blueprint $table) {
+            $table->dropColumn('outlet_id');
+        });
     }
 };

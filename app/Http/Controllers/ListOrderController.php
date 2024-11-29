@@ -168,11 +168,7 @@ class ListOrderController extends Controller
         $sjProducts = DB::select($suratJalanQuery, [$id]);
         $soProducts = DB::select($salesOrderQuery, [$id]);
         $invProducts = DB::select($invoiceQuery, [$id]);
-
         $allProducts = [];
-
-
-        // Initialize products from return data
         foreach ($returnProducts as $product) {
             $allProducts[$product->id] = [
                 'product_name' => $product->product_name,
@@ -183,8 +179,6 @@ class ListOrderController extends Controller
             ];
         }
 
-
-        // Process surat jalan products
         foreach ($sjProducts as $product) {
             if (!isset($allProducts[$product->id])) {
                 $allProducts[$product->id] = [
@@ -260,7 +254,7 @@ class ListOrderController extends Controller
         }
 
         // Fetch related sales order data
-        $salesorder = SalesOrder::with('outlet', 'customer', 'products', 'products.product', 'returnSalesOrder', 'invoice')->findOrFail($id);
+        $salesorder = SalesOrder::with('outlet', 'customer', 'products', 'products.product', 'returnSalesOrder', 'invoice','suratJalan','returnSalesOrder')->findOrFail($id);
         $soProducts = DB::select($salesOrderQuery, [$id]);
 
         $soProducts = ProductSalesOrder::with('variant', 'batch')

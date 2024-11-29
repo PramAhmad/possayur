@@ -11,13 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('curencys', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-            $table->string('name');
-            $table->string('symbol');
-            $table->string('code');
-            $table->boolean('is_active')->default(false);
+        Schema::table('stock_op_names', function (Blueprint $table) {
+            // status boolean
+            $table->boolean('status')->default(false);
+
         });
     }
 
@@ -26,6 +23,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('curencies');
+        Schema::table('stock_op_names', function (Blueprint $table) {
+            $table->dropColumn('status');
+        });
     }
 };

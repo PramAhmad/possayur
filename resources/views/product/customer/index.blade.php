@@ -62,7 +62,7 @@
                                 
                                             <td class="table-td">{{ $price->customer->name }}</td>
                                             <td class="table-td">{{ $price->outlet->name }}</td>
-                                            <td class="table-td">{{ number_format($price->price, 2) }}</td>
+                                            <td class="table-td">{{ currency($price->price, 2) }}</td>
                                             <td class="table-td">{{ $price->start_date }}</td>
                                             <td class="table-td">{{ $price->end_date }}</td>
 

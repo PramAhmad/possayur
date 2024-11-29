@@ -19,6 +19,7 @@ use App\Http\Controllers\WidgetsController;
 use App\Http\Controllers\SetLocaleController;
 use App\Http\Controllers\ComponentsController;
 use App\Http\Controllers\CouponController;
+use App\Http\Controllers\CurencyController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\CustomerGroupController;
 use App\Http\Controllers\PermissionController;
@@ -87,7 +88,11 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
     Route::resource('customer', CustomerController::class);
     Route::resource('supplier', SuplierController::class);
     Route::resource('coupon', CouponController::class);
+    Route::resource('curency', CurencyController::class);
     Route::resource('tax', TaxController::class);
+    Route::post('/taxes/make-active', [TaxController::class, 'makeActive'])
+    ->name('tax.make-active');
+    Route::post('/curencies/make-active', [CurencyController::class, 'makeActive'])->name('curency.make-active');
     // coupon.get
     Route::get('/this/coupon/get', [CouponController::class, 'getCoupon'])->name('coupon.get');
     Route::resource('unit', UnitController::class);
@@ -128,7 +133,10 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
     Route::get('listorder/{id}', [ListOrderController::class, 'show'])->name('listorder.show');
     Route::resource('stockopname', StockOpNameController::class);
     Route::get('json/stockopname/{id}', [StockOpNameController::class, 'showStock'])->name('stockopname.showStock');
-    // adjust
+    Route::get('download/stockopname/download-template', [StockOpnameController::class, 'downloadTemplate'])
+    ->name('stockopname.download-template');
+Route::post('download/stockopname/import-excel', [StockOpnameController::class, 'importExcel'])
+    ->name('stockopname.import-excel');
     Route::post('json/stockopname/{id}/adjust', [StockOpNameController::class, 'adjust'])->name('stockopname.adjust');
 
 

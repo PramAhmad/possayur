@@ -210,7 +210,6 @@
                                 <thead class="bg-slate-200 dark:bg-slate-700">
                                     <tr>
                                         <th class="table-th" style="min-width: 120px;">No</th>
-                                        <th class="table-th" style="min-width: 150px;">Product ID</th>
                                         <th class="table-th" style="min-width: 200px;">Product Name</th>
                                         <th class="table-th" style="min-width: 100px;">SO Qty</th>
                                         <th class="table-th" style="min-width: 150px;">SO Price</th>
@@ -230,7 +229,7 @@
                                     @foreach($allProducts as $productId => $data)
                                     <tr>
                                         <td class="table-td">{{ $loop->iteration }}</td>
-                                        <td class="table-td">{{ $productId }}</td>
+
                                         <td class="table-td">
                                             {{ $data['product_name'] ?? "-" }}
                                             @if (!empty($data['variant_name']))
@@ -241,18 +240,18 @@
                                             @endif
                                         </td>
 
-                                        <td class="table-td">{{ number_format($data['so_qty']) ?? 0 }}</td>
-                                        <td class="table-td">{{ number_format($data['so_price']) ?? 0 }}</td>
-                                        <td class="table-td">{{ number_format($data['so_total']) ?? 0 }}</td>
-                                        <td class="table-td">{{ number_format($data['sj_qty']) ?? 0 }}</td>
-                                        <td class="table-td">{{ number_format($data['sj_price']) ?? 0 }}</td>
-                                        <td class="table-td">{{ number_format($data['sj_total']) ?? 0 }}</td>
-                                        <td class="table-td">{{ number_format($data['inv_qty']) ?? 0 }}</td>
-                                        <td class="table-td">{{ number_format($data['inv_price']) ?? 0 }}</td>
-                                        <td class="table-td">{{ number_format($data['inv_total']) ?? 0 }}</td>
-                                        <td class="table-td">{{ number_format($data['return_qty']) ?? 0 }}</td>
-                                        <td class="table-td">{{ number_format($data['return_price']) ?? 0 }}</td>
-                                        <td class="table-td">{{ number_format($data['return_total']) ?? 0 }}</td>
+                                        <td class="table-td">{{  $data['so_qty']  }}</td>
+                                        <td class="table-td">{{ currency($data['so_price']) ?? 0 }}</td>
+                                        <td class="table-td">{{ currency($data['so_total']) ?? 0 }}</td>
+                                        <td class="table-td">{{ $data['sj_qty'] ?? 0 }}</td>
+                                        <td class="table-td">{{ currency($data['sj_price']) ?? 0 }}</td>
+                                        <td class="table-td">{{ currency($data['sj_total']) ?? 0 }}</td>
+                                        <td class="table-td">{{ $data['inv_qty'] ?? 0 }}</td>
+                                        <td class="table-td">{{ currency($data['inv_price']) ?? 0 }}</td>
+                                        <td class="table-td">{{ currency($data['inv_total']) ?? 0 }}</td>
+                                        <td class="table-td">{{ $data['return_qty'] ?? 0 }}</td>
+                                        <td class="table-td">{{ currency($data['return_price']) ?? 0 }}</td>
+                                        <td class="table-td">{{ currency($data['return_total']) ?? 0 }}</td>
                                     </tr>
                                     @endforeach
                                 </tbody>
@@ -268,7 +267,6 @@
                                 <thead class="bg-slate-200 dark:bg-slate-700">
                                     <tr>
                                         <th class="table-th" style="min-width: 120px;">No</th>
-                                        <th class="table-th" style="min-width: 150px;">Product ID</th>
                                         <th class="table-th" style="min-width: 200px;">Product Name</th>
                                         <th class="table-th" style="min-width: 100px;">SO Qty</th>
                                         <th class="table-th" style="min-width: 150px;">SO Price</th>
@@ -280,7 +278,7 @@
                                     @foreach($allProducts as $productId => $data)
                                     <tr>
                                         <td class="table-td">{{ $loop->iteration }}</td>
-                                        <td class="table-td">{{ $productId }}</td>
+
                                         <td class="table-td">
                                             {{ $data['product_name'] ?? "-" }}
                                             @if (!empty($data['variant_name']))
@@ -291,9 +289,9 @@
                                             @endif
                                         </td>
 
-                                        <td class="table-td">{{ number_format($data['so_qty']) ?? 0 }}</td>
-                                        <td class="table-td">{{ number_format($data['so_price']) ?? 0 }}</td>
-                                        <td class="table-td">{{ number_format($data['so_total']) ?? 0 }}</td>
+                                        <td class="table-td">{{ $data['so_qty'] ?? 0 }}</td>
+                                        <td class="table-td">{{ currency($data['so_price']) ?? 0 }}</td>
+                                        <td class="table-td">{{ currency($data['so_total']) ?? 0 }}</td>
 
                                     </tr>
                                     @endforeach
@@ -310,7 +308,6 @@
                                 <thead class="bg-slate-200 dark:bg-slate-700">
                                     <tr>
                                         <th class="table-th" style="min-width: 120px;">No</th>
-                                        <th class="table-th" style="min-width: 150px;">Product ID</th>
                                         <th class="table-th" style="min-width: 200px;">Product Name</th>
                                         <th class="table-th" style="min-width: 100px;">SJ Qty</th>
                                         <th class="table-th" style="min-width: 150px;">SJ Price</th>
@@ -321,7 +318,7 @@
                                     @foreach($allProducts as $productId => $data)
                                     <tr>
                                         <td class="table-td">{{ $loop->iteration }}</td>
-                                        <td class="table-td">{{ $productId }}</td>
+
                                         <td class="table-td">
                                             {{ $data['product_name'] ?? "-" }}
                                             @if (!empty($data['variant_name']))
@@ -332,9 +329,9 @@
                                             @endif
                                         </td>
 
-                                        <td class="table-td">{{ number_format($data['sj_qty']) ?? 0 }}</td>
-                                        <td class="table-td">{{ number_format($data['sj_price']) ?? 0 }}</td>
-                                        <td class="table-td">{{ number_format($data['sj_total']) ?? 0 }}</td>
+                                        <td class="table-td">{{ $data['sj_qty'] ?? 0 }}</td>
+                                        <td class="table-td">{{ currency($data['sj_price']) ?? 0 }}</td>
+                                        <td class="table-td">{{ currency($data['sj_total']) ?? 0 }}</td>
                                     </tr>
                                     @endforeach
                                 </tbody>
@@ -350,7 +347,6 @@
                                 <thead class="bg-slate-200 dark:bg-slate-700">
                                     <tr>
                                         <th class="table-th" style="min-width: 120px;">No</th>
-                                        <th class="table-th" style="min-width: 150px;">Product ID</th>
                                         <th class="table-th" style="min-width: 200px;">Product Name</th>
                                         <th class="table-th" style="min-width: 100px;">INV Qty</th>
                                         <th class="table-th" style="min-width: 150px;">INV Price</th>
@@ -361,7 +357,7 @@
                                     @foreach($allProducts as $productId => $data)
                                     <tr>
                                         <td class="table-td">{{ $loop->iteration }}</td>
-                                        <td class="table-td">{{ $productId }}</td>
+
                                         <td class="table-td">
                                             {{ $data['product_name'] ?? "-" }}
                                             @if (!empty($data['variant_name']))
@@ -372,9 +368,9 @@
                                             @endif
                                         </td>
 
-                                        <td class="table-td">{{ number_format($data['inv_qty']) ?? 0 }}</td>
-                                        <td class="table-td">{{ number_format($data['inv_price']) ?? 0 }}</td>
-                                        <td class="table-td">{{ number_format($data['inv_total']) ?? 0 }}</td>
+                                        <td class="table-td">{{ $data['inv_qty'] ?? 0 }}</td>
+                                        <td class="table-td">{{ currency($data['inv_price']) ?? 0 }}</td>
+                                        <td class="table-td">{{ currency($data['inv_total']) ?? 0 }}</td>
                                     </tr>
                                     @endforeach
                                 </tbody>
@@ -390,7 +386,6 @@
                                 <thead class="bg-slate-200 dark:bg-slate-700">
                                     <tr>
                                         <th class="table-th" style="min-width: 120px;">No</th>
-                                        <th class="table-th" style="min-width: 150px;">Product ID</th>
                                         <th class="table-th" style="min-width: 200px;">Product Name</th>
                                         <th class="table-th" style="min-width: 100px;">RET Qty</th>
                                         <th class="table-th" style="min-width: 150px;">RET Price</th>
@@ -401,7 +396,6 @@
                                     @foreach($allProducts as $productId => $data)
                                     <tr>
                                         <td class="table-td">{{ $loop->iteration }}</td>
-                                        <td class="table-td">{{ $productId }}</td>
                                         <td class="table-td">
                                             {{ $data['product_name'] ?? "-" }}
                                             @if (!empty($data['variant_name']))
@@ -412,9 +406,9 @@
                                             @endif
                                         </td>
 
-                                        <td class="table-td">{{ number_format($data['return_qty']) ?? 0 }}</td>
-                                        <td class="table-td">{{ number_format($data['return_price']) ?? 0 }}</td>
-                                        <td class="table-td">{{ number_format($data['return_total']) ?? 0 }}</td>
+                                        <td class="table-td">{{ $data['return_qty'] ?? 0 }}</td>
+                                        <td class="table-td">{{ currency($data['return_price']) ?? 0 }}</td>
+                                        <td class="table-td">{{ currency($data['return_total']) ?? 0 }}</td>
                                     </tr>
                                     @endforeach
                                 </tbody>

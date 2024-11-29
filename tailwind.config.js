@@ -7,6 +7,8 @@ module.exports = {
         "./storage/framework/views/*.php",
         "./resources/views/**/*.blade.php",
         "./node_modules/tw-elements/dist/js/**/*.js",
+        'node_modules/preline/dist/*.js',
+
     ],
     darkMode: "class",
     mode: "jit",
@@ -187,5 +189,6 @@ module.exports = {
         // require("@tailwindcss/forms"),
         require("@tailwindcss/aspect-ratio"),
         require("tw-elements/dist/plugin"),
+        require('preline/plugin'),
     ],
 };

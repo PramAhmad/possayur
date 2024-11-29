@@ -247,9 +247,9 @@
                                         <td class="px-4 py-3 text-sm text-slate-500 dark:text-slate-300">{{ $product->qty }}
                                         </td>
                                         <td class="px-4 py-3 text-sm text-slate-500 dark:text-slate-300">
-                                            {{ number_format($product->unit_price, 0, ',', '.') }}</td>
+                                            {{ currency($product->unit_price, 0, ',', '.') }}</td>
                                         <td class="px-4 py-3 text-sm text-slate-500 dark:text-slate-300">
-                                            {{ number_format($product->total_price, 0, ',', '.') }}</td>
+                                            {{ currency($product->total_price, 0, ',', '.') }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -300,9 +300,9 @@
                                         <td class="px-4 py-3 text-sm text-slate-500 dark:text-slate-300">{{ $product->qty }}
                                         </td>
                                         <td class="px-4 py-3 text-sm text-slate-500 dark:text-slate-300">
-                                            {{ number_format($product->unit_price, 0, ',', '.') }}</td>
+                                            {{ currency($product->unit_price) }}</td>
                                         <td class="px-4 py-3 text-sm text-slate-500 dark:text-slate-300">
-                                            {{ number_format($product->total_price, 0, ',', '.') }}</td>
+                                            {{ currency($product->total_price) }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
