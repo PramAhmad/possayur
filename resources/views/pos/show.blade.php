@@ -17,9 +17,9 @@
     @endpush
     <div class="flex-grow flex flex-col lg:flex-row">
         <!-- Products Section -->
-        <div class="flex flex-col bg-blue-gray-50 w-full h-full py-4">
-            <div class="flex px-2 w-full flex-row relative" id="search-table">
-                <div class="absolute left-5 top-3 z-10 px-2 py-2 rounded-full bg-sky-500 text-white">
+        <div class="flex flex-col bg-blue-gray-50  w-full h-full py-4">
+            <div class="flex px-2 w-full flex-row relative dark:bg-gray-800" id="search-table">
+                <div class="absolute left-5 top-3 z-10 px-2 py-2 rounded-full bg-sky-500 text-white ">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
@@ -39,8 +39,10 @@
 
                     @foreach ($products as $product)
                     <option value="{{ $product->id }}"
+                    data-product-id="{{ $product->id }}"
                         data-price="{{ $product->selling_price }}"
                         data-image="{{ asset('upload/product/' . $product->image) }}"
+
                         data-hs-select-option='{
                 "icon": "<img class=\"inline-block size-4 rounded-full\" src=\"{{ asset('upload/product/' . $product->image) }}\" alt=\"{{ addslashes($product->name) }}\" style=\"width: 30px; height: 30px;\" />"
             }'
@@ -50,7 +52,10 @@
 
                     @if ($product->variants->count() > 0)
                     @foreach ($product->variants as $variant)
-                    <option value="{{ $variant->id }}" data-price="{{ $variant->additional_price }}"
+                    <option value="{{ $variant->id }}" 
+                    data-product-id="{{ $product->id }}"
+                        data-variant-id="{{ $variant->id }}"
+                    data-price="{{ $variant->additional_price }}"
                         data-hs-select-option='{
                 "icon": "<img class=\"inline-block size-4 rounded-full\" src=\"{{ asset('upload/product/' . $product->image) }}\" alt=\"{{ addslashes($product->name) }}\" style=\"width: 30px; height: 30px;\" />"
             }'
@@ -63,7 +68,10 @@
 
                     @if ($product->batches->count() > 0)
                     @foreach ($product->batches as $batch)
-                    <option value="{{ $batch->id }}" data-price="{{ $batch->price }}"
+                    <option value="{{ $batch->id }}"
+                        data-product-id="{{ $product->id }}"
+                        data-batch-id="{{ $batch->id }}"                                                                                                                          
+                        data-price="{{ $batch->price }}"
                         data-hs-select-option='{
                 "icon": "<img class=\"inline-block size-4 rounded-full\" src=\"{{ asset('upload/product/' . $product->image) }}\" alt=\"{{ addslashes($product->name) }}\" style=\"width: 30px; height: 30px;\" />"
             }'
@@ -113,10 +121,10 @@
                     <table class="table-auto w-full bg-white rounded-lg shadow ">
                         <thead>
                             <tr class="bg-gray-200 text-gray-700">
-                                <th class="px-4 py-2">Image</th>
-                                <th class="px-4 py-2">Name</th>
-                                <th class="px-4 py-2">Price</th>
-                                <th class="px-4 py-2">Unit</th>
+                                <th class="px-4 py-2 text-start">Image</th>
+                                <th class="px-4 py-2 text-start">Name</th>
+                                <th class="px-4 py-2 text-start">Price</th>
+                                <th class="px-4 py-2 text-start">Unit</th>
                             </tr>
                         </thead>
                         <tbody class="items-chart-table">
@@ -127,7 +135,7 @@
 
                 <!-- Grid View -->
                 <div id="product-grid" class="h-full overflow-y-auto px-2">
-                    <div class="product-grid grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-4 pb-3">
+                    <div class="product-grid grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 pb-3">
                         @foreach ($products as $product)
                         <div>
                             <div
@@ -140,17 +148,18 @@
                                 data-variant-id=""
                                 data-batch-id="">
                                 <img src="{{ asset('upload/product/' . $product->image) }}"
-                                    class="object-cover w-full h-24 sm:h-44 lg:h-52"
+                                    class="object-cover w-full h-24 sm:h-44 lg:h-40"
                                     alt="{{ $product->name }}">
-                                <div class="flex flex-col sm:flex-row pb-3 px-3 text-sm mt-3">
+                                <div class="flex flex-col sm:flex-row  text-sm mt-3">
                                     <p class="flex-grow truncate mr-1">
                                         {{ $product->name }}
                                         <span class="font-semibold">( {{ $product->unit->name ?? '-' }} )</span>
                                     </p>
-                                    <p class="nowrap font-semibold">
-                                        Rp {{ number_format($product->selling_price) }}
-                                    </p>
+                                    <br>
                                 </div>
+                                <p class="px-3 pb-3  font-semibold">
+                                    Rp {{ number_format($product->selling_price) }}
+                                </p>
                             </div>
                         </div>
 
@@ -166,17 +175,17 @@
                                 data-product-image="{{ asset('upload/product/' . ($variant->image ?? $product->image)) }}"
                                 data-variant-id="{{ $variant->id }}"
                                 data-batch-id=""> <img src="{{ asset('upload/product/' . ($variant->image ?? $product->image)) }}"
-                                    class="object-cover w-full h-24 sm:h-44 lg:h-52"
+                                    class="object-cover w-full h-24 sm:h-44 lg:h-40"
                                     alt="{{ $variant->name }}">
-                                <div class="flex flex-col sm:flex-row pb-3 px-3 text-sm mt-3">
+                                <div class="flex flex-col sm:flex-row  text-sm mt-3">
                                     <p class="flex-grow truncate mr-1">
                                         {{ $variant->name }}
                                         <span class="font-semibold">( {{ $variant->unit->name ?? $product->unit->name ?? '-' }} )</span>
                                     </p>
-                                    <p class="nowrap font-semibold">
-                                        Rp {{ number_format($variant->additional_price) }}
-                                    </p>
                                 </div>
+                                <p class="px-3 pb-3  font-semibold">
+                                    Rp {{ number_format($variant->additional_price) }}
+                                </p>
                             </div>
                         </div>
                         @endforeach
@@ -291,7 +300,7 @@
                             <div class="flex-grow text-left">CASH</div>
                             <div class="flex text-right">
                                 <div class="mr-2">Rp</div>
-                                <input id="cash" type="text" class="w-24 lg:w-28 text-right bg-white shadow rounded-lg focus:bg-white focus:shadow-lg px-2 focus:outline-none">
+                                <input id="cash" type="text" class="w-24 lg:w-28  number_format text-right bg-white shadow rounded-lg focus:bg-white focus:shadow-lg px-2 focus:outline-none">
                             </div>
                         </div>
                         <hr class="my-2">
@@ -391,6 +400,9 @@
 
     <script>
         $(document).ready(function() {
+            // localStorage.setItem('menuLayout', 'horizontalMenu');
+            $('html').addClass('horizontalMenu');
+            // $('#horizontal_menu').prop('checked', true);
             let currentDiscount = 0;
             $('#search-table').hide();
             $('#tableMode, #gridMode').on('click', function() {
@@ -470,8 +482,8 @@
                             <div class="flex items-center space-x-3">
                                 <div class="flex items-center">
                                     <input 
-                                        type="number" 
-                                        class="qty-edit w-16 h-8 text-sm bg-gray-50 rounded border border-gray-100 px-2" 
+                                        type="text" 
+                                        class="qty-edit number_format w-16 h-8 text-sm bg-gray-50 rounded border border-gray-100 px-2" 
                                         value="${item.qty}" 
                                         min="1"
                                         data-product-id="${item.id}"
@@ -481,8 +493,8 @@
                                 <div class="flex items-center">
                                     <span class="text-sm mr-1">Rp</span>
                                     <input 
-                                        type="number" 
-                                        class="price-edit w-24 h-8 text-sm bg-gray-50 rounded border border-gray-100 px-2" 
+                                        type="text" 
+                                        class="price-edit number_format w-24 h-8 text-sm bg-gray-50 rounded border border-gray-100 px-2" 
                                         value="${item.price}" 
                                         min="0"
                                         data-product-id="${item.id}"
@@ -528,8 +540,8 @@
                         <td class="px-4 py-2">${item.name}</td>
                          <td class="px-4 py-2">
                         <input 
-                            type="number" 
-                            class="price-edit-table w-24 h-8 text-sm bg-gray-50 rounded border border-gray-100 px-2" 
+                            type="text" 
+                            class="price-edit-table number_format w-24 h-8 text-sm bg-gray-50 rounded border border-gray-100 px-2" 
                             value="${item.price}" 
                             min="0"
                             data-product-id="${item.id}"
@@ -537,8 +549,8 @@
                     </td>
                         <td class="px-4 py-2">
                             <input 
-                                type="number" 
-                                class="qty-edit-table w-16 h-8 text-sm bg-gray-50 rounded border border-gray-100 px-2" 
+                                type="text" 
+                                class="qty-edit-table number_format w-16 h-8 text-sm bg-gray-50 rounded border border-gray-100 px-2" 
                                 value="${item.qty}" 
                                 min="1"
                                 data-product-id="${item.id}"
@@ -553,6 +565,12 @@
                 updateSubtotalAndDiscount(totalPrice, currentDiscount);
                 $("#total-price").text("Rp " + Intl.NumberFormat().format(totalPrice - currentDiscount));
                 $("#cart-count").text(cart.length);
+                $('.number_format').each(function() {
+            new Cleave(this, {
+            numeral: true,
+            numeralThousandsGroupStyle: 'thousand'
+            });
+            });
             }
             // Tambahkan item ke keranjang
             $(".add-to-cart").click(function() {
@@ -680,7 +698,7 @@
 
             $(document).on("change", ".qty-edit", function() {
                 const productId = $(this).data("product-id");
-                let newQty = parseInt($(this).val()) || 1;
+                let newQty = parseInt($(this).val().replace(/,/g, '')) || 1;
 
                 if (newQty < 1) {
                     newQty = 1;
@@ -701,7 +719,7 @@
             // qty-edit-table
             $(document).on("change", ".qty-edit-table", function() {
                 const productId = $(this).data("product-id");
-                let newQty = parseInt($(this).val()) || 1;
+                let newQty = parseInt($(this).val().replace(/,/g, '')) || 1;
 
                 if (newQty < 1) {
                     newQty = 1;
@@ -720,7 +738,7 @@
 
             $(document).on("change", ".price-edit", function() {
                 const productId = $(this).data("product-id");
-                let newPrice = parseInt($(this).val()) || 0;
+                let newPrice = parseInt($(this).val().replace(/,/g, '')) || 0;
 
                 if (newPrice < 0) {
                     newPrice = 0;
@@ -738,7 +756,8 @@
             // price-edit-table
             $(document).on("change", ".price-edit-table", function() {
                 const productId = $(this).data("product-id");
-                let newPrice = parseInt($(this).val()) || 0;
+                let newPrice = parseInt($(this).val().replace(/,/g, '')) || 0;
+
 
                 if (newPrice < 0) {
                     newPrice = 0;
@@ -954,7 +973,7 @@
                 currentDiscount = discount;
                 const total = subtotal - discount;
                 console.log(total)
-                $("#subtotal").text("Rp " + subtotal);
+                $("#subtotal").text("Rp " + Intl.NumberFormat().format(subtotal));
                 $("#discount").text("Rp " + discount);
                 $("#total-price").text("Rp " + total);
                 fetchTax(subtotal, discount);
@@ -1045,6 +1064,10 @@
     <script src="{{asset('js/preline.js')}}"></script>
     <!-- change using laravel -->
     <script src="{{ asset('js/app.js') }}"></script>
+    <script>var cleave = new Cleave('.number_format', {
+    numeral: true,
+    numeralThousandsGroupStyle: 'thousand'
+});</script>
     @endpush
 
 </x-app-layout>

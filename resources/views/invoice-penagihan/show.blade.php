@@ -189,12 +189,16 @@
                         <thead>
                             <tr>
                                 <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">Product</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">Details</th>
-                                <th class="px-4 py-3 text-right text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">Total</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">QTy</th>
+                                <th class="px-4 py-3 text-right text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">Price Product</th>
+                                <th class="px-4 py-3 text-right text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">Total Tagihan</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-200 dark:divide-slate-700">
                             @foreach($invoice->productInvoices as $product)
+                            @if ( $product->qty > 0)
+                                
+                           
                             <tr>
                                 <td class="px-4 py-3 text-sm text-slate-500 dark:text-slate-300">
                                     {{ $product->product->name }}
@@ -211,15 +215,17 @@
                                     @endif
                                 </td>
                                 <td class="px-4 py-3 text-sm text-slate-500 dark:text-slate-300">
-                                    <div class="flex justify-between">
-                                        <span>Qty: {{ $product->qty }}</span>
-                                        <span>Price: {{ currency($product->price) }}</span>
-                                    </div>
+                                    {{ $product->qty }}
+                                   
+                                </td>
+                                <td class="px-4 py-3 text-right text-sm text-slate-500 dark:text-slate-300">
+                                    {{ currency($product->price) }}
                                 </td>
                                 <td class="px-4 py-3 text-right text-sm text-slate-500 dark:text-slate-300">
                                     {{ currency($product->total) }}
                                 </td>
                             </tr>
+                            @endif
                             @endforeach
 
                             <!-- Total Row -->

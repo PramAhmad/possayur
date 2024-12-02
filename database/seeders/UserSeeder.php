@@ -27,7 +27,7 @@ class UserSeeder extends Seeder
                 'email' => 'admin@mail.com',
                 'email_verified_at' => now(),
                 'password' => bcrypt('password'),
-                'role' => 'admin',
+                'role' => 'super-admin',
             ],
             [
                 'name' => 'User',
