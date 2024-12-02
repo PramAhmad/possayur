@@ -64,10 +64,7 @@ class PurchaseOrder extends Model
         public function productPurchase()
     {return $this->hasMany(ProductPurchase::class, 'purchase_id', 'id');
     }
-    public function products()
-    {
-        return $this->belongsToMany(Product::class, 'product_purchase', 'purchase_id', 'product_id')->withPivot('quantity', 'unit_price', 'net_cost', 'total_cost');
-    }
+ 
 
 
 }

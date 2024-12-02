@@ -64,7 +64,7 @@
                                         <td class="table-td">{{ currency($purchaseOrder->grand_total) }}</td>
                                         <td class="table-td text-center">
                                             <div class="flex justify-center items-center">
-                                                <a href="#" class="action-btn text-center" onclick="showProductModal({{ $purchaseOrder->id }})" data-products='@json($purchaseOrder->products)'>
+                                                <a href="#" class="action-btn text-center" onclick="showProductModal({{ $purchaseOrder->id }})" data-products='@json($purchaseOrder->productPurchase)'>
                                                     <iconify-icon icon="akar-icons:eye" class="text-lg"></iconify-icon>
                                                 </a>
                                             </div>

@@ -449,28 +449,35 @@
     </div>
 
     <!-- Card Delivery Note -->
-    <div class="card border border-slate-200 shadow-lg rounded-lg">
-        <div class="p-4">
-            <h3 class="text-lg font-bold text-slate-700">Delivery Note</h3>
-            <a href="{{ route('suratJalan.pdf', $salesorder->suratJalan->id) }}" 
-               class="text-blue-500 hover:text-blue-700 font-medium">
-                Download Surat Jalan
-            </a>
-        </div>
-    </div>
+     @if ($salesorder->suratJalan)
+         
+     <div class="card border border-slate-200 shadow-lg rounded-lg">
+         <div class="p-4">
+             <h3 class="text-lg font-bold text-slate-700">Delivery Note</h3>
+             <a href="{{ route('suratJalan.pdf', $salesorder->suratJalan->id) }}" 
+                class="text-blue-500 hover:text-blue-700 font-medium">
+                 Download Surat Jalan
+             </a>
+         </div>
+     </div>
+     @endif
 
     <!-- Card Invoice -->
-    <div class="card border border-slate-200 shadow-lg rounded-lg">
-        <div class="p-4">
-            <h3 class="text-lg font-bold text-slate-700">Invoice</h3>
-            <a href="{{ route('invoice.pdf', $salesorder->invoice->id) }}" 
-               class="text-blue-500 hover:text-blue-700 font-medium">
-                Download Invoice
-            </a>
-        </div>
-    </div>
+     @if ($salesorder->invoice)
+         
+     <div class="card border border-slate-200 shadow-lg rounded-lg">
+         <div class="p-4">
+             <h3 class="text-lg font-bold text-slate-700">Invoice</h3>
+             <a href="{{ route('invoice.pdf', $salesorder->invoice->id) }}" 
+                class="text-blue-500 hover:text-blue-700 font-medium">
+                 Download Invoice
+             </a>
+         </div>
+     </div>
+     @endif
 
     <!-- Card Return -->
+    @if ($salesorder->returnSalesOrder)
     <div class="card border border-slate-200 shadow-lg rounded-lg">
         <div class="p-4">
             <h3 class="text-lg font-bold text-slate-700">Return</h3>
@@ -480,6 +487,7 @@
             </a>
         </div>
     </div>
+    @endif
 </section>
 
                 <!-- Modal footer -->

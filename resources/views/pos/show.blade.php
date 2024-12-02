@@ -275,6 +275,11 @@
                         <div>Discount</div>
                         <div id="discount" class="text-right w-full"></div>
                     </div>
+                    <!-- tax -->
+                    <div class="flex mb-1 text-base lg:text-lg font-semibold text-blue-gray-700" id="tax-row" style="display: none;">
+                        <div>Tax</div>
+                        <div class="text-right w-full" id="tax"></div>
+                    </div>
 
                     <div class="flex mb-3 text-base lg:text-lg font-semibold text-blue-gray-700">
                         <div>Total</div>
@@ -344,18 +349,32 @@
                 <hr class="my-2">
                 <div>
                     <div class="flex font-semibold">
-                        <div class="flex-grow">TOTAL</div>
-                        <div id="totalPrice"></div>
+                        <div class="flex-grow">Sub Total</div>
+                        <div id="subtotalAmount"></div>
                     </div>
+                    <!-- tax -->
+                    <div class="flex font-semibold" id="tax-row-receipt">
+                        <div class="flex-grow">Tax</div>
+                        <div id="taxAmount"></div>
+                    </div>
+                    <div class="flex font-semibold">
+                        <div class="flex-grow">Discount</div>
+                        <div id="discountAmount"></div>
+                    </div>
+                    <hr class="my-2">
+                    <div class="flex text-xs font-semibold">
+                        <div class="flex-grow">TOTAL</div>
+                        <div id="totalAmount"></div>
+                    </div>
+
+                    <hr class="my-2">
+                    <!-- total -->
                     <div class="flex text-xs font-semibold">
                         <div class="flex-grow">PAY AMOUNT</div>
                         <div id="payAmount"></div>
                     </div>
-                    <hr class="my-2">
-                    <div class="flex text-xs font-semibold">
-                        <div class="flex-grow">CHANGE</div>
-                        <div id="changeAmount"></div>
-                    </div>
+
+
                 </div>
             </div>
             <div class="p-4 w-full">
@@ -507,7 +526,15 @@
                             <img src="${item.image}" class="w-12 h-12 object-cover rounded-lg" alt="${item.name}">
                         </td>
                         <td class="px-4 py-2">${item.name}</td>
-                        <td class="px-4 py-2">Rp ${Intl.NumberFormat().format(item.price)}</td>
+                         <td class="px-4 py-2">
+                        <input 
+                            type="number" 
+                            class="price-edit-table w-24 h-8 text-sm bg-gray-50 rounded border border-gray-100 px-2" 
+                            value="${item.price}" 
+                            min="0"
+                            data-product-id="${item.id}"
+                        >
+                    </td>
                         <td class="px-4 py-2">
                             <input 
                                 type="number" 
@@ -529,21 +556,22 @@
             }
             // Tambahkan item ke keranjang
             $(".add-to-cart").click(function() {
-                let productId = $(this).data("product-id");
+                let productId = parseInt($(this).data("product-id")); 
                 const name = $(this).data("product-name");
-                const price = $(this).data("product-price");
+                const price = parseFloat($(this).data("product-price")); 
                 const image = $(this).data("product-image");
                 const variantId = $(this).data("variant-id") || null;
                 const batchId = $(this).data("batch-id") || null;
 
-                let cart = JSON.parse(localStorage.getItem('cart')) || [];
+                let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
                 const index = cart.findIndex(
                     (item) =>
-                    item.productId === productId &&
+                    item.id === productId &&
                     item.variantId === variantId &&
                     item.batchId === batchId
                 );
-                productId = parseInt(productId);
+
                 if (index >= 0) {
                     cart[index].qty += 1;
                 } else {
@@ -554,11 +582,13 @@
                         name,
                         price,
                         image,
-                        qty: 1
+                        qty: 1,
                     });
                 }
-                localStorage.setItem('cart', JSON.stringify(cart));
-                updateCart(cart)
+
+                localStorage.setItem("cart", JSON.stringify(cart));
+
+                updateCart(cart);
                 updateCartUI(cart, getCurrentMode());
             });
 
@@ -567,20 +597,20 @@
                 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
                 selectedOptions.each(function() {
-                    let productId = $(this).val();
+                    let productId = parseInt($(this).val());
                     const name = $(this).text();
-                    const price = $(this).data("price");
+                    const price = parseFloat($(this).data("price")); 
                     const image = $(this).data("image");
                     const variantId = $(this).data("variant-id") || null;
                     const batchId = $(this).data("batch-id") || null;
 
                     const index = cart.findIndex(
                         (item) =>
-                        item.productId === productId &&
+                        item.id === productId &&
                         item.variantId === variantId &&
                         item.batchId === batchId
                     );
-                    productId = parseInt(productId);
+
                     if (index >= 0) {
                         cart[index].qty += 1;
                     } else {
@@ -597,6 +627,7 @@
                 });
 
                 localStorage.setItem("cart", JSON.stringify(cart));
+
                 updateCartUI(cart, getCurrentMode());
             });
 
@@ -656,8 +687,11 @@
                     $(this).val(1);
                 }
 
+
                 let cart = JSON.parse(localStorage.getItem('cart')) || [];
                 const index = cart.findIndex(item => item.id === productId);
+                // validate qty dari table product
+
                 if (index >= 0) {
                     cart[index].qty = newQty;
                     updateCart(cart);
@@ -699,6 +733,24 @@
                     cart[index].price = newPrice;
                     updateCart(cart, getCurrentMode());
                     updateCartUI(cart, getCurrentMode());
+                }
+            });
+            // price-edit-table
+            $(document).on("change", ".price-edit-table", function() {
+                const productId = $(this).data("product-id");
+                let newPrice = parseInt($(this).val()) || 0;
+
+                if (newPrice < 0) {
+                    newPrice = 0;
+                    $(this).val(0);
+                }
+
+                let cart = JSON.parse(localStorage.getItem('cart')) || [];
+                const index = cart.findIndex(item => item.id === productId);
+                if (index >= 0) {
+                    cart[index].price = newPrice;
+                    updateCart(cart, 'table');
+                    updateCartUI(cart, 'table');
                 }
             });
 
@@ -748,9 +800,12 @@
                 console.log("Submit payment");
                 const cart = JSON.parse(localStorage.getItem('cart')) || [];
                 const cash = parseInt($("#cash").val()) || 0;
-                const totalPrice = cart.reduce((total, item) => total + (item.price * item.qty), 0);
+                const tax = parseInt($("#tax").text().replace("Rp ", "").replace(",", "")) || 0;
+                const subtotal = parseInt($("#subtotal").text().replace("Rp ", "").replace(",", "")) || 0;
+                const totalPrice = parseInt($("#total-price").text().replace("Rp ", "").replace(",", "")) || 0;
                 const change = cash - totalPrice;
                 const customer = $("select[name='customer']").val();
+
 
                 if (change < 0) {
                     $("#error-message").text("Nominal uang kurang!");
@@ -773,8 +828,11 @@
 
                 $("#receiptNo").text(new Date().getTime());
                 $("#receiptDate").text(new Date().toLocaleString());
-                $("#totalPrice").text("Rp " + totalPrice.toLocaleString());
+                $("#subtotalAmount").text("Rp " + subtotal.toLocaleString());
+                $("#totalAmount").text("Rp " + totalPrice.toLocaleString());
                 $("#payAmount").text("Rp " + cash.toLocaleString());
+                $("#discountAmount").text("Rp " + currentDiscount.toLocaleString());
+                $("#taxAmount").text("Rp " + tax.toLocaleString());
                 $("#changeAmount").text("Rp " + change.toLocaleString());
 
                 let receiptItemsHtml = '';
@@ -805,10 +863,15 @@
                 $("#modalReceipt").fadeOut();
                 const item = JSON.parse(localStorage.getItem('cart')) || [];
                 const cash = parseInt($("#cash").val()) || 0;
-                const totalPrice = item.reduce((total, item) => total + (item.price * item.qty), 0);
+                const totalPrice = parseInt($("#total-price").text().replace("Rp ", "").replace(",", "")) || 0;
                 const change = cash - totalPrice;
                 const customer = $("select[name='customer']").val();
                 const outlet = "{{ $outlet->id }}";
+                const couponId = $("select[name='coupon']").val();
+                const tax = parseInt($("#tax").text().replace("Rp ", "").replace(",", "")) || 0;
+                const totalDiscount = parseInt($("#discount").text().replace("Rp ", "").replace(",", "")) || 0;
+                const orderTaxRate = totalDiscount / totalPrice;
+
 
                 $.ajax({
                     url: "{{ route('pos.store') }}",
@@ -820,11 +883,16 @@
                         total: totalPrice,
                         change,
                         customer,
-                        outlet
+                        outlet,
+                        coupon: couponId,
+                        tax,
+                        totalDiscount,
+                        orderTaxRate
                     },
                     success: function(response) {
                         console.log(response);
                         localStorage.removeItem("cart");
+                        updateCartUI([], getCurrentMode());
                         loadCart();
                         $("#cash").val("");
                         $("#total-price").text("Rp 0");
@@ -883,13 +951,44 @@
             });
 
             function updateSubtotalAndDiscount(subtotal, discount) {
-                currentDiscount = discount; 
+                currentDiscount = discount;
                 const total = subtotal - discount;
                 console.log(total)
                 $("#subtotal").text("Rp " + subtotal);
                 $("#discount").text("Rp " + discount);
                 $("#total-price").text("Rp " + total);
-            }   
+                fetchTax(subtotal, discount);
+
+            }
+
+            function fetchTax(subtotal, discount) {
+                $.ajax({
+                    url: `{{ route('tax.get') }}`,
+                    type: "GET",
+                    success: function(response) {
+                        if (response && response.rate > 0) {
+                            const taxRate = response.rate / 100;
+                            const totalAfterDiscount = subtotal - discount;
+                            const currentTax = totalAfterDiscount * taxRate;
+                            const totalWithTax = totalAfterDiscount + currentTax;
+
+                            $("#tax").text("Rp " + Intl.NumberFormat().format(currentTax));
+                            $("#tax-row").show(); // Pastikan baris pajak terlihat
+                            $("#total-price").text("Rp " + Intl.NumberFormat().format(totalWithTax));
+                        } else {
+                            // Jika pajak kosong atau nol
+                            $("#tax").text("");
+                            $("#tax-row").hide(); // Sembunyikan baris pajak
+                            const totalWithTax = subtotal - discount;
+                            $("#total-price").text("Rp " + Intl.NumberFormat().format(totalWithTax));
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Error fetching tax:", error);
+                    }
+                });
+            }
+
             loadCart();
         });
     </script>

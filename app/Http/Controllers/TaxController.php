@@ -232,4 +232,10 @@ class TaxController extends Controller
 
         return redirect()->back()->with('message', 'Tax berhasil di update');
     }
+
+    public function getTax(Request $request)
+    {
+        $tax = Tax::where('outlet_id', $request->outlet_id)->where('is_active', true)->first();
+        return response()->json($tax);
+    }
 }

@@ -69,15 +69,18 @@
                             </thead>
                             <tbody id="products-table-body" class="bg-white divide-y divide-gray-200">
                             </tbody>
-                            <tfoot class="bg-gray-50">
-                                <tr>
-                                    <td colspan="2" class="px-6 py-4 font-semibold">Totals:</td>
-                                    <td class="px-6 py-4" id="total-original-qty">0</td>
-                                    <td class="px-6 py-4" id="total-original-amount">0</td>
-                                    <td class="px-6 py-4" id="total-adjusted-qty">0</td>
-                                    <td class="px-6 py-4" id="total-adjusted-amount">0</td>
-                                </tr>
-                            </tfoot>
+                            <tfoot>
+                        <tr>
+                            <td colspan="2" class="font-semibold">Totals:</td>
+                            <td id="total-original-qty">0</td>
+                            <td id="total-original-amount">0</td>
+                            <td id="total-adjusted-qty">0</td>
+                            <td id="total-adjusted-amount">0</td>
+                            <td id="total-return-qty">0</td>
+                        </tr>
+                    </tfoot>
+
+
                         </table>
                     </div>
                 </div>
@@ -99,36 +102,44 @@
         }).format(amount);
     }
 
-    function updateTotals() {
-        let totalOriginalQty = 0;
-        let totalOriginalAmount = 0;
-        let totalAdjustedQty = 0;
-        let totalAdjustedAmount = 0;
+   function updateTotals() {
+    let totalOriginalQty = 0;
+    let totalOriginalAmount = 0;
+    let totalAdjustedQty = 0;
+    let totalAdjustedAmount = 0;
+    let totalReturnQty = 0;
 
-        $('#products-table-body tr').each(function() {
-            const price = parseFloat($(this).data('price'));
-            const originalQty = parseFloat($(this).data('original-qty'));
-            const adjustedQty = parseFloat($(this).find('input[name="adjusted_quantities[]"]').val() || 0);
+    $('#products-table-body tr').each(function() {
+        const price = parseFloat($(this).data('price'));
+        const originalQty = parseFloat($(this).data('original-qty'));
+        const adjustedQty = parseFloat($(this).find('input[name="adjusted_quantities[]"]').val() || 0);
+        const returnQty = originalQty - adjustedQty;
 
-            totalOriginalQty += originalQty;
-            totalOriginalAmount += price * originalQty;
-            totalAdjustedQty += adjustedQty;
-            totalAdjustedAmount += price * adjustedQty;
-        });
+        totalOriginalQty += originalQty;
+        totalOriginalAmount += price * originalQty;
+        totalAdjustedQty += adjustedQty;
+        totalAdjustedAmount += price * adjustedQty;
+        totalReturnQty += returnQty;
 
-        $('#total-original-qty').text(totalOriginalQty);
-        $('#total-original-amount').text(formatCurrency(totalOriginalAmount));
-        $('#total-adjusted-qty').text(totalAdjustedQty);
-        $('#total-adjusted-amount').text(formatCurrency(totalAdjustedAmount));
+        // Update return qty in the table
+        $(this).find('.return-qty').text(returnQty);
+    });
 
-        return {
-            totalOriginalQty,
-            totalOriginalAmount,
-            totalAdjustedQty,
-            totalAdjustedAmount
-        };
-    }
+    // Update totals in the footer
+    $('#total-original-qty').text(totalOriginalQty);
+    $('#total-original-amount').text(formatCurrency(totalOriginalAmount));
+    $('#total-adjusted-qty').text(totalAdjustedQty);
+    $('#total-adjusted-amount').text(formatCurrency(totalAdjustedAmount));
+    $('#total-return-qty').text(totalReturnQty);
 
+    return {
+        totalOriginalQty,
+        totalOriginalAmount,
+        totalAdjustedQty,
+        totalAdjustedAmount,
+        totalReturnQty
+    };
+}
     $('#sales_order_id').change(function() {
         const salesOrderId = $(this).val();
         if (salesOrderId) {

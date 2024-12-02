@@ -47,7 +47,7 @@ class PurchaseOrderController extends Controller
                 AllowedFilter::partial('reference_no'),
                 AllowedFilter::partial('status'),      
             ])
-            ->with(['supplier', 'user', 'outlet','products']) 
+            ->with(['supplier', 'user', 'outlet','productPurchase']) 
             ->where('reference_no', 'like', "%$q%") 
             ->latest() 
             ->paginate($perPage) 

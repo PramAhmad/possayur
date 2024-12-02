@@ -22,8 +22,11 @@ class SalesOrder extends Model
         'status',
         'total_price',
         'total_qty',
-        'discount',
-        'tax',
+        'total_discount',
+        'total_tax',
+        'coupon_id',
+        'order_tax_rate',
+        
         'grand_total',
         'note',
     ];

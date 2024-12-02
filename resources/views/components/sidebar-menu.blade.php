@@ -69,67 +69,88 @@
                 </ul>
 
             </li>
-            <li>
-                <a href="{{ route('purchaseorder.index') }}" class="navItem {{ (request()->is('purchaseorder*')) ? 'active' : '' }}">
-                    <span class="flex items
-                    -center">
-                        <iconify-icon class=" nav-icon" icon="heroicons-outline:shopping-bag"></iconify-icon>
-                        <span>{{ __('Purchase Order') }}</span>
-                    </span>
-                    <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
+            <li class="{{
+    request()->routeIs('purchasepos.index') ||
+    request()->routeIs('purchaseorder.index') ||
+    request()->routeIs('invoicepurchase.index') ||
+    request()->routeIs('returnpurchase.index') ? 'active' : ''
+}}">
+    <a href="#" class="navItem">
+        <span class="flex items-center">
+            <iconify-icon class="nav-icon" icon="heroicons-outline:shopping-bag"></iconify-icon>
+            <span>{{ __('Purchase') }}</span>
+        </span>
+        <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
+    </a>
+    <ul class="sidebar-submenu">
+        <!-- Purchase POS -->
+        @can('purchase view')
+        <li class="navItem {{ request()->routeIs('purchasepos.index') ? 'active' : '' }}">
+            <a href="{{ route('purchasepos.index') }}">{{ __('Point Of Sale') }}</a>
+        </li>
+        @endcan
 
-                </a>
-                <ul class="sidebar-submenu first-letter:">
-                    <li class="navItem {{ request()->is('purchasepos*') ? 'active' : '' }}">
-                        <a href="{{ route('purchasepos.index') }}">Point Of Sale</a>
-                    </li>
+        <!-- Purchase Order -->
+        @can('purchase view')
+        <li class="navItem {{ request()->routeIs('purchaseorder.index') ? 'active' : '' }}">
+            <a href="{{ route('purchaseorder.index') }}">{{ __('Purchase Order') }}</a>
+        </li>
+        @endcan
 
-                </ul>
-                <ul class="sidebar-submenu first-letter:">
-                    <li class="navItem {{ request()->is('purchaseorder*') ? 'active' : '' }}">
-                        <a href="{{ route('purchaseorder.index') }}">Purchase Order</a>
-                    </li>
+        <!-- Invoice Purchase -->
+        @can('purchase view')
+        <li class="navItem {{ request()->routeIs('invoicepurchase.index') ? 'active' : '' }}">
+            <a href="{{ route('invoicepurchase.index') }}">{{ __('Invoice Purchase') }}</a>
+        </li>
+        @endcan
 
-                </ul>
-            </li>
+        <!-- Return Purchase -->
+        @can('returnpurchase view')
+        <li class="navItem {{ request()->routeIs('returnpurchase.index') ? 'active' : '' }}">
+            <a href="{{ route('returnpurchase.index') }}">{{ __('Return Purchase') }}</a>
+        </li>
+        @endcan
+    </ul>
+</li>
+
             <li class="{{ request()->routeIs('salesorder.index') || 
             request()->routeIs('pos.index') || 
             request()->routeIs('suratjalan.index') || 
             request()->routeIs('invoice.index') || 
             request()->routeIs('returnsalesorder.index') || 
             request()->routeIs('listorder.index') ? 'active' : '' }}">
-    <a href="#" class="navItem">
-        <span class="flex items-center">
-            <iconify-icon class="nav-icon" icon="heroicons-outline:shopping-cart"></iconify-icon>
-            <span>{{ __('Sales Order') }}</span>
-        </span>
-        <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
-    </a>
-    <ul class="sidebar-submenu first-letter:">
-        <li class="navItem {{ request()->routeIs('pos.index') ? 'active' : '' }}">
-            <a href="{{ route('pos.index') }}">Point Of Sales</a>
-        </li>
-        <li class="navItem {{ request()->routeIs('salesorder.index') ? 'active' : '' }}">
-            <a href="{{ route('salesorder.index') }}">Sales Order</a>
-        </li>
-        <!-- Surat Jalan -->
-        <li class="navItem {{ request()->routeIs('suratjalan.index') ? 'active' : '' }}">
-            <a href="{{ route('suratjalan.index') }}">Surat Jalan</a>
-        </li>
-        <!-- Invoice -->
-        <li class="navItem {{ request()->routeIs('invoice.index') ? 'active' : '' }}">
-            <a href="{{ route('invoice.index') }}">Invoice</a>
-        </li>
-        <!-- Return Product -->
-        <li class="navItem {{ request()->routeIs('returnsalesorder.index') ? 'active' : '' }}">
-            <a href="{{ route('returnsalesorder.index') }}">Return Product</a>
-        </li>
-        <!-- List Order -->
-        <li class="navItem {{ request()->routeIs('listorder.index') ? 'active' : '' }}">
-            <a href="{{ route('listorder.index') }}">List Order</a>
-        </li>
-    </ul>
-</li>
+                <a href="#" class="navItem">
+                    <span class="flex items-center">
+                        <iconify-icon class="nav-icon" icon="heroicons-outline:shopping-cart"></iconify-icon>
+                        <span>{{ __('Sales Order') }}</span>
+                    </span>
+                    <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
+                </a>
+                <ul class="sidebar-submenu first-letter:">
+                    <li class="navItem {{ request()->routeIs('pos.index') ? 'active' : '' }}">
+                        <a href="{{ route('pos.index') }}">Point Of Sales</a>
+                    </li>
+                    <li class="navItem {{ request()->routeIs('salesorder.index') ? 'active' : '' }}">
+                        <a href="{{ route('salesorder.index') }}">Sales Order</a>
+                    </li>
+                    <!-- Surat Jalan -->
+                    <li class="navItem {{ request()->routeIs('suratjalan.index') ? 'active' : '' }}">
+                        <a href="{{ route('suratjalan.index') }}">Surat Jalan</a>
+                    </li>
+                    <!-- Invoice -->
+                    <li class="navItem {{ request()->routeIs('invoice.index') ? 'active' : '' }}">
+                        <a href="{{ route('invoice.index') }}">Invoice</a>
+                    </li>
+                    <!-- Return Product -->
+                    <li class="navItem {{ request()->routeIs('returnsalesorder.index') ? 'active' : '' }}">
+                        <a href="{{ route('returnsalesorder.index') }}">Return Product</a>
+                    </li>
+                    <!-- List Order -->
+                    <li class="navItem {{ request()->routeIs('listorder.index') ? 'active' : '' }}">
+                        <a href="{{ route('listorder.index') }}">List Order</a>
+                    </li>
+                </ul>
+            </li>
 
             <li>
                 <a href="{{ route('suratjalan.index') }}" class="navItem {{ (request()->is('suratjalan*')) ? 'active' : '' }}">

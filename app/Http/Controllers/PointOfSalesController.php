@@ -71,7 +71,7 @@ class PointOfSalesController extends Controller
     public function store(Request $request)
     {
         // dd($request->all());
-
+       
 
         try {
             DB::beginTransaction();
@@ -84,6 +84,9 @@ class PointOfSalesController extends Controller
                 'paid_amount' =>   $request->cash,
                 'grandtotal' => $request->total,
                 'user_id' => auth()->user()->id,
+                'coupon_id' => $request->coupon,
+            'total_tax' => $request->tax,
+                'total_discount' => $request->totalDiscount,
             ]);
             foreach ($request->items as $item) {
                 ProductSalesOrder::create([

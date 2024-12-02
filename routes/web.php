@@ -27,6 +27,7 @@ use App\Http\Controllers\DatabaseBackupController;
 use App\Http\Controllers\GeneralSettingController;
 use App\Http\Controllers\HistoryLogController;
 use App\Http\Controllers\InvoicePenagihanController;
+use App\Http\Controllers\InvoicePurchaseController;
 use App\Http\Controllers\ListOrderController;
 use App\Http\Controllers\OutletController;
 use App\Http\Controllers\PointOfSalesController;
@@ -34,6 +35,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductPriceByCustomer;
 use App\Http\Controllers\PurchaseOrderController;
 use App\Http\Controllers\PurchasePOSController;
+use App\Http\Controllers\ReturnPurchaseController;
 use App\Http\Controllers\ReturnSalesOrderController;
 use App\Http\Controllers\ReturnSalesOrderExportController;
 use App\Http\Controllers\SalesOrderControllre;
@@ -92,6 +94,7 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
     Route::resource('tax', TaxController::class);
     Route::post('/taxes/make-active', [TaxController::class, 'makeActive'])
     ->name('tax.make-active');
+    Route::get('/this/tax/get', [TaxController::class, 'getTax'])->name('tax.get');
     Route::post('/curencies/make-active', [CurencyController::class, 'makeActive'])->name('curency.make-active');
     // coupon.get
     Route::get('/this/coupon/get', [CouponController::class, 'getCoupon'])->name('coupon.get');
@@ -106,7 +109,20 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
     Route::delete('product/{id}/customer/{customer_id}', [ProductPriceByCustomer::class, 'destroy'])->name('product.customer.destroy');
 
     Route::resource('purchaseorder', PurchaseOrderController::class);
-    // purchasepost.get
+    Route::get('purchaseorder/{id}/products', [PurchaseOrderController::class, 'getProducts'])->name('purchaseorder.getProducts');
+    // invoicepurchase
+    Route::get('invoicepurchase', [InvoicePurchaseController::class, 'index'])->name('invoicepurchase.index');
+    Route::get('invoicepurchase/show/{id}', [InvoicePurchaseController::class, 'show'])->name('invoicepurchase.show');
+    Route::get('invoicepurchase/create', [InvoicePurchaseController::class, 'create'])->name('invoicepurchase.create');
+    Route::post('invoicepurchase', [InvoicePurchaseController::class, 'store'])->name('invoicepurchase.store');
+    Route::get('invoicepurchase/get-products/{id}', [InvoicePurchaseController::class, 'getProducts'])->name('invoicepurchase.getproduct');
+    
+    // return purchase
+    Route::get('returnpurchase', [ReturnPurchaseController::class, 'index'])->name('returnpurchase.index');
+    Route::get('returnpurchase/show/{id}', [ReturnPurchaseController::class, 'show'])->name('returnpurchase.show');
+    Route::delete('returnpurchase/{id}', [ReturnPurchaseController::class, 'destroy'])->name('returnpurchase.destroy');
+
+
     Route::get('purchasepos', [PurchasePOSController::class, 'index'])->name('purchasepos.index');
     Route::get('purchasepos/{id}', [PurchasePOSController::class, 'show'])->name('purchasepos.show');
     Route::post('purchasepos', [PurchasePOSController::class, 'store'])->name('purchasepos.store');
@@ -148,14 +164,19 @@ Route::post('download/stockopname/import-excel', [StockOpnameController::class, 
     Route::get('export/returnsalesorder', [ReturnSalesOrderExportController::class, 'export'])->name('returnsalesorder.export');
     Route::get('export/listorder', [ListOrderController::class, 'export'])->name('listorder.export');
     Route::get('export/stockopname', [StockOpNameController::class, 'export'])->name('stockopname.export');
+    Route::get('export/purchaseorder', [PurchaseOrderController::class, 'export'])->name('purchaseorder.export');
+    Route::get('export/invoicepurchase', [InvoicePurchaseController::class, 'export'])->name('invoicepurchase.export');
+    Route::get('export/returnpurchase', [ReturnPurchaseController::class, 'export'])->name('returnpurchase.export');
 
     // pdf
     Route::get('pdf/salesorder/{id}', [SalesOrderExportController::class, 'pdf'])->name('salesorder.pdf');
     Route::get('pdf/suratjalan/{id}', [SuratJalanExportController::class, 'pdf'])->name('suratJalan.pdf');
     Route::get('pdf/invoice/{id}', [InvoicePenagihanExportController::class, 'pdf'])->name('invoice.pdf');
-Route::get('pdf/returnsalesorder/{id}', [ReturnSalesOrderExportController::class, 'pdf'])->name('returnsalesorder.pdf');
+    Route::get('pdf/returnsalesorder/{id}', [ReturnSalesOrderExportController::class, 'pdf'])->name('returnsalesorder.pdf');
     Route::get('pdf/listorder', [ListOrderController::class, 'pdf'])->name('listorder.pdf');
-
+    Route::get('pdf/purchaseorder/{id}', [PurchaseOrderController::class, 'pdf'])->name('purchaseorder.pdf');
+    Route::get('pdf/invoicepurchase/{id}', [InvoicePurchaseController::class, 'pdf'])->name('invoicepurchase.pdf');
+    Route::get('pdf/returnpurchase/{id}', [ReturnPurchaseController::class, 'pdf'])->name('returnpurchase.pdf');
 
 });
 

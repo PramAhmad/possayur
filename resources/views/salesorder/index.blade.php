@@ -155,8 +155,36 @@
                                         <td class="table-td">{{ $order->total_qty }}</td>
                                         <td class="table-td">{{ currency($order->grandtotal) }}</td>
                                         <td class="table-td">
-                                            <span class="{{ $order->status === 'paid' ? 'success' : 'warning' }}">
-                                                {{ ucfirst($order->status) }}
+                                            @php
+                                            switch ($order->status) {
+                                            case 'pending':
+                                            $status = [
+                                            'class' => 'bg-warning-500 text-warning-500',
+                                            'text' => 'Pending',
+                                            ];
+                                            break;
+                                            case 'process':
+                                            $status = [
+                                            'class' => 'bg-info-500 text-info-500',
+                                            'text' => 'Process',
+                                            ];
+                                            break;
+                                            case 'completed':
+                                            $status = [
+                                            'class' => 'bg-success-500 text-success-500',
+                                            'text' => 'Completed',
+                                            ];
+                                            break;
+                                            case 'canceled':
+                                            $status = [
+                                            'class' => 'bg-danger-500 text-danger-500',
+                                            'text' => 'Canceled',
+                                            ];
+                                            break;
+                                            }
+                                            @endphp
+                                            <span class="inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-full bg-opacity-20 {{ $status['class'] }}">
+                                                {{ __($status['text']) }}
                                             </span>
                                         </td>
                                         <td class="table-td">

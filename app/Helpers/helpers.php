@@ -13,8 +13,8 @@ if (!function_exists('currency')) {
         $currency = Curency::where('is_active', true)->first();
         $symbol = $currency->symbol;
         $code = $currency->code;
-
-        return $code . ' '  . ' ' . number_format($amount);
+        // using dot number format
+        return $code . ' ' . number_format($amount, 0, ',', '.');
     }
 }
 
