@@ -617,5 +617,6 @@ class RoleHasPermissionsTableSeeder extends Seeder
         ));
         
         
+        
     }
 }
