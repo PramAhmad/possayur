@@ -24,14 +24,14 @@ class UserSeeder extends Seeder
             ],
             [
                 'name' => 'Admin',
-                'email' => 'admin@dashcode.com',
+                'email' => 'admin@mail.com',
                 'email_verified_at' => now(),
                 'password' => bcrypt('password'),
                 'role' => 'admin',
             ],
             [
                 'name' => 'User',
-                'email' => 'user@dashcode.com',
+                'email' => 'user@mail.com',
                 'email_verified_at' => now(),
                 'password' => bcrypt('password'),
                 'role' => 'user',
