@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
       
+        $this->call(OutletsTableSeeder::class);
 
         $this->call(UsersTableSeeder::class);
         $this->call(PermissionsTableSeeder::class);
@@ -28,6 +29,5 @@ class DatabaseSeeder extends Seeder
         $this->call(CategoryTableSeeder::class);
         $this->call(CustomerGroupTableSeeder::class);
         $this->call(CustomerTableSeeder::class);
-        $this->call(OutletsTableSeeder::class);
     }
 }
