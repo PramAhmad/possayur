@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\InvoicePurchase as ExportsInvoicePurchase;
 use App\Models\InvoicePurchase;
 use App\Models\Outlet;
 use App\Models\Product;
@@ -13,6 +14,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Maatwebsite\Excel\Facades\Excel;
+
 use Spatie\QueryBuilder\QueryBuilder;
 
 class InvoicePurchaseController extends Controller
@@ -259,5 +262,10 @@ class InvoicePurchaseController extends Controller
             'invoicePurchase' => $invoicePurchase
         ]);
         return $pdf->download(now().' invoice_purchase.pdf');
+    }
+
+    public function export()
+    {
+      return Excel::download(new ExportsInvoicePurchase, now().'invoice_purchase.xlsx');
     }
 }

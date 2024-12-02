@@ -21,6 +21,11 @@
                     <a class="btn inline-flex justify-center btn-dark rounded-[25px] items-center !p-2.5" href="{{ route('purchaseorder.index') }}">
                         <iconify-icon icon="mdi:refresh" class="text-xl"></iconify-icon>
                     </a>
+                    @can('purchase view')    
+                     <a href="{{ route('invoicepurchase.export') }}" class="btn btn-success inline-flex justify-center btn-dark rounded-[25px] items-center !p-2.5">
+                         Excel <iconify-icon icon="heroicons-outline:folder-arrow-down" class="ml-3 text-xl"></iconify-icon>
+                     </a>
+                     @endcan
                 </div>
 
                 <div class="justify-center flex flex-wrap sm:flex items-center lg:justify-end gap-3">
