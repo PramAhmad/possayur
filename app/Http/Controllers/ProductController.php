@@ -94,7 +94,6 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->all());
         $request->validate([
             'name' => 'required|string',
             'barcode' => 'required|string|unique:product,barcode',
@@ -124,18 +123,36 @@ class ProductController extends Controller
             'category_id.required' => 'Category is required',
             'category_id.exists' => 'Category not found',
         ]);
-
+    
+        if($request->is_variant == 1){
+            $request->validate([
+                'variants.*.item_code' => 'required|string',
+                'variants.*.name' => 'required|string',
+                'variants.*.additional_price' => 'required|integer',
+            ]);
+        }
+    
+        if($request->is_batch == 1){
+            $request->validate([
+                'batches.*.batch_no' => 'required|string',
+                'batches.*.qty' => 'required|integer',
+                'batches.*.price' => 'required|integer',
+                'batches.*.expired_date' => 'required|date',
+            ]);
+        }
+    
+        // Handle image upload
         $image = $request->file('image');
         $imageName = null;
         if ($image) {
             $imageName = time().'.'.$image->getClientOriginalExtension();
             $image->move(public_path('upload/product'), $imageName);
         }
-
+    
         DB::beginTransaction();
-        try{
-
-           $product =  Product::create([
+        try {
+            // Create product
+            $product = Product::create([
                 'name' => $request->name,
                 'barcode' => $request->barcode,
                 'slug' => Str::slug($request->name),
@@ -154,7 +171,9 @@ class ProductController extends Controller
                 'brand_id' => $request->brand_id,
                 'outlet_id' => $request->outlet_id,
             ]);
-            if (in_array('variant', $request->product_type)) {
+    
+            // Handle variants
+            if($request->is_variant == 1 && in_array('variant', $request->product_type)){
                 $variants = $request->variants ?? [];
                 foreach ($variants as $variant) {
                     Variant::create([
@@ -162,13 +181,14 @@ class ProductController extends Controller
                         'item_code' => $variant['item_code'],
                         'outlet_id' => $request->outlet_id,
                         'name' => $variant['name'],
-                        'qty' =>  $request->qty,
+                        'qty' => $variant['qty'] ?? $request->qty,
                         'additional_price' => $variant['additional_price'],
                     ]);
                 }
             }
-        
-            if (in_array('batch', $request->product_type)) {
+    
+            // Handle batches
+            if($request->is_batch == 1 && in_array('batch', $request->product_type)){
                 $batches = $request->batches ?? [];
                 foreach ($batches as $batch) {
                     Batches::create([
@@ -181,15 +201,14 @@ class ProductController extends Controller
                     ]);
                 }
             }
+    
             DB::commit();
-        return redirect()->route('product.index')->with('success', 'Product created successfully');
-
-        }catch(\Exception $e){
-            return $e->getMessage();
+            return redirect()->route('product.index')->with('success', 'Product created successfully');
+    
+        } catch(\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', $e->getMessage());
         }
-
     }
 
     /**
