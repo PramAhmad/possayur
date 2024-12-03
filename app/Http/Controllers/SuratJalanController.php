@@ -236,8 +236,7 @@ class SuratJalanController extends Controller
                ]);
             }
             DB::commit();
-            return redirect()->route('suratjalan.index')->with('success', 'Surat Jalan created successfully');
-
+        return response()->json(['id' => $suratJalan->id], 201);
         }catch(\Exception $e){
             DB::rollBack();
             return $e->getMessage();

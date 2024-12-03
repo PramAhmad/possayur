@@ -21,5 +21,13 @@ class SalesOrderExportController extends Controller
         
         $pdf = Pdf::loadView('salesorder.pdf', compact('salesOrder'));
         return $pdf->download(now().'sales_order.pdf');
-    }   
+    } 
+    
+    public function print($id){
+        // stream pdf
+        $salesOrder = SalesOrder::with('outlet', 'customer', 'products', 'products.product', 'returnSalesOrder', 'invoice','products.variant','products.batch','products.product.unit')->find($id);
+
+        $pdf = Pdf::loadView('salesorder.pdf', compact('salesOrder'));
+        return $pdf->stream();
+    }
 }

@@ -178,6 +178,8 @@ Route::post('download/stockopname/import-excel', [StockOpnameController::class, 
     Route::get('pdf/invoicepurchase/{id}', [InvoicePurchaseController::class, 'pdf'])->name('invoicepurchase.pdf');
     Route::get('pdf/returnpurchase/{id}', [ReturnPurchaseController::class, 'pdf'])->name('returnpurchase.pdf');
 
+    // print
+    Route::get('print/suratjalan/{id}', [SuratJalanExportController::class, 'print'])->name('suratJalan.print');
 });
 
 // test log

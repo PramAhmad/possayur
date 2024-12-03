@@ -21,4 +21,11 @@ class SuratJalanExportController extends Controller
         $pdf = Pdf::loadView('suratjalan.pdf', compact('suratJalan'));
         return $pdf->download(now().'surat_jalan.pdf');
     }
+
+    public function print($id){
+           $suratJalan = SuratJalan::with(['salesorder.products.product','salesorder.products.variant','salesorder.products.batch','salesorder.outlet','salesorder.customer','productSuratJalans.product','productSuratJalans.variant','productSuratJalans.batch','productSuratJalans.product.unit'])->findOrFail($id);
+
+        $pdf = Pdf::loadView('suratjalan.pdf', compact('suratJalan'));
+        return $pdf->stream();
+    }
 }
