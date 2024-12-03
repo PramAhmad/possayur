@@ -256,7 +256,7 @@ class ProductController extends Controller
             'alert_qty' => 'required|integer',
             'sku' => 'required|string',
             'category_id' => 'required|exists:category,id',
-            'brand_id' => 'nullable|exists:brands,id',
+            'brand_id' => 'nullable|exists:brand,id',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:5048',
         ]);
     
