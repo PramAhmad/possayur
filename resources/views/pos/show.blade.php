@@ -39,7 +39,7 @@
 
                     @foreach ($products as $product)
                     <option value="{{ $product->id }}"
-                    data-product-id="{{ $product->id }}"
+                        data-product-id="{{ $product->id }}"
                         data-price="{{ $product->selling_price }}"
                         data-image="{{ asset('upload/product/' . $product->image) }}"
 
@@ -52,10 +52,10 @@
 
                     @if ($product->variants->count() > 0)
                     @foreach ($product->variants as $variant)
-                    <option value="{{ $variant->id }}" 
-                    data-product-id="{{ $product->id }}"
+                    <option value="{{ $variant->id }}"
+                        data-product-id="{{ $product->id }}"
                         data-variant-id="{{ $variant->id }}"
-                    data-price="{{ $variant->additional_price }}"
+                        data-price="{{ $variant->additional_price }}"
                         data-hs-select-option='{
                 "icon": "<img class=\"inline-block size-4 rounded-full\" src=\"{{ asset('upload/product/' . $product->image) }}\" alt=\"{{ addslashes($product->name) }}\" style=\"width: 30px; height: 30px;\" />"
             }'
@@ -70,7 +70,7 @@
                     @foreach ($product->batches as $batch)
                     <option value="{{ $batch->id }}"
                         data-product-id="{{ $product->id }}"
-                        data-batch-id="{{ $batch->id }}"                                                                                                                          
+                        data-batch-id="{{ $batch->id }}"
                         data-price="{{ $batch->price }}"
                         data-hs-select-option='{
                 "icon": "<img class=\"inline-block size-4 rounded-full\" src=\"{{ asset('upload/product/' . $product->image) }}\" alt=\"{{ addslashes($product->name) }}\" style=\"width: 30px; height: 30px;\" />"
@@ -566,17 +566,17 @@
                 $("#total-price").text("Rp " + Intl.NumberFormat().format(totalPrice - currentDiscount));
                 $("#cart-count").text(cart.length);
                 $('.number_format').each(function() {
-            new Cleave(this, {
-            numeral: true,
-            numeralThousandsGroupStyle: 'thousand'
-            });
-            });
+                    new Cleave(this, {
+                        numeral: true,
+                        numeralThousandsGroupStyle: 'thousand'
+                    });
+                });
             }
             // Tambahkan item ke keranjang
             $(".add-to-cart").click(function() {
-                let productId = parseInt($(this).data("product-id")); 
+                let productId = parseInt($(this).data("product-id"));
                 const name = $(this).data("product-name");
-                const price = parseFloat($(this).data("product-price")); 
+                const price = parseFloat($(this).data("product-price"));
                 const image = $(this).data("product-image");
                 const variantId = $(this).data("variant-id") || null;
                 const batchId = $(this).data("batch-id") || null;
@@ -617,7 +617,7 @@
                 selectedOptions.each(function() {
                     let productId = parseInt($(this).val());
                     const name = $(this).text();
-                    const price = parseFloat($(this).data("price")); 
+                    const price = parseFloat($(this).data("price"));
                     const image = $(this).data("image");
                     const variantId = $(this).data("variant-id") || null;
                     const batchId = $(this).data("batch-id") || null;
@@ -816,28 +816,29 @@
             });
 
             $("#submit-payment").click(function() {
-                console.log("Submit payment");
+                console.log('submit payment');
                 const cart = JSON.parse(localStorage.getItem('cart')) || [];
-                const cash = parseInt($("#cash").val()) || 0;
+                const cash = $("#cash").val();
+                const subtotal =  parseInt($("#subtotal").text().replace(/[^\d]/g, '')) || 0;
                 const tax = parseInt($("#tax").text().replace("Rp ", "").replace(",", "")) || 0;
-                const subtotal = parseInt($("#subtotal").text().replace("Rp ", "").replace(",", "")) || 0;
-                const totalPrice = parseInt($("#total-price").text().replace("Rp ", "").replace(",", "")) || 0;
+                const totalPrice = parseInt($("#total-price").text().replace(/[^\d]/g, '')) || 0;
                 const change = cash - totalPrice;
+                const currentDiscount = parseInt($("#discount").text().replace(/[^\d]/g, '')) || 0;
                 const customer = $("select[name='customer']").val();
 
 
-                if (change < 0) {
-                    $("#error-message").text("Nominal uang kurang!");
-                    $("#error-info").show();
-                    $("#change-info").hide();
-                    return;
-                }
-                if (cash === 0) {
-                    $("#error-message").text("Nominal uang tidak boleh 0!");
-                    $("#error-info").show();
-                    $("#change-info").hide();
-                    return;
-                }
+                // if (change < 0) {
+                //     $("#error-message").text("Nominal uang kurang!");
+                //     $("#error-info").show();
+                //     $("#change-info").hide();
+                //     return;
+                // }
+                // if (cash === 0) {
+                //     $("#error-message").text("Nominal uang tidak boleh 0!");
+                //     $("#error-info").show();
+                //     $("#change-info").hide();
+                //     return;
+                // }
                 if (customer === "") {
                     $("#error-message").text("Customer harus diisi!");
                     $("#error-info").show();
@@ -847,11 +848,11 @@
 
                 $("#receiptNo").text(new Date().getTime());
                 $("#receiptDate").text(new Date().toLocaleString());
-                $("#subtotalAmount").text("Rp " + subtotal.toLocaleString());
+                $("#subtotalAmount").text("Rp " + subtotal);
                 $("#totalAmount").text("Rp " + totalPrice.toLocaleString());
                 $("#payAmount").text("Rp " + cash.toLocaleString());
                 $("#discountAmount").text("Rp " + currentDiscount.toLocaleString());
-                $("#taxAmount").text("Rp " + tax.toLocaleString());
+                $("#taxAmount").text("Rp " + tax);
                 $("#changeAmount").text("Rp " + change.toLocaleString());
 
                 let receiptItemsHtml = '';
@@ -882,7 +883,7 @@
                 $("#modalReceipt").fadeOut();
                 const item = JSON.parse(localStorage.getItem('cart')) || [];
                 const cash = parseInt($("#cash").val()) || 0;
-                const totalPrice = parseInt($("#total-price").text().replace("Rp ", "").replace(",", "")) || 0;
+                const totalPrice = parseInt($("#total-price").text().replace(/[^\d]/g, '')) || 0;
                 const change = cash - totalPrice;
                 const customer = $("select[name='customer']").val();
                 const outlet = "{{ $outlet->id }}";
@@ -1064,10 +1065,42 @@
     <script src="{{asset('js/preline.js')}}"></script>
     <!-- change using laravel -->
     <script src="{{ asset('js/app.js') }}"></script>
-    <script>var cleave = new Cleave('.number_format', {
-    numeral: true,
-    numeralThousandsGroupStyle: 'thousand'
-});</script>
+    <script>
+        var cleave = new Cleave('.number_format', {
+            numeral: true,
+            numeralThousandsGroupStyle: 'thousand'
+        });
+    </script>
+
+    <script>
+        new Cleave('#cash', {
+            numeral: true,
+            numeralThousandsGroupStyle: 'thousand',
+            prefix: 'Rp ',
+            noImmediatePrefix: true
+        });
+
+        new Cleave('#subtotal', {
+            numeral: true,
+            numeralThousandsGroupStyle: 'thousand',
+            prefix: 'Rp ',
+            noImmediatePrefix: true
+        });
+
+        new Cleave('#total-price', {
+            numeral: true,
+            numeralThousandsGroupStyle: 'thousand',
+            prefix: 'Rp ',
+            noImmediatePrefix: true
+        });
+
+        new Cleave('#tax', {
+            numeral: true,
+            numeralThousandsGroupStyle: 'thousand',
+            prefix: 'Rp ',
+            noImmediatePrefix: true
+        });
+    </script>
     @endpush
 
 </x-app-layout>

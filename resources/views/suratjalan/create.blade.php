@@ -273,10 +273,21 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             success: function(response) {
-                if (response.success) {
-                    alert('Surat Jalan created successfully.');
-                    window.location.href = "{{ route('suratjalan.index') }}";
-                }
+                // open swal confirm mau cetak atau tidak
+                Swal.fire({
+                    title: 'Surat Jalan berhasil dibuat',
+                    text: 'Apakah anda ingin mencetak Surat Jalan?',
+                    icon: 'success',
+                    showCancelButton: true,
+                    confirmButtonText: 'Ya',
+                    cancelButtonText: 'Tidak'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = `/suratjalan/${response.id}/print`;
+                    } else {
+                        window.location.href = '/suratjalan';
+                    }
+                });
             },
             error: function(xhr) {
                 if (xhr.status === 422) {
