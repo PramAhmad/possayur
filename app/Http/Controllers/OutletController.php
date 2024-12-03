@@ -136,7 +136,30 @@ class OutletController extends Controller
      */
     public function edit($id)
     {
-        //
+        $breadcrumbsItems = [
+            [
+                'name' => 'Settings',
+                'url' => '/general-settings',
+                'active' => false
+            ],
+            [
+                'name' => 'Outlets',
+                'url' => route('outlets.index'),
+                'active' => false
+            ],
+            [
+                'name' => 'Edit Outlet',
+                'url' => route('outlets.edit',['outlet'=>$id]),
+                'active' => true
+            ],
+        ];
+        $outlet = Outlet::findOrFail($id);
+        
+        return view('outlet.edit', [
+            'breadcrumbItems' => $breadcrumbsItems,
+            'pageTitle' => 'Edit Outlet',
+            'outlet' => $outlet 
+        ]);
     }
 
     /**
@@ -146,9 +169,42 @@ class OutletController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Outlet $outlet)
     {
-        //
+        $request->validate([
+            'name' => 'required|string',
+            'address' => 'required|string',
+            'phone' => 'required|string',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:5048',
+        ],[
+            'name.required' => 'Name wajib di isi',
+            'address.required' => 'Address wajib di isi',
+            'phone.required' => 'Phone wajib di isi',
+            'logo.image' => 'Logo harus berupa gambar',
+            'logo.mimes' => 'Logo harus berupa gambar',
+            'logo.max' => 'Ukuran gambar maksimal 5MB',
+        ]);
+    
+        $logo = $request->file('logo');
+        $logoName = $outlet->logo;
+    
+        if ($logo) {
+            if ($logoName && file_exists(public_path('upload/outlets/'.$logoName))) {
+                unlink(public_path('upload/outlets/'.$logoName));
+            }
+    
+            $logoName = time().'.'.$logo->getClientOriginalExtension();
+            $logo->move(public_path('upload/outlets'), $logoName);
+        }
+    
+        $outlet->update([
+            'name' => $request->name,
+            'address' => $request->address,
+            'phone' => $request->phone,
+            'logo' => $logoName,
+        ]);
+    
+        return redirect()->route('outlets.index')->with('success', 'Outlet updated successfully');
     }
 
     /**
