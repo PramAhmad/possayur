@@ -283,7 +283,7 @@
                     cancelButtonText: 'Tidak'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        window.location.href = `/print/suratjalan/${response.id}`;
+                    window.open(`/print/suratjalan/${response.id}`, '_blank');
                     } else {
                         window.location.href = '/suratjalan';
                     }
