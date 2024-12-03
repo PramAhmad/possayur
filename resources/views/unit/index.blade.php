@@ -60,7 +60,7 @@
                                             </td>
                                             <td class="table-td">
                                                 <div class="flex space-x-3 rtl:space-x-reverse">
-                                                    @can('unit update')
+                                                    @can('unit edit')
                                                         <a class="action-btn" href="{{ route('unit.edit', ['unit' => $unit]) }}">
                                                             <iconify-icon icon="heroicons:pencil-square"></iconify-icon>
                                                         </a>

@@ -190,7 +190,38 @@ class UnitController extends Controller
      */
     public function edit($id)
     {
-        //
+        $pageTitle = "Edit Unit";
+        $breadcrumbItems = [
+            [
+                'name' => 'Dashboard',
+                'url' => route('dashboard.index'),
+                'active' => false
+            ],
+            [
+                'name' => 'Unit',
+                'url' => route('unit.index'),
+                'active' => false
+            ],
+            [
+                'name' => 'Edit Unit',
+                'url' => route('unit.edit', ['unit' => $id]),
+                'active' => true
+            ],
+        ];
+        $unit = Unit::findOrFail($id);
+
+        if(auth()->user()->hasRole('super-admin')){
+            $outlets = Outlet::all();
+        }else{
+            $outlets = Outlet::where('id', auth()->user()->outlet_id)->get();
+        }
+
+        return view('unit.edit', [
+            'unit' => $unit,
+            'outlets' => $outlets,
+            'pageTitle' => $pageTitle,
+            'breadcrumbItems' => $breadcrumbItems,
+        ]);
     }
 
     /**
@@ -202,9 +233,68 @@ class UnitController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $unit = Unit::findOrFail($id); // Temukan unit berdasarkan ID
+    
+        $validated = $request->validate([
+            'outlet_id' => 'nullable|exists:outlets,id',
+            'code' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('units')->ignore($unit->id)->where(function ($query) use ($request) {
+                    return $query->where('outlet_id', $request->outlet_id);
+                })
+            ],
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('units')->ignore($unit->id)->where(function ($query) use ($request) {
+                    return $query->where('outlet_id', $request->outlet_id);
+                })
+            ],
+            'base_unit' => 'required|string|max:255',
+            'operator' => 'required|in:*,/,+,-',
+            'operation_value' => [
+                'required',
+                'string',
+                'max:255',
+                function ($attribute, $value, $fail) use ($request) {
+                    if (!is_numeric($value)) {
+                        $fail(__('The operation value must be a number.'));
+                    }
+                    if ($request->operator === '/' && $value == 0) {
+                        $fail(__('Cannot divide by zero.'));
+                    }
+                },
+            ],
+            'is_active' => 'required|in:0,1',
+        ], [
+            'code.unique' => __('This code is already used in the selected outlet.'),
+            'name.unique' => __('This name is already used in the selected outlet.'),
+        ]);
+    
+        try {
+            if (!auth()->user()->hasRole('super-admin')) {
+                $validated['outlet_id'] = auth()->user()->outlet_id;
+            }
+    
+            $validated['operation_value'] = (string)floatval($validated['operation_value']);
+    
+            $unit->update($validated); // Update unit
+            return redirect()
+                ->route('unit.index')
+                ->with('message', __('Unit updated successfully.'));
+    
+        } catch (\Exception $e) {
+            // Redirect back with error
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with('error', __('Failed to update unit. Please try again.'));
+        }
     }
-
+    
     /**
      * Remove the specified resource from storage.
      *

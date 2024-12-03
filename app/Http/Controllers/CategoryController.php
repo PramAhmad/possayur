@@ -132,7 +132,7 @@ class CategoryController extends Controller
             'image' => $image_name,
         ]);
 
-        return redirect()->back()->with('success', 'Category berhasil di tambahkan');
+        return redirect()->back()->with('message', 'Category berhasil di tambahkan');
 
     }
 
@@ -221,7 +221,7 @@ class CategoryController extends Controller
             'image' => $image_name,
         ]);
 
-        return redirect()->back()->with('success', 'Category berhasil di update');
+        return redirect()->back()->with('message', 'Category berhasil di update');
     }
 
     /**
@@ -233,6 +233,6 @@ class CategoryController extends Controller
     public function destroy($id)
     {
         Category::find($id)->delete();
-        return response()->json(['success' => 'Category berhasil di hapus']);
+        return response()->json(['message' => 'Category berhasil di hapus']);
     }
 }
