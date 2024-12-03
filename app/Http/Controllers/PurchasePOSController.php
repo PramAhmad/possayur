@@ -109,7 +109,7 @@ class PurchasePOSController extends Controller
         ];
 
         $pageTitle = 'Point of Sales';
-        $products = Product::where('outlet_id', $id)->with('unit','variants','batches')->get();
+        $products = Product::where('outlet_id', $id)->with('unit','variants','batches')->where('is_active','=','1')->get();
         $outlet = Outlet::find($id);
        if(auth()->user()->hasRole('super-admin')){
             $suppliers = Suplier::all();

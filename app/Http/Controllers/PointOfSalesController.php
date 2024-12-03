@@ -132,7 +132,7 @@ class PointOfSalesController extends Controller
         ];
 
         $pageTitle = 'Point of Sales';
-        $products = Product::where('outlet_id', $id)->with('unit','variants','batches')->get();
+        $products = Product::where('outlet_id', $id)->with('unit','variants','batches')->where('is_active','=','1')->get();
         $outlet = Outlet::find($id);
         $customer = Customer::whereHas('user', function ($query) use ($id) {
             $query->where('outlet_id', $id);
