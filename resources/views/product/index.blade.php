@@ -155,7 +155,7 @@
                                             <td class="table-td">{{ $product->name }}</td>
                                             <td class="table-td">{{ $product->sku }}</td>
                                             <td class="table-td">{{ currency($product->selling_price) }}</td>
-                                            <td class="table-td">{{ currency($product->qty) }}</td>
+                                            <td class="table-td">{{ number_format($product->qty) }}</td>
 
                                             <td class="table-td">
                                                 <div class="flex space-x-3 rtl:space-x-reverse">
