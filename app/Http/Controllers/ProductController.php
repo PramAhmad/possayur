@@ -306,7 +306,7 @@ class ProductController extends Controller
                 'is_variant' => $request->has('is_variant') ? "1" : "0",
                 'is_batch' => $request->has('is_batch') ? "1" : "0",
                 'is_difprice' => $request->has('is_difprice') ? "1" : "0",
-                'is_active' => $request->has('is_active') ? "1" : "0",
+                'is_active' => $request->is_active,
                 'category_id' => $request->category_id,
                 'brand_id' => $request->brand_id,
                 'outlet_id' => $request->outlet_id,
