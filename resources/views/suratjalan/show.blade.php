@@ -283,7 +283,7 @@
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-200 dark:divide-slate-700">
-                                @foreach($suratJalan->productSuratJalans as $product)
+                                @foreach($suratJalan->salesorder->products as $product)
                                     <tr>
                                         <td class="px-4 py-3 text-sm text-slate-500 dark:text-slate-300">
                                             <p>{{ $product->product->name }}</p>
