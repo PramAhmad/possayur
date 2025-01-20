@@ -18,7 +18,7 @@
                     </a>
                     @endcan
 
-                    <a class="btn inline-flex justify-center btn-dark rounded-[25px] items-center !p-2.5" href="{{ route('purchaseorder.index') }}">
+                    <a class="btn inline-flex justify-center btn-dark rounded-[25px] items-center !p-2.5" href="{{ route('invoicepurchase.create') }}">
                         <iconify-icon icon="mdi:refresh" class="text-xl"></iconify-icon>
                     </a>
                     @can('purchase view')    
