@@ -37,7 +37,6 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: Tasikmalaya123..
       MYSQL_DATABASE: astapos
-      MYSQL_USER: root
       MYSQL_PASSWORD: Tasikmalaya123..
       MYSQL_INITDB_SKIP_TZINFO: 1
     volumes:
