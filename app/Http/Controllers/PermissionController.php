@@ -19,10 +19,10 @@ class PermissionController extends Controller
      *
      * @return void
      */
-    public function __construct()
-    {
-        $this->authorizeResource(Permission::class, 'permission');
-    }
+    // public function __construct()
+    // {
+    //     $this->authorizeResource(Permission::class, 'permission');
+    // }
 
     /**
      * Display a listing of the resource.
