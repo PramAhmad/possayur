@@ -9,6 +9,7 @@ services:
     restart: unless-stopped
     volumes:
       - ./:/var/www/html
+      - /var/www/html/node_modules
     environment:
       - DB_HOST=mysql
       - DB_DATABASE=${DB_DATABASE}
