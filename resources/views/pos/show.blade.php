@@ -148,9 +148,9 @@
                                 data-variant-id=""
                                 data-batch-id="">
                                 <img src="{{ asset('upload/product/' . $product->image) }}"
-                                    class="object-cover w-full h-24 sm:h-44 lg:h-40"
+                                    class="object-cover w-full h-24 sm:h-44 lg:h-52"
                                     alt="{{ $product->name }}">
-                                <div class="flex flex-col sm:flex-row  text-sm mt-3">
+                                <div class="flex flex-col sm:flex-row pb-3 px-3 text-sm mt-3">
                                     <p class="flex-grow truncate mr-1">
                                         {{ $product->name }}
                                         <span class="font-semibold">( {{ $product->unit->name ?? '-' }} )</span>
@@ -926,6 +926,12 @@
                     },
                     error: function(xhr, status, error) {
                         console.error(error);
+                        let errorMsg = xhr.responseJSON.message;
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: errorMsg,
+                        });
                     }
                 });
 

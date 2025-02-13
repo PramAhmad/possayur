@@ -22,7 +22,7 @@ class HomeController extends Controller
         ];
 
         return view('Index', [
-            'pageTitle' => 'Blank Page',
+        'pageTitle' => 'Blank Page',
             'breadcrumbItems' => $breadcrumbsItems
         ]);
     }

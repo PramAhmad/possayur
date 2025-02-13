@@ -3,6 +3,7 @@
         <div class="mb-6">
             <x-breadcrumb :breadcrumb-items="$breadcrumbItems" :page-title="$pageTitle" />
         </div>
+        
 
         @if (session('message'))
         <x-alert :message="session('message')" :type="'success'" />

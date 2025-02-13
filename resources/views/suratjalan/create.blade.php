@@ -53,6 +53,10 @@
                                     <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         {{ __('Price') }}
                                     </th>
+                                    <!-- Unit  -->
+                                    <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        {{ __('Unit') }}
+                                    </th>
                                     <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         {{ __('Original Qty') }}
                                     </th>
@@ -149,6 +153,7 @@
                 url: `/suratjalan/get-products/${salesOrderId}`,
                 type: 'GET',
                 success: function(response) {
+                console.log(response);
                     const tableBody = $('#products-table-body');
                     tableBody.empty();
 
@@ -169,8 +174,11 @@
                                 ${item.variant ? `<input type="hidden" name="variant_ids[]" value="${item.variant.id}">` : ''}
                                 ${item.batch ? `<input type="hidden" name="batch_ids[]" value="${item.batch.id}">` : ''}
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
+                             <td class="px-6 py-4 whitespace-nowrap">
                                 ${formatCurrency(item.unit_price)}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                ${item.product.unit.name}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 ${item.qty}

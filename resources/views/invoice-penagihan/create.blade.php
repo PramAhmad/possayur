@@ -39,6 +39,7 @@
                                 <tr>
                                     <th class="px-6 py-3">{{ __('Product Name') }}</th>
                                     <th class="px-6 py-3">{{ __('Price') }}</th>
+                                    <th class="px-6 py-3">{{ __('Unit') }}</th>
                                     <th class="px-6 py-3">{{ __('Order Qty') }}</th>
                                     <th class="px-6 py-3">{{ __('Surat Jalan Qty') }}</th>
                                     <th class="px-6 py-3">{{ __('Invoice Qty') }}</th>
@@ -155,6 +156,7 @@
                                     </div>
                                 </td>
                                 <td>${formatCurrency(item.unit_price)}</td>
+                                <td>${item.product.unit.name}</td>
                                 <td>${item.qty}</td>
                                 <td>${suratJalanQty}</td>
                                 <td>

@@ -95,7 +95,7 @@ class SuratJalanController extends Controller
 
     public function getProducts($salesOrderId)
     {
-        $salesOrder = SalesOrder::with(['products','products.product','products.variant','products.batch'])->findOrFail($salesOrderId);
+        $salesOrder = SalesOrder::with(['products','products.product','products.variant','products.batch','products.product.unit'])->findOrFail($salesOrderId);
         
         return response()->json([
             'products' => $salesOrder->products,

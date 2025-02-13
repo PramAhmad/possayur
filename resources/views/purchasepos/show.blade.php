@@ -19,7 +19,7 @@
         <!-- Products Section -->
         <div class="flex flex-col bg-blue-gray-50 w-full h-full py-4">
             <div class="flex px-2 w-full flex-row relative" id="search-table">
-                <div class="absolute left-5 top-3 z-10 px-2 py-2 rounded-full bg-primary-500 text-white">
+                <div class="absolute left-5 top-3 z-10 px-2 py-2 rounded-full bg-sky-500 text-white">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
@@ -81,7 +81,7 @@
             <!-- End Select -->
 
             <div class="flex px-2 flex-row relative" id="search-grid">
-                <div class="absolute left-5 top-3 px-2 py-2 rounded-full bg-primary-500 text-white">
+                <div class="absolute left-5 top-3 px-2 py-2 rounded-full bg-sky-500 text-white">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
@@ -127,7 +127,7 @@
 
                 <!-- Grid View -->
                 <div id="product-grid" class="h-full overflow-y-auto px-2">
-                    <div class="product-grid grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-4 pb-3">
+                    <div class="product-grid grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 pb-3">
                         @foreach ($products as $product)
                         <div>
                             <div
@@ -147,10 +147,11 @@
                                         {{ $product->name }}
                                         <span class="font-semibold">( {{ $product->unit->name ?? '-' }} )</span>
                                     </p>
-                                    <p class="nowrap font-semibold">
-                                        Rp {{ number_format($product->selling_price) }}
-                                    </p>
+                                    <br>
                                 </div>
+                                <p class="px-3 pb-3  font-semibold">
+                                    Rp {{ number_format($product->selling_price) }}
+                                </p>
                             </div>
                         </div>
 
@@ -166,17 +167,17 @@
                                 data-product-image="{{ asset('upload/product/' . ($variant->image ?? $product->image)) }}"
                                 data-variant-id="{{ $variant->id }}"
                                 data-batch-id=""> <img src="{{ asset('upload/product/' . ($variant->image ?? $product->image)) }}"
-                                    class="object-cover w-full h-24 sm:h-44 lg:h-52"
+                                    class="object-cover w-full h-24 sm:h-44 lg:h-40"
                                     alt="{{ $variant->name }}">
-                                <div class="flex flex-col sm:flex-row pb-3 px-3 text-sm mt-3">
+                                <div class="flex flex-col sm:flex-row  text-sm mt-3">
                                     <p class="flex-grow truncate mr-1">
                                         {{ $variant->name }}
                                         <span class="font-semibold">( {{ $variant->unit->name ?? $product->unit->name ?? '-' }} )</span>
                                     </p>
-                                    <p class="nowrap font-semibold">
-                                        Rp {{ number_format($variant->additional_price) }}
-                                    </p>
                                 </div>
+                                <p class="px-3 pb-3  font-semibold">
+                                    Rp {{ number_format($variant->additional_price) }}
+                                </p>
                             </div>
                         </div>
                         @endforeach
@@ -210,7 +211,7 @@
                         @endif
                         @endforeach
                     </div>
-                </div>
+                </div> 
             </div>
 
         </div>
@@ -233,7 +234,7 @@
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                             </svg>
-                            <div id="cart-count" class="text-center absolute bg-primary-500 text-white w-5 h-5 text-xs p-0 leading-5 rounded-full -right-2 top-3"></div>
+                            <div id="cart-count" class="text-center absolute bg-sky-500 text-white w-5 h-5 text-xs p-0 leading-5 rounded-full -right-2 top-3"></div>
                         </div>
                         <div class="flex-grow px-8 text-right text-lg py-4 relative">
                             <button id="clear-cart" class="text-blue-gray-300 hover:text-pink-500 focus:outline-none">
@@ -300,7 +301,7 @@
                     <div id="error-info" class="flex mb-3 text-base lg:text-lg font-semibold bg-pink-100 text-blue-gray-700 rounded-lg py-2 px-3" style="display:none;">
                         <div id="error-message" class="text-right flex-grow text-pink-600"></div>
                     </div>
-                    <button id="submit-payment" class="text-white rounded-2xl text-base lg:text-lg w-full py-3 focus:outline-none bg-primary-500 hover:bg-sky-600">
+                    <button id="submit-payment" class="text-white rounded-2xl text-base lg:text-lg w-full py-3 focus:outline-none bg-sky-500 hover:bg-sky-600">
                         SUBMIT
                     </button>
                 </div>
@@ -358,7 +359,7 @@
                 </div>
             </div>
             <div class="p-4 w-full">
-                <button id="proceedButton" class="bg-primary-500 text-white text-lg px-4 py-3 rounded-2xl w-full focus:outline-none">PROCEED</button>
+                <button id="proceedButton" class="bg-sky-500 text-white text-lg px-4 py-3 rounded-2xl w-full focus:outline-none">PROCEED</button>
             </div>
         </div>
     </div>
@@ -371,6 +372,7 @@
 
     <script>
         $(document).ready(function() {
+            $('html').addClass('horizontalMenu');
             const CART_KEY = 'pochart';
             let currentDiscount = 0;
             $('#search-table').hide();
@@ -378,10 +380,10 @@
                 let mode = $(this).attr('id').replace('Mode', '').toLowerCase();
 
                 // Remove active state from all mode buttons
-                $('#tableMode, #gridMode').removeClass('bg-primary-500 text-white').addClass('bg-white text-blue-gray-500');
+                $('#tableMode, #gridMode').removeClass('bg-sky-500 text-white').addClass('bg-white text-blue-gray-500');
 
                 // Add active state to clicked button
-                $(this).removeClass('bg-white text-blue-gray-500').addClass('bg-primary-500 text-white');
+                $(this).removeClass('bg-white text-blue-gray-500').addClass('bg-sky-500 text-white');
 
                 if (mode === 'table') {
                     $('#search-table').show();
@@ -401,7 +403,7 @@
             });
 
             function getCurrentMode() {
-                return $('#tableMode').hasClass('bg-primary-500') ? 'table' : 'grid';
+                return $('#tableMode').hasClass('bg-sky-500') ? 'table' : 'grid';
             }
 
             function loadCart() {

@@ -14,7 +14,7 @@
                     @can('purchase create')
                     <a class="btn inline-flex justify-center btn-dark rounded-[25px] items-center !p-2 !px-3" href="{{ route('invoicepurchase.create') }}">
                         <iconify-icon icon="ic:round-plus" class="text-lg mr-1"></iconify-icon>
-                        {{ __('New Purchase Order') }}
+                        {{ __('Purchase Order') }}
                     </a>
                     @endcan
 

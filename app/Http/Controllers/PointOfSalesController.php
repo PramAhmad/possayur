@@ -69,9 +69,34 @@ class PointOfSalesController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
-        // dd($request->all());
-       
+    {  
+        $request->validate([
+            'customer' => 'required|exists:customer,id',
+            'outlet' => 'required|exists:outlets,id',
+            'cash' => 'required|numeric|min:0',
+            'total' => 'required|numeric|min:0',
+            'items' => 'required|array|min:1',
+            'items.*.id' => 'required|exists:product,id',
+            'items.*.qty' => [
+                'required',
+                'numeric',
+                'min:1',
+                function ($attribute, $value, $fail) use ($request) {
+                    $index = explode('.', $attribute)[1];
+                    $productId = $request->items[$index]['id'];
+                    $product = Product::find($productId);
+                    
+                    if ($product && $value > $product->qty) {
+                        $fail("Insufficient stock for product {$product->name}. Available: {$product->qty}, Requested: {$value}");
+                    }
+                },
+            ],
+            'items.*.price' => 'required|numeric|min:0',
+            'items.*.discount' => 'nullable|numeric|min:0',
+            'items.*.tax' => 'nullable|numeric|min:0',
+            'items.*.variantId' => 'nullable|exists:product_variants,id',
+            'items.*.batchId' => 'nullable|exists:product_batches,id',
+        ]);
 
         try {
             DB::beginTransaction();
@@ -85,7 +110,7 @@ class PointOfSalesController extends Controller
                 'grandtotal' => $request->total,
                 'user_id' => auth()->user()->id,
                 'coupon_id' => $request->coupon,
-            'total_tax' => $request->tax,
+                'total_tax' => $request->tax,
                 'total_discount' => $request->totalDiscount,
             ]);
             foreach ($request->items as $item) {

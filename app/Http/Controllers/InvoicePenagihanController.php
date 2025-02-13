@@ -246,6 +246,7 @@ class InvoicePenagihanController extends Controller
         $salesOrder = SalesOrder::with([
             'products', 
             'products.product', 
+            'products.product.unit', 
             'products.variant', 
             'products.batch',
         ])->findOrFail($salesOrderId);
