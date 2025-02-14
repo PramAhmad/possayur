@@ -10,7 +10,7 @@ Proyek ini menggunakan Laravel 10 dengan Node.js untuk asset compilation, di-dep
 - Server Ubuntu 22.04 LTS (minimal 2GB RAM)
 
 ## Struktur Proyek
-
+```bash
 project/
 ├── docker/
 │ ├── nginx/
@@ -21,7 +21,7 @@ project/
 ├── Dockerfile
 ├── .env
 └── (file Laravel lainnya)
-
+```
 
 ## Instalasi
 
@@ -168,16 +168,37 @@ volumes:
   dbdata:
 ```
 
-<!-- make list -->
+
 
 ### Perintah Umum
-- Start containers: docker-compose up -d
-- Stop containers: docker-compose down
-- Rebuild containers: docker-compose up -d --build --force-recreate
-- View logs: docker-compose logs -f
-- Run artisan commands: docker-compose exec app php artisan [command]
-- Run npm commands: docker-compose exec app npm [command]
-- Run Shell CLI Container : docker-compose exec app sh
+- Start containers
+```bash
+docker-compose up -d
+```
+- Stop containers
+```bash
+docker-compose down
+```
+- Rebuild containers
+```bash
+docker-compose up -d --build --force-recreate
+```
+- View logs
+```bash
+docker-compose logs -f
+```
+- Run artisan commands
+```bash
+docker-compose exec app php artisan [command]
+```
+- Run npm commands
+```bash
+docker-compose exec app npm [command]
+```
+- Run Shell CLI Container
+```bash
+docker-compose exec app sh
+```
 
 
 ### Backup DB
