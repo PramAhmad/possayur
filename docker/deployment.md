@@ -202,10 +202,29 @@ docker-compose exec app npm [command]
 docker-compose exec app sh
 ```
 
-
 ### Backup DB
 ```bash
 docker-compose exec mysql sh -c 'exec mysqldump --all-databases -uroot -p"$MYSQL_ROOT_PASSWORD"' > backup.sql
+```
+
+### Troubleshooting
+### 1.Config Cache Error
+```bash
+docker-compose exec app php artisan config:clear
+rm -f bootstrap/cache/config.php
+```
+
+### 2.Node.js Build Failed
+```bash
+docker-compose exec app npm install --force
+docker-compose exec app npm run build
+```
+
+### 3. Optimize laravel
+```bash
+docker-compose exec app php artisan config:cache
+docker-compose exec app php artisan route:cache
+docker-compose exec app php artisan view:cache
 ```
 
 ### Noted Penting jangan kelewat !!!
