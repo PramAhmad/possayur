@@ -31,7 +31,7 @@ WORKDIR /var/www/html
 COPY . .
 
 # Install npm dependencies and build assets
-RUN npm install --production=false && \
+RUN npm install  && \
     npm run build && \
     npm cache clean --force
 
