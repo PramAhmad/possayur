@@ -201,6 +201,10 @@ docker-compose exec app npm [command]
 ```bash
 docker-compose exec app sh
 ```
+- Show all docker container active
+```bash
+docker ps -a
+```
 
 ### Backup DB
 ```bash
@@ -232,4 +236,5 @@ docker-compose exec app php artisan view:cache
 - Untuk development, gunakan npm run dev dengan hot-reloading
 - Selalu update .env sesuai environment
 - Backup volume database secara berkala (kalo gada feature backup di softwarenya)
+- Ketika melakukan docker exec perhatikan selalu nama container
 
