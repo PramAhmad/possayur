@@ -23,58 +23,6 @@ project/
 └── (file Laravel lainnya)
 ```
 
-## Instalasi
-
-### 1. Clone Repository
-```bash
-git clone https://github.com/yourusername/yourproject.git
-cd yourproject
-```
-
-
-### 2. Setup Environment
-
-Buat file .env dari template:
-```bash
-cp .env.example .env
-```
-
-Isi konfigurasi database di .env:
-```bash
-DB_CONNECTION=mysql
-DB_HOST=mysql
-DB_PORT=3306
-DB_DATABASE=laravel
-DB_USERNAME=laravel_user
-DB_PASSWORD=strong_password
-DB_ROOT_PASSWORD=root_strong_password
-```
-
-### 3. Build dan Jalankan Container
-```bash
-docker-compose up -d --build
-```
-
-### 4. Instalasi Dependencies
-```bash
-docker-compose exec app composer install
-docker-compose exec app npm install
-docker-compose exec app npm run build
-```
-
-
-### 5. Konfigurasi Laravel
-```bash
-docker-compose exec app php artisan key:generate
-docker-compose exec app php artisan storage:link
-docker-compose exec app chmod -R 775 storage bootstrap/cache
-```
-
-### 6. Migrasi Database
-```bash
-docker-compose exec app php artisan migrate --seed --force
-```
-
 
 
 ### KONFIGURASI DOCKER !!!
@@ -170,7 +118,61 @@ volumes:
 
 
 
-### Perintah Umum
+## Instalasi
+
+### 1. Clone Repository
+```bash
+git clone https://github.com/yourusername/yourproject.git
+cd yourproject
+```
+
+
+### 2. Setup Environment
+
+Buat file .env dari template:
+```bash
+cp .env.example .env
+```
+
+Isi konfigurasi database di .env:
+```bash
+DB_CONNECTION=mysql
+DB_HOST=mysql
+DB_PORT=3306
+DB_DATABASE=laravel
+DB_USERNAME=laravel_user
+DB_PASSWORD=strong_password
+DB_ROOT_PASSWORD=root_strong_password
+```
+
+### 3. Build dan Jalankan Container
+```bash
+docker-compose up -d --build
+```
+
+### 4. Instalasi Dependencies
+```bash
+docker-compose exec app composer install
+docker-compose exec app npm install
+docker-compose exec app npm run build
+```
+
+
+### 5. Konfigurasi Laravel
+```bash
+docker-compose exec app php artisan key:generate
+docker-compose exec app php artisan storage:link
+docker-compose exec app chmod -R 775 storage bootstrap/cache
+```
+
+### 6. Migrasi Database
+```bash
+docker-compose exec app php artisan migrate --seed --force
+```
+
+
+
+### Perintah Umum Di Docker
 - Start containers
 ```bash
 docker-compose up -d
