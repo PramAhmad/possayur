@@ -16,7 +16,8 @@ class Outlet extends Model
         'phone',
         'address',
         'description',
-        'logo'
+        'logo',
+        'uuid'
     ];
     public function tapActivity(Activity $activity, string $eventName)
     {
