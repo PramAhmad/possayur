@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Outlet;
 use Illuminate\Http\Request;
 use Spatie\QueryBuilder\QueryBuilder;
+use Illuminate\Support\Str;
 
 class OutletController extends Controller
 {
@@ -108,6 +109,7 @@ class OutletController extends Controller
         }
 
         Outlet::create([
+            'uuid' =>  Str::uuid()->toString(),
             'name' => $request->name,
             'address' => $request->address,
             'phone' => $request->phone,
@@ -116,7 +118,6 @@ class OutletController extends Controller
         
         return redirect()->route('outlets.index')->with('success', 'Outlet created successfully');
     }
-
     /**
      * Display the specified resource.
      *
