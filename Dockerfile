@@ -38,6 +38,9 @@ RUN npm install  && \
 # Optional: Jika perlu build untuk production
 # RUN npm ci --only=production && npm run build
 
+# Install Certbot SSL
+RUN apt-get install -y certbot python3-certbot-nginx
+
 # Permissions
 RUN chown -R www-data:www-data storage bootstrap/cache public
 
