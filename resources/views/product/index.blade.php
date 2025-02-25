@@ -24,8 +24,11 @@
                                 <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
                                     Totel Product
                                 </div>
+                                @php
+                                    $countProduct = App\Models\Product::count();
+                                @endphp
                                 <div class="text-slate-900 dark:text-white text-lg font-medium">
-                                    {{$products->count()}}
+                                    {{$countProduct}}
                                 </div>
                             </div>
                         </div>
@@ -93,6 +96,7 @@
         <div class="card mt-4">
             <header class="card-header noborder">
                 <div class="justify-end flex gap-3 items-center flex-wrap">
+                    
                     {{-- Create Button start --}}
                     @can('product create')
                         <a class="btn inline-flex justify-center btn-dark rounded-[25px] items-center !p-2 !px-3" href="{{ route('product.create') }}">
@@ -100,6 +104,25 @@
                             {{ __('New Product') }}
                         </a>
                     @endcan
+                    <div class="relative">
+                                    <input type="file" id="excelImport" name="excel_import"
+                                        accept=".xlsx,.xls"
+                                        class="hidden" />
+                                    <button type="button"
+                                        onclick="$('#excelImport').click()"
+                                        class="btn inline-flex justify-center btn-success rounded-[25px] items-center !p-2 !px-3">
+                                        <iconify-icon icon="heroicons:document-arrow-up"></iconify-icon>
+                                        {{ __('Import Excel') }}
+                                    </button>
+                                </div>
+
+                                <!-- Download Template -->
+                                <a href="{{route('product.download-template')}}"
+                                    class="btn inline-flex justify-center btn-success rounded-[25px] items-center !p-2 !px-3">
+                                    <iconify-icon icon="heroicons:document-arrow-down"></iconify-icon>
+                                    {{ __('Download Template') }}
+                                </a>
+
 
                     {{-- Refresh Button start --}}
                     <a class="btn inline-flex justify-center btn-dark rounded-[25px] items-center !p-2.5" href="{{ route('product.index') }}">
@@ -217,5 +240,31 @@
                 })
             }
         </script>
+        <script>
+    $(document).ready(function() {
+        $('#excelImport').change(function() {
+            let formData = new FormData();
+            formData.append('excel_import', $('#excelImport')[0].files[0]);
+
+            $.ajax({
+                url: "{{ route('product.import-excel') }}",
+                type: "POST",
+                data: formData,
+                contentType: false,
+                processData: false,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    Swal.fire('Sukses!', response.message, 'success');
+                },
+                error: function(xhr) {
+                    Swal.fire('Error!', xhr.responseJSON.message, 'error');
+                }
+            });
+        });
+    });
+</script>
+
     @endpush
 </x-app-layout>

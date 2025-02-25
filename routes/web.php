@@ -107,6 +107,10 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
     Route::get('product/{id}/customer/{customer_id}/edit', [ProductPriceByCustomer::class, 'edit'])->name('product.customer.edit');
     Route::put('product/{id}/customer/{customer_id}', [ProductPriceByCustomer::class, 'update'])->name('product.customer.update');
     Route::delete('product/{id}/customer/{customer_id}', [ProductPriceByCustomer::class, 'destroy'])->name('product.customer.destroy');
+    Route::get('download/product/download-template', [ProductController::class, 'downloadTemplate'])
+    ->name('product.download-template');
+    // import
+    Route::post('download/product/import-excel', [ProductController::class, 'import'])->name('product.import-excel');
 
     Route::resource('purchaseorder', PurchaseOrderController::class);
     Route::get('purchaseorder/{id}/products', [PurchaseOrderController::class, 'getProducts'])->name('purchaseorder.getProducts');

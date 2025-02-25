@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ProductTemplateExport;
+use App\Imports\ProductImport;
 use App\Models\Batches;
 use App\Models\Product;
 use App\Models\Outlet;
@@ -12,6 +14,8 @@ use App\Models\Variant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Maatwebsite\Excel\Facades\Excel;
+
 use Spatie\QueryBuilder\QueryBuilder;
 
 class ProductController extends Controller
@@ -396,5 +400,31 @@ class ProductController extends Controller
         return redirect()->route('product.index')->with('success', 'Product deleted successfully');
     }
 
- 
+    public function downloadTemplate(Request $request)
+    {   
+        $fileName = now().'product.xlsx';
+        return Excel::download(new ProductTemplateExport, $fileName);
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'excel_import' => 'required|mimes:xlsx,xls|max:2048'
+        ]);
+
+        try {
+            Excel::import(new ProductImport, $request->file('excel_import'));
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Data berhasil diimpor!'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan saat mengimpor data!',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

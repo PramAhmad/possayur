@@ -137,6 +137,7 @@
                 <div id="product-grid" class="h-full overflow-y-auto px-2">
                     <div class="product-grid grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 pb-3">
                         @foreach ($products as $product)
+                        <!-- Produk Utama -->
                         <div>
                             <div
                                 role="button"
@@ -147,9 +148,10 @@
                                 data-product-image="{{ asset('upload/product/' . $product->image) }}"
                                 data-variant-id=""
                                 data-batch-id="">
-                                <img src="{{ asset('upload/product/' . $product->image) }}"
-                                    class="object-cover w-full h-24 sm:h-44 lg:h-52"
-                                    alt="{{ $product->name }}">
+                                <img src="{{ asset($product->image ? 'upload/product/' . $product->image : 'images/default.png') }}"
+    class="object-cover w-full h-24 sm:h-44 lg:h-52"
+    alt="{{ $product->name }}">
+
                                 <div class="flex flex-col sm:flex-row pb-3 px-3 text-sm mt-3">
                                     <p class="flex-grow truncate mr-1">
                                         {{ $product->name }}
@@ -163,6 +165,7 @@
                             </div>
                         </div>
 
+                        <!-- Variant dari Produk -->
                         @if ($product->variants->count() > 0)
                         @foreach ($product->variants as $variant)
                         <div>
@@ -174,9 +177,11 @@
                                 data-product-price="{{ $variant->additional_price }}"
                                 data-product-image="{{ asset('upload/product/' . ($variant->image ?? $product->image)) }}"
                                 data-variant-id="{{ $variant->id }}"
-                                data-batch-id=""> <img src="{{ asset('upload/product/' . ($variant->image ?? $product->image)) }}"
-                                    class="object-cover w-full h-24 sm:h-44 lg:h-40"
-                                    alt="{{ $variant->name }}">
+                                data-batch-id="">
+                                <img src="{{ asset(($variant->image ?? $product->image) ? 'upload/product/' . ($variant->image ?? $product->image) : 'images/default.png') }}"
+    class="object-cover w-full h-24 sm:h-44 lg:h-40"
+    alt="{{ $variant->name }}">
+
                                 <div class="flex flex-col sm:flex-row  text-sm mt-3">
                                     <p class="flex-grow truncate mr-1">
                                         {{ $variant->name }}
@@ -190,7 +195,9 @@
                         </div>
                         @endforeach
                         @endif
-                        @if ($product->batches->count() > 0 )
+
+                        <!-- Batch dari Produk -->
+                        @if ($product->batches->count() > 0)
                         @foreach ($product->batches as $batch)
                         <div>
                             <div
@@ -201,16 +208,18 @@
                                 data-product-price="{{ $batch->price }}"
                                 data-product-image="{{ asset('upload/product/' . ($batch->image ?? $product->image)) }}"
                                 data-variant-id=""
-                                data-batch-id="{{ $batch->id }}"><img src="{{ asset('upload/product/' . ($batch->image ?? $product->image)) }}"
-                                    class="object-cover w-full h-24 sm:h-44 lg:h-52"
-                                    alt="{{ $batch->batch_no }}">
+                                data-batch-id="{{ $batch->id }}">
+                                <img src="{{ asset(($batch->image ?? $product->image) ? 'upload/product/' . ($batch->image ?? $product->image) : 'images/default.png') }}"
+    class="object-cover w-full h-24 sm:h-44 lg:h-52"
+    alt="{{ $batch->batch_no }}">
+
                                 <div class="flex flex-col sm:flex-row pb-3 px-3 text-sm mt-3">
                                     <p class="flex-grow truncate mr-1">
                                         {{ $batch->batch_no }}
                                         <span class="font-semibold">( {{ $batch->unit->name ?? $product->unit->name ?? '-' }} )</span>
                                     </p>
                                     <p class="nowrap font-semibold">
-                                        Rp {{ number_format($batch->additional_price) }}
+                                        Rp {{ number_format($batch->price) }}
                                     </p>
                                 </div>
                             </div>
@@ -219,6 +228,11 @@
                         @endif
                         @endforeach
                     </div>
+
+                    <!-- Pagination -->
+                    @if(!request()->has('search'))
+                    {{ $products->links() }}
+                    @endif
                 </div>
             </div>
 
@@ -819,7 +833,7 @@
                 console.log('submit payment');
                 const cart = JSON.parse(localStorage.getItem('cart')) || [];
                 const cash = $("#cash").val();
-                const subtotal =  parseInt($("#subtotal").text().replace(/[^\d]/g, '')) || 0;
+                const subtotal = parseInt($("#subtotal").text().replace(/[^\d]/g, '')) || 0;
                 const tax = parseInt($("#tax").text().replace("Rp ", "").replace(",", "")) || 0;
                 const totalPrice = parseInt($("#total-price").text().replace(/[^\d]/g, '')) || 0;
                 const change = cash - totalPrice;

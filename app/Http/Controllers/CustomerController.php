@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Customer;
 use App\Models\CustomerGroup;
+use App\Models\Outlet;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -42,6 +43,8 @@ class CustomerController extends Controller
             ['name' => 'Create Customer', 'url' => route('customer.create'), 'active' => true]
         ];
         $data['customer_group'] = CustomerGroup::all();
+        $data['outlet'] = Outlet::all();
+
 
         return view('customer.create' , $data);
     }
@@ -69,6 +72,7 @@ class CustomerController extends Controller
             'postal_code' => 'required|string|max:255',
         'city' => 'required|string|max:255',
         'state' => 'required|string|max:255',
+        'outlet_id' => 'required|exists:outlets,id'
         ],[
             'name.required' => 'Name wajib di isi',
             'name.max' => 'Name maksimal 255 karakter',
@@ -113,6 +117,8 @@ class CustomerController extends Controller
             'email' => $request->email,
             'password' => bcrypt($request->password),
             'email_verified_at' => now(),
+            'outlet_id' => $request->outlet_id,
+
         ]);
    
         Customer::create([
@@ -169,6 +175,7 @@ class CustomerController extends Controller
         ];
         $data['customer_group'] = CustomerGroup::all();
         $data['customer'] = Customer::find($id);
+        $data['outlet'] = Outlet::all();    
         return view('customer.edit' , $data);
     }
 
@@ -240,6 +247,7 @@ class CustomerController extends Controller
             'email' => $request->email,
             'password' => bcrypt($request->password),
             'email_verified_at' => now(),
+            'outlet_id' => $request->outlet_id,
         ]);
 
         Customer::where('user_id', $id)->update([

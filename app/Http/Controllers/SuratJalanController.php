@@ -214,7 +214,6 @@ class SuratJalanController extends Controller
         try{
             $suratJalan = SuratJalan::create([
             'sales_order_id' => $request->sales_order_id,
-            'packer' => $request->packer,
             'driver' => $request->driver,
             'due_date' => $request->due_date,
             'total_qty' => $request->summary['total_adjusted_qty'] ?? 0, 

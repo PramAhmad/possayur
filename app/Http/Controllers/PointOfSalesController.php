@@ -157,11 +157,14 @@ class PointOfSalesController extends Controller
         ];
 
         $pageTitle = 'Point of Sales';
-        $products = Product::where('outlet_id', $id)->with('unit','variants','batches')->where('is_active','=','1')->get();
+        $productsQuery = Product::where('outlet_id', $id)
+        ->with('unit', 'variants', 'batches')
+        ->where('is_active', '=', '1');
         $outlet = Outlet::find($id);
         $customer = Customer::whereHas('user', function ($query) use ($id) {
             $query->where('outlet_id', $id);
         })->with('user')->get();
+        $products = $productsQuery->paginate(10);
         $coupon = Coupon::where('outlet_id', $id)->get();
         // return $customer;
         return view('pos.show', [

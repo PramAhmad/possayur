@@ -37,6 +37,21 @@
                             @csrf
                             @method('POST')
                             <div class="grid md:grid-cols-2 gap-7">
+                                <!-- outlet -->
+                                <div class="input-area">
+                                    <label for="outlet_id" class="form-label">Outlet</label>
+                                    <select id="outlet_id" name="outlet_id" class="form-control">
+                                        <option value="">Pilih Outlet</option>
+                                        @foreach ($outlet as $o)
+                                        <option value="{{ $o->id }}">{{ $o->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('outlet_id')
+                                    <div class="text-red-500 mt-2 text-sm">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
+                                </div>
                                 <div class="input-area">
                                     <label for="name" class="form-label">Nama </label>
                                     <input id="name" name="name" type="text" class="form-control" placeholder="Masukan Nama ">
