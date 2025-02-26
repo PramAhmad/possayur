@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AppsController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CertSignController;
 use App\Http\Controllers\FormController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RoleController;
@@ -184,6 +185,10 @@ Route::post('download/stockopname/import-excel', [StockOpnameController::class, 
 
     // print
     Route::get('print/suratjalan/{id}', [SuratJalanExportController::class, 'print'])->name('suratJalan.print');
+    Route::get('print/salesorder/{id}', [SalesOrderExportController::class, 'print'])->name('salesorder.print');
+
+    /** CERTIFICATE SIGN QZ.IO */
+    Route::get('cert-sign', [CertSignController::class, 'index'])->name('cert-sign.index');
 });
 
 // test log

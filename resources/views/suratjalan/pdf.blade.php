@@ -148,7 +148,7 @@
                     @endif
                 </td>
                 <td>{{ $product->qty }}</td>
-                <td>{{ $product->product->unit->name }}</td>
+                <td>{{ $product->product?->unit?->name }}</td>
                 <td>{{ currency($product->unit_price) }}</td>
 
                 <td class="text-right">

@@ -13,7 +13,7 @@
                         <select name="sales_order_id" id="sales_order_id" class="form-control">
                             <option value="">{{ __('Select Sales Order') }}</option>
                             @foreach ($salesOrders as $so)
-                            <option value="{{ $so->id }}">{{ $so->reference_no }}</option>
+                                <option value="{{ $so->id }}">{{ $so->reference_no }}</option>
                             @endforeach
                         </select>
                         <div class="error-message text-red-500 mt-1" id="sales_order_id_error"></div>
@@ -22,7 +22,6 @@
                     <div class="input-area">
                         <label for="outlet_id" class="form-label">{{ __('Outlet') }}</label>
                         <input type="text" id="outlet_name" class="form-control" readonly>
-                        <input type="hidden" name="outlet_id" id="outlet_id">
                     </div>
 
                     <div class="input-area">
@@ -49,7 +48,7 @@
                             <tbody id="products-table-body" class="bg-white divide-y divide-gray-200"></tbody>
                             <tfoot class="bg-gray-50">
                                 <tr>
-                                    <td colspan="3" class="px-6 py-4 font-semibold">{{ __('Totals') }}:</td>
+                                    <td colspan="4" class="px-6 py-4 font-semibold">{{ __('Totals') }}:</td>
                                     <td class="px-6 py-4"></td> <!-- Surat Jalan Qty total -->
                                     <td class="px-6 py-4" id="total-invoice-qty">0</td>
                                     <td class="px-6 py-4" id="total-amount">0</td>
@@ -119,7 +118,6 @@
                 url: `/invoice/get-products/${salesOrderId}`,
                 type: 'GET',
                 success: function(response) {
-                    $('#outlet_id').val(response.outlet_id);
                     $('#outlet_name').val(response.outlet_name);
                     const tableBody = $('#products-table-body');
                     tableBody.empty();
@@ -156,9 +154,9 @@
                                     </div>
                                 </td>
                                 <td>${formatCurrency(item.unit_price)}</td>
-                                <td>${item.product.unit.name}</td>
-                                <td>${item.qty}</td>
-                                <td>${suratJalanQty}</td>
+                                <td>${item.product?.unit?.name ?? '-'}</td>
+                                <td class="text-center">${item.qty}</td>
+                                <td class="text-center">${suratJalanQty}</td>
                                 <td>
                                     <input type="number" 
                                            name="invoice_quantities[]" 
@@ -268,7 +266,14 @@
             data: JSON.stringify(formData),
             contentType: 'application/json',
             success: function(response) {
-                alert('Invoice created successfully.');
+                Swal.fire({
+                    title: 'Sukses',
+                    text: 'Invoice berhasil dibuat',
+                    icon: 'success',
+                    confirmButtonText: 'Ok',
+                }).then((result) => {
+                    window.location.href = '{{ route('invoice.index') }}';
+                });
             },
             error: function(xhr) {
                 console.error('Error creating invoice:', xhr);

@@ -9,6 +9,7 @@ use App\Models\SalesOrder;
 use App\Models\SuratJalan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class SuratJalanController extends Controller
@@ -73,22 +74,34 @@ class SuratJalanController extends Controller
                 'active' => true
             ],
         ];
+
         if (auth()->user()->hasRole('super-admin')) {
             $outlets = Outlet::where('id', auth()->user()->outlet_id)->get();
             $salesOrder = SalesOrder::where('status', '=' ,'pending')->get();
-            $productSalesOrders = ProductSalesOrder::all();
+            // $productSalesOrders = ProductSalesOrder::all();
         }else{
             $outlets = Outlet::all();
             $salesOrder = SalesOrder::where('outlet_id', auth()->user()->outlet_id)->get();
-            $productSalesOrders = ProductSalesOrder::all();
+            // $productSalesOrders = ProductSalesOrder::all();
         }
+
+        $outlets = Outlet::when(!auth()->user()->hasRole('super-admin'), function ($query) {
+                        return $query->where('id', auth()->user()->outlet_id);
+                    })
+                    ->get();
+
+        $salesOrder = SalesOrder::when(!auth()->user()->hasRole('super-admin'), function ($query) {
+                        return $query->where('outlet_id', auth()->user()->outlet_id);
+                    })
+                    ->where('status', 'pending')
+                    ->get();
 
         // return $salesOrder;
         return view('suratjalan.create', [
             'breadcrumbItems' => $breadcrumbItems,
             'salesOrder' => $salesOrder,
             'outlets' => $outlets,
-            'productSalesOrders' => $productSalesOrders,
+            // 'productSalesOrders' => $productSalesOrders,
             'pageTitle' => 'Create Surat Jalan',
         ]);
     }
@@ -100,7 +113,6 @@ class SuratJalanController extends Controller
         return response()->json([
             'products' => $salesOrder->products,
             'outlet_id' => $salesOrder->outlet_id,
-  
             'total_qty' => $salesOrder->total_qty,
             'grand_total' => $salesOrder->grandtotal
         ]);
@@ -221,10 +233,10 @@ class SuratJalanController extends Controller
        ]);
             SalesOrder::findOrFail($request->sales_order_id)->update([
                 'status' => 'process'
-            ]);;
+            ]);
 
             foreach($request->products as $key => $product){
-               ProductSuratJalan::create(attributes: [
+                ProductSuratJalan::create(attributes: [
                    'surat_jalan_id' => $suratJalan->id,
                    'product_id' => $product['product_id'],
                    'qty' => $product['adjusted_qty'],
@@ -235,11 +247,13 @@ class SuratJalanController extends Controller
                ]);
             }
             DB::commit();
-        return response()->json(['id' => $suratJalan->id], 201);
-        }catch(\Exception $e){
+
+            return response()->json(['id' => $suratJalan->id], 201);
+        } catch (\Exception $e){
             DB::rollBack();
+            Log::error('Error in store method: ' . $e->getMessage());
+
             return $e->getMessage();
-            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
