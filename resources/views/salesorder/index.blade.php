@@ -194,9 +194,9 @@
                                                 </a>
                                                 <!-- can export dwonload pdf -->
                                                 @can('salesorder export')
-                                                <a href="{{ route('salesorder.pdf', $order->id) }}" class="action-btn" data-tippy-content="Download PDF">
-                                                    <iconify-icon icon="heroicons:arrow-down-tray"></iconify-icon>
-                                                </a>
+                                                    <a href="{{ route('salesorder.pdf', $order->id) }}" target="_blank" class="action-btn" data-tippy-content="Download PDF">
+                                                        <iconify-icon icon="heroicons:arrow-down-tray"></iconify-icon>
+                                                    </a>
                                                 @endcan
                                               
                                             </div>

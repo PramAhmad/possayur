@@ -3,13 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Invoice</title>
+    <title>Sales Order</title>
     <style>
+        @page {
+            size: A4;
+            margin: 0;
+        }
+        
+        html, body {
+            width: 210mm;
+            height: 297mm;
+        }
         body {
-            font-family: Arial, sans-serif;
-            font-size: 18px;
-            margin: 0.5cm;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 8px;
+            margin: 0;
             padding: 0;
+            letter-spacing: normal
         }
 
         p {
@@ -45,8 +55,8 @@
         <table border="0" style="width: 100%">
             <tr>
                 <td class="outlet-header" width="50%">
-                    <p><strong style="font-size: 22px">Koyasai</strong></p>
-                    <p style="font-size: 18px">Pusat</p>
+                    <p><strong style="font-size: 12px">Koyasai</strong></p>
+                    <p style="font-size: 10px">Pusat</p>
                     <p>Pusat</p>
                     <p>Telepon: +62 851-9898-9744 | Email: info@gubugbuah.com</p>
                     <br>
@@ -54,15 +64,16 @@
                     <p>Alamat: Jl. Ibrahim haji no 55</p>
                 </td>
                 <td style="text-align: right" valign="top">
-                    <p><strong style="font-size: 22px">INVOICE</strong></p>
-                    <p>Tanggal: 25 Feb 2025</p>
-                    <p>No Invoice: INV-2</p>
+                    <p><strong style="font-size: 12px">SALES ORDER</strong></p>
+                    <p>Tanggal: 26 Feb 2025</p>
+                    <p>No Invoice: INV-4</p>
                     
                 </td>
             </tr>
         </table>
     </div>
 
+    <br>
     
 </body>
 </html>

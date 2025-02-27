@@ -43,9 +43,9 @@
                     <span>Edit</span>
                 </a>
                 <button type="button"
-                    class="invocie-btn invoice-btn-print inline-flex btn btn-sm whitespace-nowrap space-x-1 cursor-pointer bg-white dark:bg-slate-800
+                    class="invocie-btn invoice-btn-print inline-flex btn btn-sm whitespace-nowrap space-x-1 cursor-not-allowed bg-white dark:bg-slate-800
                     dark:text-slate-300 btn-md h-min text-sm font-normal text-slate-900 rtl:space-x-reverse"
-                    data-url="{{ route('salesorder.print', $salesOrder->id) }}">
+                    data-url="{{ route('salesorder.print', $salesOrder->id) }}" disabled>
                     <span class="text-lg">
                         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
                             aria-hidden="true" role="img" class="iconify iconify--heroicons" width="1em"
@@ -59,11 +59,11 @@
                                 1.125v3.659M18 10.5h.008v.008H18V10.5Zm-3 0h.008v.008H15V10.5Z"></path>
                         </svg>
                     </span>
-                    <span>Print</span>
+                    <span class="print-text-button">Print</span>
                 </button>
                 <a href="{{ route('salesorder.pdf', ['id' => $salesOrder->id]) }}"
                     class="invocie-btn inline-flex btn btn-sm whitespace-nowrap space-x-1 cursor-pointer bg-white dark:bg-slate-800
-                    dark:text-slate-300 btn-md h-min text-sm font-normal text-slate-900 rtl:space-x-reverse">
+                    dark:text-slate-300 btn-md h-min text-sm font-normal text-slate-900 rtl:space-x-reverse" target="_blank">
                     <span class="text-lg">
                         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
                             aria-hidden="true" role="img" class="iconify iconify--heroicons" width="1em"
@@ -76,7 +76,7 @@
                     </span>
                     <span>Download</span>
                 </a>
-                <button
+                {{-- <button
                     class="invocie-btn inline-flex btn btn-sm whitespace-nowrap space-x-1 cursor-pointer bg-white dark:bg-slate-800
                     dark:text-slate-300 btn-md h-min text-sm font-normal text-slate-900 rtl:space-x-reverse">
                     <span class="text-lg transform -rotate-45">
@@ -90,8 +90,7 @@
                         </svg>
                     </span>
                     <span>Send invoice</span>
-                </button>
-                <input type="text" class="default-printer">
+                </button> --}}
             </div>
         </div>
         <!-- salesOrder Header Card -->
@@ -227,43 +226,71 @@
     <!-- script -->
     <!-- invocie-btn export pdf jquery post ajax-->
 
-    @include('vendor.qz.script')
     @push('scripts')
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        @vite(['resources/js/qz.io/qz-tray.js', 'resources/js/qz.io/promise-polyfill-8.1.3.min.js'])
         <script>
             $(function() {
-                // qz.websocket.connect().then(function() {
-                //     findDefaultPrinter();
-                //     $('.qz-loader').addClass('d-none');
-                //     $('.printer, .btn-cetak').prop('disabled', false);
-                // }).catch(handleConnectionError);
+                let printer = '';
+
+                qz.security.setCertificatePromise(function(resolve, reject) {
+                    fetch("{{ asset('override.crt') }}", {cache: 'no-store', headers: {'Content-Type': 'text/plain'}})
+                        .then(function(data) { data.ok ? resolve(data.text()) : reject(data.text()); });
+                });
+
+                qz.security.setSignatureAlgorithm("SHA512");
+
+                qz.security.setSignaturePromise(function(toSign) {
+                    return function(resolve, reject) {
+                        fetch("{{ route('cert-sign.index') }}" + '?request=' + toSign, {cache: 'no-store', headers: {'Content-Type': 'text/plain'}})
+                            .then(function(data) { data.ok ? resolve(data.text()) : reject(data.text()); });
+                    };
+                });
+
+                qz.websocket.connect().then(function() {
+                    findDefaultPrinter();
+                    // $('.qz-loader').addClass('d-none');
+                    $('.invoice-btn-print').removeClass('cursor-not-allowed').prop('disabled', false);
+                }).catch(handleConnectionError);
 
                 $('.invoice-btn-print').on('click', function() {
-                    var url = $(this).data('url') + '?action=direct_print';
+                    var url = $(this).data('url');
 
                     $.ajax({
-                        url: `${url}`,
+                        url: `${url}?action=direct_print`,
                         type: 'GET',
-                        beforeSend: function() {},
+                        beforeSend: function() {
+                            $('.invoice-btn-print').addClass('cursor-not-allowed')
+                            $('.print-text-button').text('Printing...')
+                        },
                         success: function(result) {
-                            // // $('.print-preview-frame').attr('src', `${url}?action=print`)
-                            // let config = qz.configs.create($('.default-printer').val());
-
-                            // qz.print(config, data).catch(function(e) { console.error(e); });
-                            let config = qz.configs.create($('.default-printer').val());
+                            let config = qz.configs.create(printer);
                             let printData = [{
                                 type: 'pixel',
-                                format: 'html',
+                                format: 'pdf',
                                 flavor: 'file',
                                 data: result
                             }]
 
                             qz.print(config, printData).catch(function(e) {
                                 console.error(e);
+                                Swal.fire({
+                                    title: "Failed to print",
+                                    text: e,
+                                    icon: "error"
+                                });
                             });
+
+                            $('.invoice-btn-print').removeClass('cursor-not-allowed')
+                            $('.print-text-button').text('Print')
+                        },
+                        complete: function() {
                         },
                         error: function(xhr, status, error) {
                             console.log(xhr.responseText);
+                            
+                            $('.invoice-btn-print').removeClass('cursor-not-allowed')
+                            $('.print-text-button').text('Print')
                         }
                     });
 
@@ -271,7 +298,7 @@
 
                 function findDefaultPrinter() {
                     qz.printers.getDefault().then(function(data) {
-                        $('.default-printer').val(data);
+                        printer = data
                     }).catch(displayError);
                 }
 
@@ -281,26 +308,14 @@
                 }
 
                 function displayMessage(msg, css, time) {
-                    if (css == undefined) {
-                        css = 'alert-info';
-                    }
-
-                    // var timeout = setTimeout(function() { $('#' + timeout).alert('close'); }, time ? time : 50000);
-
-                    var alert = $("<div/>").addClass('alert alert-dismissible fade show in ' + css)
-                        .css('max-height', '20em').css('overflow', 'auto')
-                        // .attr('id', timeout)
-                        .attr('role', 'alert');
-                    alert.html(
-                        `${msg} <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`
-                        );
-
-                    $(".qz-alert").append(alert);
+                    Swal.fire({
+                        title: "Error",
+                        text: msg,
+                        icon: "error"
+                    });
                 }
 
                 function handleConnectionError(err) {
-                    // updateState('Error', 'danger');
-
                     if (err.target != undefined) {
                         if (err.target.readyState >= 2) { //if CLOSING or CLOSED
                             displayError("Connection to QZ Tray was closed");
@@ -312,7 +327,7 @@
                         displayError(err);
                     }
 
-                    $('.qz-loader').addClass('d-none');
+                    // $('.qz-loader').addClass('d-none');
                 }
             })
         </script>

@@ -6,6 +6,7 @@ use App\Exports\SalesOrderExport;
 use App\Models\SalesOrder;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -21,7 +22,7 @@ class SalesOrderExportController extends Controller
     {
         return Excel::download(new SalesOrderExport, now() . 'sales_order.xlsx');
     }
-    public function pdf($id)
+    public function oldPdf($id)
     {
         $salesOrder = SalesOrder::with(
             'outlet',
@@ -271,6 +272,27 @@ class SalesOrderExportController extends Controller
         return;
     }
 
+    public function pdf($id)
+    {
+        $salesOrder = SalesOrder::with(
+            'outlet',
+            'customer',
+            'products',
+            'products.product',
+            'returnSalesOrder',
+            'invoice',
+            'products.variant',
+            'products.batch',
+            'products.product.unit'
+        )->find($id);
+
+        $pdf = Pdf::loadView('salesorder.print', compact('salesOrder'));
+
+        return $pdf->download('Sales Order ' . $salesOrder->reference_no . ' '. now()->format('Ymd_His') .'.pdf');
+        // $content = $pdf->download()->getOriginalContent();
+        // $filename = 'sales-order_' . $id . '.pdf';
+    }
+
     public function print(Request $request, $id)
     {
         $salesOrder = SalesOrder::with(
@@ -285,14 +307,16 @@ class SalesOrderExportController extends Controller
             'products.product.unit'
         )->find($id);
 
-        // if ($request->action == 'check') {
-        //     return response()->json(['success' => ($salesOrder ? true : false), 'data' => $salesOrder ?? null], $salesOrder ? 200 : 404);
-        // }
-
         if ($request->action == 'direct_print') {
-            file_put_contents('salesorder-print.html', view('salesorder.print', compact('salesOrder'))->render());
+            $pdf = Pdf::loadView('salesorder.print', compact('salesOrder'));
+            $content = $pdf->download()->getOriginalContent();
+            $filename = 'sales-order_' . $id . '.pdf';
 
-            return asset('salesorder-print.html');
+            if (Storage::put('public/direct-print/'. $filename, $content)) {
+                return response()->json(asset('storage/direct-print/' . $filename), 200);
+            }
+
+            return response()->json('Failed to save PDF', 500);
         }
 
         return view('salesorder.print', compact('salesOrder'))->render();

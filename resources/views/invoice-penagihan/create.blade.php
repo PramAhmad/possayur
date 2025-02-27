@@ -157,10 +157,10 @@
                                 <td>${item.product?.unit?.name ?? '-'}</td>
                                 <td class="text-center">${item.qty}</td>
                                 <td class="text-center">${suratJalanQty}</td>
-                                <td>
+                                <td class="text-center">
                                     <input type="number" 
                                            name="invoice_quantities[]" 
-                                           class="form-control qty-input" 
+                                           class="form-control qty-input text-center" 
                                            value="${suratJalanQty}" 
                                            min="0"
                                            max="${item.qty}">
@@ -266,14 +266,8 @@
             data: JSON.stringify(formData),
             contentType: 'application/json',
             success: function(response) {
-                Swal.fire({
-                    title: 'Sukses',
-                    text: 'Invoice berhasil dibuat',
-                    icon: 'success',
-                    confirmButtonText: 'Ok',
-                }).then((result) => {
-                    window.location.href = '{{ route('invoice.index') }}';
-                });
+                alert('Invoice berhasil dibuat');
+                window.location.href = '{{ route('invoice.index') }}';
             },
             error: function(xhr) {
                 console.error('Error creating invoice:', xhr);

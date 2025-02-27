@@ -9,7 +9,7 @@ class CertSignController extends Controller
     public function index(Request $request)
     {
         // Sample key.  Replace with one used for CSR generation
-        $KEY = 'private-key.pem';
+        $KEY = 'key.pem';
         //$PASS = 'S3cur3P@ssw0rd';
 
         $req = $request->all()['request'];
