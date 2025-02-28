@@ -81,51 +81,24 @@
                                   {{ $s->phone }}
                                 </td>
                               
-                              
-                                <td class="table-td ">
-                                <div>
-                                  <div class="relative">
-                                    <div class="dropdown relative">
-                                      <button
-                                        class="text-xl text-center block w-full "
-                                        type="button"
-                                        id="tableDropdownMenuButton{{$s['id']}}"
-                                        data-bs-toggle="dropdown"
-                                        aria-expanded="false">
-                                        <iconify-icon icon="heroicons-outline:dots-vertical"></iconify-icon>
-                                      </button>
-                                      <ul class=" dropdown-menu min-w-[120px] absolute text-sm text-slate-700 dark:text-white hidden bg-white dark:bg-slate-700
-                                          shadow z-[2] float-left overflow-hidden list-none text-left rounded-lg mt-1 m-0 bg-clip-padding border-none">
-                                        <li>
-                                          <a
-                                            href="#"
-                                            class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
-                                              dark:hover:text-white">
-                                            View</a>
-                                        </li>
-                                        <li>
-                                          <a
-                                            href="{{ route('supplier.edit', $s->id) }}"
-                                            class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
-                                              dark:hover:text-white">
-                                            Edit</a>
-                                        </li>
-                                        <li>
+                                <td class="table-td">
+                                <div class="flex space-x-3 rtl:space-x-reverse">
+                                                        <a class="action-btn" href="{{ route('supplier.edit', $s->id) }}">
+                                                            <iconify-icon icon="heroicons:pencil-square"></iconify-icon>
+                                                        </a>
                                       
                                         <form id="deleteForm{{ $s->id }}" method="POST" action="{{ route('supplier.destroy', $s) }}">
                                                             @csrf
                                                             @method('DELETE')
-                                                            <a class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
-                                              dark:hover:text-white" onclick="sweetAlertDelete(event, 'deleteForm{{ $s->id }}')" type="submit">
-                                                                delete
-                                                            </a>
+                                                          <a class="action-btn cursor-pointer" onclick="sweetAlertDelete(event, 'deleteForm{{ $s->id }}')" type="submit">
+                                                              <iconify-icon icon="heroicons:trash"></iconify-icon>
+                                                          </a>
                                                         </form>
-                                        </li>
-                                      </ul>
+
                                     </div>
-                                  </div>
-                                </div>
+                                 
                               </td>
+                               
                               
                             @endforeach
                         </tbody>

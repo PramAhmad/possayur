@@ -17,11 +17,13 @@
     @endpush
     <div class="flex-grow flex flex-col lg:flex-row">
         <!-- Products Section -->
-        <div class="flex flex-col bg-blue-gray-50 w-full h-full py-4">
-            <div class="flex px-2 w-full flex-row relative" id="search-table">
-                <div class="absolute left-5 top-3 z-10 px-2 py-2 rounded-full bg-sky-500 text-white">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        <div class="flex flex-col bg-blue-gray-50  w-full h-full py-4">
+            <div class="flex px-2 w-full flex-row relative dark:bg-gray-800" id="search-table">
+                <div class="absolute left-5 top-3 z-10 px-2 py-2 rounded-full bg-sky-500 text-white ">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
                 </div>
 
@@ -38,24 +40,22 @@
                     <option value="">Choose a product</option>
 
                     @foreach ($products as $product)
-                    <option value="{{ $product->id }}"
+                    <option value="{{ $product->id }}" data-product-id="{{ $product->id }}"
                         data-price="{{ $product->selling_price }}"
-                        data-image="{{ asset('upload/product/' . $product->image) }}"
-                        data-hs-select-option='{
-                "icon": "<img class=\"inline-block size-4 rounded-full\" src=\"{{ asset('upload/product/' . $product->image) }}\" alt=\"{{ addslashes($product->name) }}\" style=\"width: 30px; height: 30px;\" />"
-            }'
-                        role="button">
-                        {{ $product->name }}
+                        data-image="{{ asset('upload/product/' . $product->image) }}" data-hs-select-option='{
+                               "icon": "<img class=\"inline-block size-4 rounded-full\" src=\"{{ asset($product->image ? 'upload/product/' . $product->image : 'images/default.png') }}\" alt=\"{{ addslashes($product->name) }}\" style=\"width: 30px; height: 30px;\" />"
+            }' role="button">
+                        {{ $product->name }} - Rp {{ number_format($product->selling_price) }}
                     </option>
 
                     @if ($product->variants->count() > 0)
                     @foreach ($product->variants as $variant)
-                    <option value="{{ $variant->id }}" data-price="{{ $variant->additional_price }}"
+                    <option value="{{ $variant->id }}" data-product-id="{{ $product->id }}"
+                        data-variant-id="{{ $variant->id }}" data-price="{{ $variant->additional_price }}"
                         data-hs-select-option='{
-                "icon": "<img class=\"inline-block size-4 rounded-full\" src=\"{{ asset('upload/product/' . $product->image) }}\" alt=\"{{ addslashes($product->name) }}\" style=\"width: 30px; height: 30px;\" />"
-            }'
-                        data-image="{{ asset('upload/product/' . ($variant->image ?? $product->image)) }}
-        ">
+                                                                "icon": "<img class=\"inline-block size-4 rounded-full\" src=\"{{ asset('upload/product/' . $product->image) }}\" alt=\"{{ addslashes($product->name) }}\" style=\"width: 30px; height: 30px;\" />"
+                                                            }' data-image="{{ asset('upload/product/' . ($variant->image ?? $product->image)) }}
+                                                        ">
                         {{ $variant->name }} - Rp {{ number_format($variant->additional_price) }}
                     </option>
                     @endforeach
@@ -63,11 +63,10 @@
 
                     @if ($product->batches->count() > 0)
                     @foreach ($product->batches as $batch)
-                    <option value="{{ $batch->id }}" data-price="{{ $batch->price }}"
-                        data-hs-select-option='{
-                "icon": "<img class=\"inline-block size-4 rounded-full\" src=\"{{ asset('upload/product/' . $product->image) }}\" alt=\"{{ addslashes($product->name) }}\" style=\"width: 30px; height: 30px;\" />"
-            }'
-                        data-image="{{ asset('upload/product/' . ($batch->image ?? $product->image)) }}">
+                    <option value="{{ $batch->id }}" data-product-id="{{ $product->id }}"
+                        data-batch-id="{{ $batch->id }}" data-price="{{ $batch->price }}" data-hs-select-option='{
+                                                        "icon": "<img class=\"inline-block size-4 rounded-full\" src=\"{{ asset('upload/product/' . $product->image) }}\" alt=\"{{ addslashes($product->name) }}\" style=\"width: 30px; height: 30px;\" />"
+                                                    }' data-image="{{ asset('upload/product/' . ($batch->image ?? $product->image)) }}">
                         {{ $batch->batch_no }} - Rp {{ number_format($batch->price) }}
                     </option>
                     @endforeach
@@ -82,13 +81,13 @@
 
             <div class="flex px-2 flex-row relative" id="search-grid">
                 <div class="absolute left-5 top-3 px-2 py-2 rounded-full bg-sky-500 text-white">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
                 </div>
-                <input
-                    type="text"
-                    id="search-input"
+                <input type="text" id="search-input"
                     class="bg-white rounded-3xl shadow text-lg w-full h-16 py-4 pl-16 transition-shadow focus:shadow-2xl focus:outline-none"
                     placeholder="Search Product ..." />
             </div>
@@ -97,10 +96,12 @@
             <div class="flex justify-start px-2 mt-2">
                 <div class="flex">
                     <!-- Badge -->
-                    <button id="tableMode" class="flex items-center justify-center bg-white text-blue-gray-500 rounded-lg px-3 py-1 mr-2">
+                    <button id="tableMode"
+                        class="flex items-center justify-center bg-white text-blue-gray-500 rounded-lg px-3 py-1 mr-2">
                         Table
                     </button>
-                    <button id="gridMode" class="flex items-center justify-center bg-white text-blue-gray-500 rounded-lg px-3 py-1">
+                    <button id="gridMode"
+                        class="flex items-center justify-center bg-white text-blue-gray-500 rounded-lg px-3 py-1">
                         Grid
                     </button>
                 </div>
@@ -113,10 +114,11 @@
                     <table class="table-auto w-full bg-white rounded-lg shadow ">
                         <thead>
                             <tr class="bg-gray-200 text-gray-700">
-                                <th class="px-4 py-2">Image</th>
-                                <th class="px-4 py-2">Name</th>
-                                <th class="px-4 py-2">Price</th>
-                                <th class="px-4 py-2">Unit</th>
+                                <th class="px-4 py-2 text-start">Image</th>
+                                <th class="px-4 py-2 text-start">Name</th>
+                                <th class="px-4 py-2 text-start">Price</th>
+                                <th class="px-4 py-2 text-start">Unit</th>
+                                <th class="px-4 py-2 text-start">Action</th>
                             </tr>
                         </thead>
                         <tbody class="items-chart-table">
@@ -129,19 +131,17 @@
                 <div id="product-grid" class="h-full overflow-y-auto px-2">
                     <div class="product-grid grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 pb-3">
                         @foreach ($products as $product)
+                        <!-- Produk Utama -->
                         <div>
-                            <div
-                                role="button"
+                            <div role="button"
                                 class="select-none cursor-pointer transition-shadow overflow-hidden rounded-2xl p-2 bg-white shadow hover:shadow-lg add-to-cart"
-                                data-product-id="{{ $product->id }}"
-                                data-product-name="{{ $product->name }}"
+                                data-product-id="{{ $product->id }}" data-product-name="{{ $product->name }}"
                                 data-product-price="{{ $product->selling_price }}"
-                                data-product-image="{{ asset('upload/product/' . $product->image) }}"
-                                data-variant-id=""
+                                data-product-image="{{ asset('upload/product/' . $product->image) }}" data-variant-id=""
                                 data-batch-id="">
-                                <img src="{{ asset('upload/product/' . $product->image) }}"
-                                    class="object-cover w-full h-24 sm:h-44 lg:h-52"
-                                    alt="{{ $product->name }}">
+                                <img src="{{ asset($product->image ? 'upload/product/' . $product->image : 'images/default.png') }}"
+                                    class="object-cover w-full h-24 sm:h-44 lg:h-52" alt="{{ $product->name }}">
+
                                 <div class="flex flex-col sm:flex-row pb-3 px-3 text-sm mt-3">
                                     <p class="flex-grow truncate mr-1">
                                         {{ $product->name }}
@@ -155,24 +155,24 @@
                             </div>
                         </div>
 
+                        <!-- Variant dari Produk -->
                         @if ($product->variants->count() > 0)
                         @foreach ($product->variants as $variant)
                         <div>
-                            <div
-                                role="button"
+                            <div role="button"
                                 class="select-none cursor-pointer transition-shadow overflow-hidden rounded-2xl p-2 bg-white shadow hover:shadow-lg add-to-cart"
-                                data-product-id="{{ $product->id }}"
-                                data-product-name="{{ $variant->name }}"
+                                data-product-id="{{ $product->id }}" data-product-name="{{ $variant->name }}"
                                 data-product-price="{{ $variant->additional_price }}"
                                 data-product-image="{{ asset('upload/product/' . ($variant->image ?? $product->image)) }}"
-                                data-variant-id="{{ $variant->id }}"
-                                data-batch-id=""> <img src="{{ asset('upload/product/' . ($variant->image ?? $product->image)) }}"
-                                    class="object-cover w-full h-24 sm:h-44 lg:h-40"
-                                    alt="{{ $variant->name }}">
+                                data-variant-id="{{ $variant->id }}" data-batch-id="">
+                                <img src="{{ asset(($variant->image ?? $product->image) ? 'upload/product/' . ($variant->image ?? $product->image) : 'images/default.png') }}"
+                                    class="object-cover w-full h-24 sm:h-44 lg:h-40" alt="{{ $variant->name }}">
+
                                 <div class="flex flex-col sm:flex-row  text-sm mt-3">
                                     <p class="flex-grow truncate mr-1">
                                         {{ $variant->name }}
-                                        <span class="font-semibold">( {{ $variant->unit->name ?? $product->unit->name ?? '-' }} )</span>
+                                        <span class="font-semibold">(
+                                            {{ $variant->unit->name ?? $product->unit->name ?? '-' }} )</span>
                                     </p>
                                 </div>
                                 <p class="px-3 pb-3  font-semibold">
@@ -182,27 +182,28 @@
                         </div>
                         @endforeach
                         @endif
-                        @if ($product->batches->count() > 0 )
+
+                        <!-- Batch dari Produk -->
+                        @if ($product->batches->count() > 0)
                         @foreach ($product->batches as $batch)
                         <div>
-                            <div
-                                role="button"
+                            <div role="button"
                                 class="select-none cursor-pointer transition-shadow overflow-hidden rounded-2xl p-2 bg-white shadow hover:shadow-lg add-to-cart"
-                                data-product-id="{{ $product->id }}"
-                                data-product-name="{{ $batch->batch_no }}"
+                                data-product-id="{{ $product->id }}" data-product-name="{{ $batch->batch_no }}"
                                 data-product-price="{{ $batch->price }}"
                                 data-product-image="{{ asset('upload/product/' . ($batch->image ?? $product->image)) }}"
-                                data-variant-id=""
-                                data-batch-id="{{ $batch->id }}"><img src="{{ asset('upload/product/' . ($batch->image ?? $product->image)) }}"
-                                    class="object-cover w-full h-24 sm:h-44 lg:h-52"
-                                    alt="{{ $batch->batch_no }}">
+                                data-variant-id="" data-batch-id="{{ $batch->id }}">
+                                <img src="{{ asset(($batch->image ?? $product->image) ? 'upload/product/' . ($batch->image ?? $product->image) : 'images/default.png') }}"
+                                    class="object-cover w-full h-24 sm:h-44 lg:h-52" alt="{{ $batch->batch_no }}">
+
                                 <div class="flex flex-col sm:flex-row pb-3 px-3 text-sm mt-3">
                                     <p class="flex-grow truncate mr-1">
                                         {{ $batch->batch_no }}
-                                        <span class="font-semibold">( {{ $batch->unit->name ?? $product->unit->name ?? '-' }} )</span>
+                                        <span class="font-semibold">(
+                                            {{ $batch->unit->name ?? $product->unit->name ?? '-' }} )</span>
                                     </p>
                                     <p class="nowrap font-semibold">
-                                        Rp {{ number_format($batch->additional_price) }}
+                                        Rp {{ number_format($batch->price) }}
                                     </p>
                                 </div>
                             </div>
@@ -211,7 +212,12 @@
                         @endif
                         @endforeach
                     </div>
-                </div> 
+
+                    <!-- Pagination -->
+                    @if(!request()->has('search'))
+                    {{ $products->links() }}
+                    @endif
+                </div>
             </div>
 
         </div>

@@ -73,7 +73,7 @@ class CustomerGroupController extends Controller
             'is_active' => $request->is_active,
         ]);
 
-        return redirect()->back()->with('success', 'CustomerGroup berhasil di tambahkan');
+        return redirect()->route('group_customer.index')->with('message', 'CustomerGroup berhasil di tambahkan');
 
     }
 
@@ -163,6 +163,6 @@ class CustomerGroupController extends Controller
     public function destroy($id)
     {
         CustomerGroup::find($id)->delete();
-        return response()->json(['success' => 'CustomerGroup berhasil di hapus']);
+        return redirect()->back()->with('message','CustomerGroup berhasil di hapus');
     }
 }

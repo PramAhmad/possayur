@@ -923,14 +923,7 @@
                 // **Validasi Cash**
                 console.log('cash'+cash)
                 console.log('totalPrice'+totalPrice)
-                if (cash < totalPrice) {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Uang tidak cukup',
-                        text: 'Jumlah uang yang diberikan kurang dari total harga.',
-                    });
-                    return; 
-                }
+              
 
                 // **Jika valid, lanjutkan transaksi**
                 $("#modalReceipt").fadeOut();
