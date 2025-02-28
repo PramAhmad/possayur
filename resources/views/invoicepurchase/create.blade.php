@@ -1,4 +1,8 @@
 <x-app-layout>
+<div class="mb-6">
+            {{-- BreadCrumb --}}
+            <x-breadcrumb :breadcrumb-items="$breadcrumbItems" :page-title="$pageTitle" />
+        </div>
     <div class="container mx-auto p-4">
         <form id="invoicePurchaseForm" class="max-w-6xl mx-auto">
             @csrf
@@ -67,7 +71,7 @@
                 </div>
 
                 <div class="mt-6">
-                    <button type="submit" class="btn btn-primary w-full">
+                    <button type="submit" class="btn inline-flex justify-center btn-dark mt-4 w-full">
                         Create Invoice Purchase
                     </button>
                 </div>
@@ -153,10 +157,10 @@
                     <tr data-product-id="${product.id}" 
                         data-unit-price="${product.cost_price}"
                         data-original-qty="${productItem.quantity}"> <!-- Gunakan quantity dari ProductPurchase -->
-                        <td>${product.name}</td>
-                        <td>${formatCurrency(product.cost_price)}</td>
-                        <td>${productItem.quantity}</td> <!-- Tampilkan quantity dari ProductPurchase -->
-                        <td>
+                        <td class="px-6 py-3">${product.name}</td>
+                        <td class="px-6 py-3">${formatCurrency(product.cost_price)}</td>
+                        <td class="px-6 py-3">${productItem.quantity}</td> <!-- Tampilkan quantity dari ProductPurchase -->
+                        <td class="px-6 py-3">
                             <input type="number" 
                                 class="form-control invoiced-qty" 
                                 max="${productItem.quantity}" 
@@ -171,6 +175,9 @@
                 $productsTableBody.append(row);
             });
 
+            // set outlet cuy
+            $outletSelect.val(response.outlet_id).prop('disabled', true);
+
             $productsTableBody.find('.invoiced-qty').on('input', updateTableTotals);
             updateTableTotals();
         },
@@ -179,7 +186,17 @@
         }
     });
 }
-    function handleInvoicePurchaseSubmit(e) {
+$purchaseOrderSelect.on('change', function() {
+    const selectedPurchaseOrderId = $(this).val();
+    if (!selectedPurchaseOrderId) {
+        $outletSelect.val('').prop('disabled', false); // Aktifkan kembali dan reset nilai
+        $productsTableBody.empty(); // Kosongkan tabel produk
+        updateTableTotals(); // Update total
+    } else {
+        fetchProductsForPurchaseOrder(selectedPurchaseOrderId);
+    }
+});
+function handleInvoicePurchaseSubmit(e) {
     e.preventDefault();
 
     // Calculate totals before submission

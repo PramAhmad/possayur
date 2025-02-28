@@ -209,7 +209,7 @@
                                 </td>
                                 <td class="px-4 py-3 text-sm text-slate-500 dark:text-slate-300">
                                     <div class="flex justify-between">
-                                        <span>Qty: {{ $product->qty }}</span>
+                                        <span>{{ $product->qty }} {{ $product->product->unit?->code }}</span>
                                         <span>Price: {{ currency($product->price) }}</span>
                                     </div>
                                 </td>
