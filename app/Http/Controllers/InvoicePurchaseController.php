@@ -91,7 +91,6 @@ class InvoicePurchaseController extends Controller
             $outlets = Outlet::where('id', auth()->user()->outlet_id)->get();
             $purchaseOrders = PurchaseOrder::where('outlet_id', auth()->user()->outlet_id)->where('status', "!=", 'completed')->get();
         }
-
         return view('invoicepurchase.create', [
             'breadCrumbItems' => $breadCrumbItems,
             'pageTitle' => $pageTitle,
@@ -243,17 +242,30 @@ class InvoicePurchaseController extends Controller
     {
         //
     }
-    public function getProducts(Request $request,$id)
-    {
-       $invoicePurchase = PurchaseOrder::with('productPurchase','productPurchase.product','productPurchase.variant','productPurchase.batch')->findOrFail($id);
+    public function getProducts(Request $request, $id)
+{
+    $invoicePurchase = PurchaseOrder::with('productPurchase', 'productPurchase.product', 'productPurchase.variant', 'productPurchase.batch',
+    'outlet')->findOrFail($id);
 
-         return response()->json([
-            'products' => $invoicePurchase->productPurchase,
-            'outlet_id' => $invoicePurchase->outlet_id,
-            'supplier_id' => $invoicePurchase->supplier_id,
-            'total' => $invoicePurchase->grand_total,
-         ]);
-    }
+    $products = $invoicePurchase->productPurchase->map(function ($productPurchase) {
+        return [
+            'product' => [
+                'id' => $productPurchase->product->id,
+                'name' => $productPurchase->product->name,
+                'cost_price' => $productPurchase->product->cost_price,
+                'qty' => $productPurchase->quantity, 
+            ],
+            'quantity' => $productPurchase->quantity,
+        ];
+    });
+
+    return response()->json([
+        'products' => $products,
+        'outlet_id' => $invoicePurchase->outlet_id,
+        'supplier_id' => $invoicePurchase->supplier_id,
+        'total' => $invoicePurchase->grand_total,
+    ]);
+}
 
     public function pdf(string $id)
     {

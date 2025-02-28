@@ -114,7 +114,7 @@ class UserController extends Controller
             + [
                 'password' => bcrypt($request->validated(['password'])),
                 'email_verified_at' => now(),
-                'outlet_id' => $request->validated('outlet_id')
+                'outlet_id' => request('outlet_id')
             ]);
         $user->assignRole([$request->validated('role')]);
 
@@ -198,10 +198,13 @@ class UserController extends Controller
      */
     public function update(UpdateUserRequest $request, User $user)
     {
+        // dd($request->all());
         $user->update($request->safe(['name', 'email'])
             + ['password' => bcrypt($request->validated(['password']))]);
 
         $user->syncRoles([$request->validated(['role'])]);
+        // update outlet
+        $user->outlet_id = request('outlet_id');
 
         return redirect()->route('users.index')->with('message', 'User updated successfully');
     }

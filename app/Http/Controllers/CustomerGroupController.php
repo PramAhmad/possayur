@@ -17,7 +17,7 @@ class CustomerGroupController extends Controller
         $data['pageTitle'] = 'Customer Group';
         $data['breadcrumbItems'] = [
             ['name' => 'Dashboard', 'url' => route('dashboard.index'), 'active' => false],  
-            ['name' => 'Customer Group', 'url' => route('customer_group.index'), 'active' => true]
+            ['name' => 'Customer Group', 'url' => route('group_customer.index'), 'active' => true]
         ];
         $data['customer_group'] = CustomerGroup::all();
         return view('customer_group.index', $data);
@@ -34,8 +34,8 @@ class CustomerGroupController extends Controller
         $data['breadcrumbItems'] = [
             ['name' => 'Dashboard', 'url' => route('dashboard.index'), 'active' => false],
             
-            ['name' => 'Customer Group', 'url' => route('customer_group.index'), 'active' => false], 
-            ['name' => 'Create Customer Group', 'url' => route('customer_group.create'), 'active' => true]
+            ['name' => 'Customer Group', 'url' => route('group_customer.index'), 'active' => false], 
+            ['name' => 'Create Customer Group', 'url' => route('group_customer.create'), 'active' => true]
         ];
     
         return view('customer_group.create' , $data);
@@ -89,8 +89,8 @@ class CustomerGroupController extends Controller
         $data['pageTitle'] = ' Customer Group';
         $data['breadcrumbItems'] = [
             ['name' => 'Dashboard', 'url' => route('dashboard.index'), 'active' => false], 
-            ['name' => 'Customer Group', 'url' => route('customer_group.index'), 'active' => false], 
-            ['name' => 'Show Customer Group', 'url' => route('customer_group.show', $id), 'active' => true]
+            ['name' => 'Customer Group', 'url' => route('group_customer.index'), 'active' => false], 
+            ['name' => 'Show Customer Group', 'url' => route('group_customer.show', $id), 'active' => true]
         ];
     
         return view('customer_group.show' , compact('customer_group'), $data);
@@ -104,15 +104,17 @@ class CustomerGroupController extends Controller
      */
     public function edit($id)
     {
-        $CustomerGroup = CustomerGroup::find($id);
+        $data['customer_group'] = CustomerGroup::find($id);
         $data['pageTitle'] = ' Customer Group';
         $data['breadcrumbItems'] = [
             ['name' => 'Dashboard', 'url' => route('dashboard.index'), 'active' => false], 
-            ['name' => 'CustomerGroup', 'url' => route('customer_group.index'), 'active' => false], 
-            ['name' => 'Edit CustomerGroup', 'url' => route('customer_group.edit', $id), 'active' => true]
+            ['name' => 'CustomerGroup', 'url' => route('group_customer.index'), 'active' => false], 
+            ['name' => 'Edit CustomerGroup', 'url' => route('group_customer.edit', $id), 'active' => true]
         ];
+
+
     
-        return view('customer_group.edit' , compact('customer_group'), $data);
+        return view('customer_group.edit' , $data);
     }
 
     /**

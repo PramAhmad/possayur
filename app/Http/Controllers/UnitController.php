@@ -37,6 +37,7 @@ class UnitController extends Controller
         if (auth()->user()->hasRole('super-admin')) {
             $outlets = Outlet::all();
             $units = QueryBuilder::for(Unit::class)
+                ->with('outlet')
                 ->allowedSorts(['name', 'code', 'base_unit', 'operator', 'operation_value', 'is_active'])
                 ->where(function ($query) use ($q) {
                     $query->where('name', 'like', "%$q%")
@@ -49,6 +50,7 @@ class UnitController extends Controller
         } else {
             $outlets = Outlet::where('id', auth()->user()->outlet_id)->get();
             $units = QueryBuilder::for(Unit::class)
+                ->with('outlet')
                 ->allowedSorts(['name', 'code', 'base_unit', 'operator', 'operation_value', 'is_active'])
                 ->where(function ($query) use ($q) {
                     $query->where('name', 'like', "%$q%")
@@ -303,6 +305,17 @@ class UnitController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $unit = Unit::findOrFail($id); 
+        try {
+            $unit->delete(); // Delete unit
+            return redirect()
+                ->route('unit.index')
+                ->with('message', __('Unit deleted successfully.'));
+    
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->with('error', __('Failed to delete unit. Please try again.'));
+        }
     }
 }

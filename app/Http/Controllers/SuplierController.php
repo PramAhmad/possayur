@@ -92,7 +92,7 @@ class SuplierController extends Controller
                 'account_holder' => $request->account_holder,
                 'account_number' => $request->account_number,
             ]);
-            return redirect()->route('supplier.index')->with('success', 'Data berhasil disimpan');
+            return redirect()->route('supplier.index')->with('message', 'Data berhasil disimpan');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Data gagal disimpan');
         }
@@ -159,9 +159,21 @@ class SuplierController extends Controller
             'shop_name.required' => 'Nama toko wajib diisi',
         ]);
         try {
-            Suplier::find($id)->update($request->all());
-            return redirect()->route('supplier.index')->with('success', 'Data berhasil diupdate');
+            Suplier::find($id)->update([
+                'name' => $request->name,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'address' => $request->address,
+                'company' => $request->company,
+                'shop_name' => $request->shop_name,
+                'bank_name' => $request->bank_name,
+                'bank_branch' => $request->bank_branch,
+                'account_holder' => $request->account_holder,
+                'account_number' => $request->account_number,
+            ]);
+            return redirect()->route('supplier.index')->with('message', 'Data berhasil diupdate');
         } catch (\Exception $e) {
+            dd($e);
             return redirect()->back()->with('error', 'Data gagal diupdate');
         }
     }
@@ -176,7 +188,7 @@ class SuplierController extends Controller
     {
         try {
             Suplier::find($id)->delete();
-            return redirect()->route('supplier.index')->with('success', 'Data berhasil dihapus');
+            return redirect()->back()->with('message', 'Data berhasil dihapus');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Data gagal dihapus');
         }

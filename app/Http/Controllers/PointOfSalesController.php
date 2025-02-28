@@ -43,7 +43,11 @@ class PointOfSalesController extends Controller
         ];
 
         $pageTitle = 'Point of Sales';
-        $outlets = Outlet::paginate(5);
+        if (auth()->user()->hasRole('super-admin')) {
+            $outlets = Outlet::all();
+        } else {
+            $outlets = Outlet::where('id', auth()->user()->outlet_id)->get();
+        }
 
         return view('pos.index', [
             'breadcrumbItems' => $breadcrumbItems,

@@ -22,6 +22,14 @@
                         <iconify-icon icon="mdi:refresh" class="text-xl"></iconify-icon>
                     </a>
                 </div>
+                <div class="justify-center flex flex-wrap sm:flex items-center lg:justify-end gap-3">
+                    <div class="relative w-full sm:w-auto flex items-center">
+                        <form id="searchForm" method="get" action="{{ route('unit.index') }}">
+                            <input name="q" type="text" class="inputField pl-8 p-2 border border-slate-200 dark:border-slate-700 rounded-md dark:bg-slate-900" placeholder="Search unit" value="{{ request()->q }}">
+                        </form>
+                        <iconify-icon class="absolute text-textColor left-2 dark:text-white" icon="quill:search-alt"></iconify-icon>
+                    </div>
+                </div>
             </header>
 
             <div class="card-body px-6 pb-6">
@@ -54,7 +62,8 @@
                                             <td class="table-td">{{ $unit->operator }}</td>
                                             <td class="table-td">{{ $unit->operation_value }}</td>
                                             <td class="table-td">
-                                                <span class="badge {{ $unit->is_active ? 'bg-success-500' : 'bg-danger-500' }}">
+                                                <span class="inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-full bg-opacity-20  {{ $unit->is_active ? 'text-success-500
+                              bg-success-500' : 'text-danger-500 bg-danger-500' }}">
                                                     {{ $unit->is_active ? __('Active') : __('Inactive') }}
                                                 </span>
                                             </td>

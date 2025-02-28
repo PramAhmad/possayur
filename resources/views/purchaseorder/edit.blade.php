@@ -60,7 +60,7 @@
                     <div class="input-area">
                         <label for="product_id" class="form-label">{{ __('Products and Quantity') }}</label>
                         <div id="products_grid" class="flex flex-col gap-4">
-                            @foreach ($purchaseOrder->products as $product)
+                            @foreach ($purchaseOrder as $product)
                                 <div class="product-row flex items-center gap-4">
                                     <div class="flex-1 ">
                                         <select name="product_id[]" class="form-control product-select">

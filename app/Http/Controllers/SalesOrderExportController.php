@@ -70,8 +70,8 @@ class SalesOrderExportController extends Controller
         $sheet->getStyle('A7')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
         $sheet->getStyle('A7')->getAlignment()->setWrapText(false);
 
-        // Jarak antara header dan tabel
-        $sheet->setCellValue('A9', ''); // Spacer
+    // Jarak antara header dan tabel
+    $sheet->setCellValue('A9', ''); 
 
         // Table headers
         $sheet->setCellValue('A10', 'NO')->getStyle('A10')->getFont()->setSize(12);

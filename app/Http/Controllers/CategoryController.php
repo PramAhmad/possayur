@@ -37,6 +37,7 @@ class CategoryController extends Controller
         if(auth()->user()->hasRole('super-admin')){
             $outlets = Outlet::all();
             $category = QueryBuilder::for(Category::class)
+            ->with('outlet')
             ->allowedSorts(['name', 'slug', 'description'])
             ->where('name', 'like', "%$q%")
             ->latest()
@@ -46,6 +47,7 @@ class CategoryController extends Controller
         }else{
             $outlets = Outlet::where('id', auth()->user()->outlet_id)->get();
             $category = QueryBuilder::for(Category::class)
+            ->with('outlet')
             ->allowedSorts(['name', 'slug', 'description'])
             ->where('name', 'like', "%$q%")
             ->where('outlet_id', auth()->user()->outlet_id)
@@ -103,6 +105,7 @@ class CategoryController extends Controller
             'slug' => 'required|string|max:255|unique:category,slug',
             'description' => 'required|min:6',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:5048',
+            'outlet_id' => 'required',
         ],[
             'name.required' => 'Name wajib di isi',
             'name.max' => 'Name maksimal 255 karakter',
@@ -130,6 +133,7 @@ class CategoryController extends Controller
             'slug' => $request->slug,
             'description' => $request->description,
             'image' => $image_name,
+            'outlet_id' => $request->outlet_id,
         ]);
 
         return redirect()->back()->with('message', 'Category berhasil di tambahkan');
@@ -165,6 +169,7 @@ class CategoryController extends Controller
     {
         $category = Category::find($id);
         $data['pageTitle'] = ' Category';
+        $data['outlets'] = Outlet::all();
         $data['breadcrumbItems'] = [
             ['name' => 'Dashboard', 'url' => route('dashboard.index'), 'active' => false], 
             ['name' => 'Category', 'url' => route('category.index'), 'active' => false], 
@@ -189,6 +194,7 @@ class CategoryController extends Controller
             'slug' => 'required|string|max:255|unique:category,slug,'.$id,
             'description' => 'required|min:6',
             'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:5048',
+            'outlet_id' => 'required',
         ],[
             'name.required' => 'Name wajib di isi',
             'name.max' => 'Name maksimal 255 karakter',
@@ -202,9 +208,10 @@ class CategoryController extends Controller
             'image.image' => 'File yang di upload harus gambar',
             'image.mimes' => 'File yang di upload harus gambar dengan format jpeg,png,jpg,gif,svg',
             'image.max' => 'Ukuran file yang di upload maksimal 5MB',
+            'outlet_id.required' => 'Outlet wajib di isi',
 
         ]);
-        
+        // dd($request->all());
 
         $category = Category::find($id);
         $image_name = $category->image;
@@ -219,6 +226,7 @@ class CategoryController extends Controller
             'slug' => $request->slug,
             'description' => $request->description,
             'image' => $image_name,
+            'outlet_id' => $request->outlet_id,
         ]);
 
         return redirect()->back()->with('message', 'Category berhasil di update');
@@ -233,6 +241,6 @@ class CategoryController extends Controller
     public function destroy($id)
     {
         Category::find($id)->delete();
-        return response()->json(['message' => 'Category berhasil di hapus']);
+        return redirect()->back()->with('message', 'Category berhasil di hapus');
     }
 }

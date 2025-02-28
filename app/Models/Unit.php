@@ -26,5 +26,11 @@ class Unit extends Model
             ->logOnlyDirty()
             ->useLogName('Unit');
     }
+
+    public function outlet()
+    {
+        return $this->belongsTo(Outlet::class);
+    }
     
 }
+

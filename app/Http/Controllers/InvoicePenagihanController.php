@@ -69,15 +69,13 @@ class InvoicePenagihanController extends Controller
                 'active' => true
             ],
         ];
-
-        $salesOrders = SalesOrder::when(!auth()->user()->hasRole('super-admin'), function ($query){
-                                        return $query->where('outlet_id', auth()->user()->outlet_id);
-                                    })
-                                    ->whereHas('suratJalan', function ($query){
-                                        return $query->whereNotNull('id');
-                                    })
-                                    ->where('status', 'process')
-                                    ->get();
+        if (auth()->user()->hasRole('super-admin')) {
+            $outlets = Outlet::all();
+            $salesOrders = SalesOrder::orderBy('created_at', 'desc')->get();
+        } else {
+            $outlets = Outlet::where('id', auth()->user()->outlet_id)->first();
+            $salesOrders = SalesOrder::where('outlet_id', auth()->user()->outlet_id)->orderBy('created_at', 'desc')->get();
+        }
 
         return view('invoice-penagihan.create', [
             'salesOrders' => $salesOrders,
@@ -243,6 +241,7 @@ class InvoicePenagihanController extends Controller
     public function getProducts($salesOrderId)
     {
         $salesOrder = SalesOrder::with([
+            'outlet',
             'products', 
             'products.product', 
             'products.product.unit', 

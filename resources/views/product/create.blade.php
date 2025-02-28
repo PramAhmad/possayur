@@ -37,28 +37,28 @@
                     </div>
                     <div class="input-area">
                         <label for="cost_price" class="form-label">{{ __('Cost Price') }}</label>
-                        <input name="cost_price" type="number" id="cost_price" class="form-control"
+                        <input name="cost_price" type="text" id="cost_price" class="form-control"
                             placeholder="{{ __('Enter cost price') }}" value="{{ old('cost_price') }}" required>
                         <x-input-error :messages="$errors->get('cost_price')" class="mt-2" />
                     </div>
 
                     <div class="input-area">
                         <label for="selling_price" class="form-label">{{ __('Selling Price') }}</label>
-                        <input name="selling_price" type="number" id="selling_price" class="form-control"
+                        <input name="selling_price" type="text" id="selling_price" class="form-control"
                             placeholder="{{ __('Enter selling price') }}" value="{{ old('selling_price') }}" required>
                         <x-input-error :messages="$errors->get('selling_price')" class="mt-2" />
                     </div>
 
                     <div class="input-area">
                         <label for="qty" class="form-label">{{ __('Quantity') }}</label>
-                        <input name="qty" type="number" id="qty" class="form-control"
+                        <input name="qty" type="text" id="qty" class="form-control"
                             placeholder="{{ __('Enter quantity') }}" value="{{ old('qty') }}" required>
                         <x-input-error :messages="$errors->get('qty')" class="mt-2" />
                     </div>
 
                     <div class="input-area">
                         <label for="alert_qty" class="form-label">{{ __('Alert Quantity') }}</label>
-                        <input name="alert_qty" type="number" id="alert_qty" class="form-control"
+                        <input name="alert_qty" type="text" id="alert_qty" class="form-control"
                             placeholder="{{ __('Enter alert quantity') }}" value="{{ old('alert_qty') }}" required>
                         <x-input-error :messages="$errors->get('alert_qty')" class="mt-2" />
                     </div>
@@ -189,85 +189,140 @@
                 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
                 <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.js"></script>
                 <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
-
                 <script>
-                    $(document).ready(function() {
-                        let variantCounter = 0;
-                        let batchCounter = 0;
+        document.getElementById('name').addEventListener('input', function() {
+            let slug = this.value.toLowerCase()
+                .replace(/[^a-z0-9-]/g, '-')
+                .replace(/-+/g, '-')
+                .replace(/^-|-$/g, '');
+            document.getElementById('slug').value = slug;
+        });
+    </script>
+               // First, let's add Cleave.js to your script section
+// Add this after your existing jQuery scripts
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cleave.js/1.6.0/cleave.min.js"></script>
 
-                        // Tambahkan fungsi untuk menambah/menghapus validasi pada input
-                        function toggleInputValidation(sectionId, isRequired) {
-                            $(`#${sectionId} input`).each(function() {
-                                if (isRequired) {
-                                    $(this).prop('required', true);
-                                } else {
-                                    $(this).prop('required', false);
-                                }
-                            });
-                        }
-                        $('input[name="product_type[]"]').change(function() {
-                            const isChecked = $(this).is(':checked');
-                            const inputName = $(this).attr('id'); 
+<script>
+    $(document).ready(function() {
+        let variantCounter = 0;
+        let batchCounter = 0;
 
-                            if (inputName === 'variant_checkbox') {
-                                $('#variant_section').toggle(isChecked);
-                                toggleInputValidation('variant_section', isChecked);
+        // Initialize Cleave.js formatters
+        new Cleave('#barcode', {
+            delimiter: '-',
+            blocks: [4, 4, 4, 4],
+            uppercase: true
+        });
 
-                                if (isChecked) {
-                                    $('#batch_checkbox, label[for="batch_checkbox"]').hide();
-                                    if ($('#variant_container').children().length === 0) {
-                                        addVariantRow();
-                                    }
-                                } else {
-                                    $('#batch_checkbox, label[for="batch_checkbox"]').show();
-                                }
-                            }
+        new Cleave('#cost_price', {
+            numeral: true,
+            numeralThousandsGroupStyle: 'thousand',
+            numeralDecimalScale: 2,
+            numeralPositiveOnly: true
+        });
 
-                            if (inputName === 'batch_checkbox') {
-                                $('#batch_section').toggle(isChecked);
-                                toggleInputValidation('batch_section', isChecked);
+        new Cleave('#selling_price', {
+            numeral: true,
+            numeralThousandsGroupStyle: 'thousand',
+            numeralDecimalScale: 2,
+            numeralPositiveOnly: true
+        });
 
-                                if (isChecked) {
-                                    $('#variant_checkbox, label[for="variant_checkbox"]').hide();
-                                    if ($('#batch_container').children().length === 0) {
-                                        addBatchRow();
-                                    }
-                                } else {
-                                    $('#variant_checkbox, label[for="variant_checkbox"]').show();
-                                }
-                            }
-                        });
+        new Cleave('#sku', {
+            delimiter: '-',
+            blocks: [3, 3, 4],
+            uppercase: true
+        });
 
+        // Function to toggle input validation
+        function toggleInputValidation(sectionId, isRequired) {
+            $(`#${sectionId} input`).each(function() {
+                if (isRequired) {
+                    $(this).prop('required', true);
+                } else {
+                    $(this).prop('required', false);
+                }
+            });
+        }
 
+        // Handle product type checkboxes
+        $('input[name="product_type[]"]').change(function() {
+            const isChecked = $(this).is(':checked');
+            const inputName = $(this).attr('id'); 
 
-                        $('#add_variant').click(addVariantRow);
-                        $('#add_batch').click(addBatchRow);
+            if (inputName === 'variant_checkbox') {
+                $('#variant_section').toggle(isChecked);
+                toggleInputValidation('variant_section', isChecked);
 
-                        $(document).on('click', '.remove-variant', function() {
-                            $(this).closest('.variant-row').remove();
-                            updateVariantIndices();
+                if (isChecked) {
+                    // Add hidden field to indicate variant exists
+                    if (!$('input[name="is_variant"]').length) {
+                        $('form').append('<input type="hidden" name="is_variant" value="1">');
+                    }
+                    
+                    $('#batch_checkbox, label[for="batch_checkbox"]').hide();
+                    if ($('#variant_container').children().length === 0) {
+                        addVariantRow();
+                    }
+                } else {
+                    // Remove hidden field when unchecked
+                    $('input[name="is_variant"]').remove();
+                    $('#batch_checkbox, label[for="batch_checkbox"]').show();
+                }
+            }
 
-                            // Sembunyikan section jika tidak ada variant
-                            if ($('#variant_container').children().length === 0) {
-                                $('#variant_checkbox').prop('checked', false);
-                                $('#variant_section').hide();
-                            }
-                        });
+            if (inputName === 'batch_checkbox') {
+                $('#batch_section').toggle(isChecked);
+                toggleInputValidation('batch_section', isChecked);
 
-                        $(document).on('click', '.remove-batch', function() {
-                            $(this).closest('.batch-row').remove();
-                            updateBatchIndices();
+                if (isChecked) {
+                    // Add hidden field to indicate batch exists
+                    if (!$('input[name="is_batch"]').length) {
+                        $('form').append('<input type="hidden" name="is_batch" value="1">');
+                    }
+                    
+                    $('#variant_checkbox, label[for="variant_checkbox"]').hide();
+                    if ($('#batch_container').children().length === 0) {
+                        addBatchRow();
+                    }
+                } else {
+                    // Remove hidden field when unchecked
+                    $('input[name="is_batch"]').remove();
+                    $('#variant_checkbox, label[for="variant_checkbox"]').show();
+                }
+            }
+        });
 
-                            // Sembunyikan section jika tidak ada batch
-                            if ($('#batch_container').children().length === 0) {
-                                $('#batch_checkbox').prop('checked', false);
-                                $('#batch_section').hide();
-                            }
-                        });
+        $('#add_variant').click(addVariantRow);
+        $('#add_batch').click(addBatchRow);
 
-                        function addVariantRow() {
-                            variantCounter++;
-                            const newRow = `
+        $(document).on('click', '.remove-variant', function() {
+            $(this).closest('.variant-row').remove();
+            updateVariantIndices();
+
+            // Hide section if no variants exist
+            if ($('#variant_container').children().length === 0) {
+                $('#variant_checkbox').prop('checked', false);
+                $('#variant_section').hide();
+                $('input[name="is_variant"]').remove();
+            }
+        });
+
+        $(document).on('click', '.remove-batch', function() {
+            $(this).closest('.batch-row').remove();
+            updateBatchIndices();
+
+            // Hide section if no batches exist
+            if ($('#batch_container').children().length === 0) {
+                $('#batch_checkbox').prop('checked', false);
+                $('#batch_section').hide();
+                $('input[name="is_batch"]').remove();
+            }
+        });
+
+        function addVariantRow() {
+            variantCounter++;
+            const newRow = `
             <tr class="variant-row" data-index="${variantCounter}">
                 <td class="text-center">
                     <svg class="w-5 h-5 text-gray-500 cursor-move" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -278,10 +333,10 @@
                     <input type="text" name="variants[${variantCounter}][name]" class="form-control" placeholder="{{ __('Variant Name') }}" required>
                 </td>
                 <td>
-                    <input type="number" name="variants[${variantCounter}][additional_price]" class="form-control" placeholder="{{ __('Variant Price') }}" required>
+                    <input type="text" name="variants[${variantCounter}][additional_price]" class="form-control variant-price" placeholder="{{ __('Variant Price') }}" required>
                 </td>
-                 <td>
-                    <input type="number" name="variants[${variantCounter}][item_code]" class="form-control" placeholder="{{ __('Variant Price') }}" required>
+                <td>
+                    <input type="text" name="variants[${variantCounter}][item_code]" class="form-control variant-code" placeholder="{{ __('Item Code') }}" required>
                 </td>
                 <td class="text-right">
                     <button type="button" class="btn btn-sm btn-outline-danger remove-variant">
@@ -291,13 +346,31 @@
             </tr>
         `;
 
-                            $('#variant_container').append(newRow);
-                            updateVariantIndices();
-                        }
+            $('#variant_container').append(newRow);
+            updateVariantIndices();
+            
+            // Apply Cleave.js to the new variant price and code
+            $('.variant-price').last().each(function() {
+                new Cleave(this, {
+                    numeral: true,
+                    numeralThousandsGroupStyle: 'thousand',
+                    numeralDecimalScale: 2,
+                    numeralPositiveOnly: true
+                });
+            });
+            
+            $('.variant-code').last().each(function() {
+                new Cleave(this, {
+                    delimiter: '-',
+                    blocks: [2, 4, 2],
+                    uppercase: true
+                });
+            });
+        }
 
-                        function addBatchRow() {
-                            batchCounter++;
-                            const newRow = `
+        function addBatchRow() {
+            batchCounter++;
+            const newRow = `
             <tr class="batch-row" data-index="${batchCounter}">
                 <td class="text-center">
                     <svg class="w-5 h-5 text-gray-500 cursor-move" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -305,13 +378,13 @@
                     </svg>
                 </td>
                 <td>
-                    <input type="text" name="batches[${batchCounter}][number]" class="form-control" placeholder="{{ __('Batch Number') }}" required>
+                    <input type="text" name="batches[${batchCounter}][number]" class="form-control batch-number" placeholder="{{ __('Batch Number') }}" required>
                 </td>
                 <td>
                     <input type="date" name="batches[${batchCounter}][expiry_date]" class="form-control" required>
                 </td>
                 <td>
-                    <input type="number" name="batches[${batchCounter}][quantity]" class="form-control" placeholder="{{ __('Quantity') }}" required>
+                    <input type="number" name="batches[${batchCounter}][quantity]" class="form-control batch-quantity" placeholder="{{ __('Quantity') }}" required>
                 </td>
                 <td class="text-right">
                     <button type="button" class="btn btn-sm btn-outline-danger remove-batch">
@@ -321,33 +394,71 @@
             </tr>
         `;
 
-                            $('#batch_container').append(newRow);
-                            updateBatchIndices();
-                        }
+            $('#batch_container').append(newRow);
+            updateBatchIndices();
+            
+            // Apply Cleave.js to the new batch number
+            $('.batch-number').last().each(function() {
+                new Cleave(this, {
+                    delimiter: '-',
+                    blocks: [3, 3, 3],
+                    uppercase: true
+                });
+            });
+            
+            $('.batch-quantity').last().each(function() {
+                new Cleave(this, {
+                    numeral: true,
+                    numeralPositiveOnly: true,
+                    numeralDecimalScale: 0
+                });
+            });
+        }
 
-                        function updateVariantIndices() {
-                            $('#variant_container .variant-row').each(function(index) {
-                                const newIndex = index + 1;
-                                $(this).attr('data-index', newIndex);
-                                $(this).find('input').each(function() {
-                                    const name = $(this).attr('name').replace(/\[\d+\]/, `[${newIndex}]`);
-                                    $(this).attr('name', name);
-                                });
-                            });
-                        }
+        function updateVariantIndices() {
+            $('#variant_container .variant-row').each(function(index) {
+                const newIndex = index + 1;
+                $(this).attr('data-index', newIndex);
+                $(this).find('input').each(function() {
+                    const name = $(this).attr('name').replace(/\[\d+\]/, `[${newIndex}]`);
+                    $(this).attr('name', name);
+                });
+            });
+        }
 
-                        function updateBatchIndices() {
-                            $('#batch_container .batch-row').each(function(index) {
-                                const newIndex = index + 1;
-                                $(this).attr('data-index', newIndex);
-                                $(this).find('input').each(function() {
-                                    const name = $(this).attr('name').replace(/\[\d+\]/, `[${newIndex}]`);
-                                    $(this).attr('name', name);
-                                });
-                            });
-                        }
-                    });
-                </script>
+        function updateBatchIndices() {
+            $('#batch_container .batch-row').each(function(index) {
+                const newIndex = index + 1;
+                $(this).attr('data-index', newIndex);
+                $(this).find('input').each(function() {
+                    const name = $(this).attr('name').replace(/\[\d+\]/, `[${newIndex}]`);
+                    $(this).attr('name', name);
+                });
+            });
+        }
+        
+        // Make the variant and batch containers sortable
+        $("#variant_container, #batch_container").sortable({
+            handle: "svg",
+            update: function(event, ui) {
+                if ($(this).attr('id') === 'variant_container') {
+                    updateVariantIndices();
+                } else {
+                    updateBatchIndices();
+                }
+            }
+        });
+        
+        // Initialize slug generator
+        document.getElementById('name').addEventListener('input', function() {
+            let slug = this.value.toLowerCase()
+                .replace(/[^a-z0-9-]/g, '-')
+                .replace(/-+/g, '-')
+                .replace(/^-|-$/g, '');
+            document.getElementById('slug').value = slug;
+        });
+    });
+</script>
 
                 @endpush
 
