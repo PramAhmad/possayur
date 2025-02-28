@@ -40,14 +40,14 @@
                     </div>
                     <div class="input-area">
                         <label for="cost_price" class="form-label">{{ __('Cost Price') }}</label>
-                        <input name="cost_price" type="number" id="cost_price" class="form-control"
+                        <input name="cost_price" type="text" id="cost_price" class="form-control"
                                placeholder="{{ __('Enter cost price') }}" value="{{ old('cost_price', $product->cost_price) }}" required>
                         <x-input-error :messages="$errors->get('cost_price')" class="mt-2"/>
                     </div>
 
                     <div class="input-area">
                         <label for="selling_price" class="form-label">{{ __('Selling Price') }}</label>
-                        <input name="selling_price" type="number" id="selling_price" class="form-control"
+                        <input name="selling_price" type="text" id="selling_price" class="form-control"
                                placeholder="{{ __('Enter selling price') }}" value="{{ old('selling_price', $product->selling_price) }}" required>
                         <x-input-error :messages="$errors->get('selling_price')" class="mt-2"/>
                     </div>
@@ -291,11 +291,40 @@
                 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
                 <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.js"></script>
                 <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/cleave.js/1.6.0/cleave.min.js"></script>
 
                 <script>
                     $(document).ready(function() {
                         let variantCounter = `{{ $product->variants->count() ?? 0 }}`;
                         let batchCounter = `{{ $product->batches->count() ?? 0 }}`;
+
+
+        // Initialize Cleave.js formatters
+        new Cleave('#barcode', {
+            delimiter: '-',
+            blocks: [4, 4, 4, 4],
+            uppercase: true
+        });
+
+        new Cleave('#cost_price', {
+            numeral: true,
+            numeralThousandsGroupStyle: 'thousand',
+            numeralDecimalScale: 2,
+            numeralPositiveOnly: true
+        });
+
+        new Cleave('#selling_price', {
+            numeral: true,
+            numeralThousandsGroupStyle: 'thousand',
+            numeralDecimalScale: 2,
+            numeralPositiveOnly: true
+        });
+
+        new Cleave('#sku', {
+            delimiter: '-',
+            blocks: [3, 3, 4],
+            uppercase: true
+        });
 
                         // Function to toggle input validation
                         function toggleInputValidation(sectionId, isRequired) {

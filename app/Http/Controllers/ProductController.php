@@ -109,7 +109,7 @@ class ProductController extends Controller
                 'slug' => 'required|string|unique:product,slug',
                 'cost_price' => 'required|integer',
                 'selling_price' => 'required|integer',
-                'qty' => 'required|integer',
+                'qty' => 'required',
                 'alert_qty' => 'required|integer',
                 'sku' => 'required|string',
                 'category_id' => 'required|exists:category,id',
@@ -309,7 +309,7 @@ class ProductController extends Controller
             'category_id' => 'required|exists:category,id',
             'brand_id' => 'nullable|exists:brand,id',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:5048',
-            'unit_id' => 'required|exists:unit,id',
+            'unit_id' => 'required|exists:units,id',
         ]);
     
         // Handle image upload
