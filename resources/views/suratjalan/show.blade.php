@@ -23,7 +23,7 @@
                   <h4>Surat Jalan
                   </h4>
                   <div class="flex lg:justify-end items-center flex-wrap space-xy-5">
-                    <a href="{{route('suratJalan.pdf',['id'=>$suratJalan->id])}}" class="invocie-btn inline-flex btn btn-sm whitespace-nowrap space-x-1 cursor-pointer bg-white dark:bg-slate-800
+                    <a href="{{route('suratjalan.edit', $suratJalan->id)}}" class="invocie-btn inline-flex btn btn-sm whitespace-nowrap space-x-1 cursor-pointer bg-white dark:bg-slate-800
                     dark:text-slate-300 btn-md h-min text-sm font-normal text-slate-900 rtl:space-x-reverse"
                     data-id="{{ $suratJalan->id }}">
                      
@@ -79,7 +79,7 @@
                       <span>Print</span>
                     </button>
                     <a href="{{route('suratJalan.pdf',['id'=>$suratJalan->id])}}" class="invocie-btn inline-flex btn btn-sm whitespace-nowrap space-x-1 cursor-pointer bg-white dark:bg-slate-800
-                    dark:text-slate-300 btn-md h-min text-sm font-normal text-slate-900 rtl:space-x-reverse">
+                    dark:text-slate-300 btn-md h-min text-sm font-normal text-slate-900 rtl:space-x-reverse" target="_blank">
                       <span class="text-lg">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -101,29 +101,6 @@
                 </span>
                       <span>Download</span>
 </a>
-                    <button class="invocie-btn inline-flex btn btn-sm whitespace-nowrap space-x-1 cursor-pointer bg-white dark:bg-slate-800
-                    dark:text-slate-300 btn-md h-min text-sm font-normal text-slate-900 rtl:space-x-reverse">
-                      <span class="text-lg transform -rotate-45">
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        xmlns:xlink="http://www.w3.org/1999/xlink"
-                        aria-hidden="true"
-                        role="img"
-                        class="iconify iconify--heroicons"
-                        width="1em"
-                        height="1em"
-                        viewbox="0 0 24 24">
-                        <path
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="1.5"
-                            d="M6 12L3.269 3.126A59.768 59.768 0 0 1 21.485 12A59.77 59.77 0 0 1 3.27 20.876L5.999 12Zm0 0h7.5"></path>
-                    </svg>
-                </span>
-                      <span>Send invoice</span>
-                    </button>
                   </div>
                 </div>
         <!-- Header Card -->

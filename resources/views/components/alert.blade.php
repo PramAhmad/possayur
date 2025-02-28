@@ -1,6 +1,6 @@
 @props(['message','type'])
 
-<div class="alert alert-success light-mode" {{ $attributes->merge(['class' => 'mb-3 alert '.$type]) }}>
+<div {{ $attributes->merge(['class' => 'alert light-mode mb-3 alert-' . $type]) }}>
     <div class="flex items-center space-x-3 rtl:space-x-reverse">
         <iconify-icon class="text-2xl flex-0" icon="system-uicons:target"></iconify-icon>
         <p class="flex-1 font-Inter">{{ $message }}</p>
@@ -15,11 +15,9 @@
 </div>
 
 @push('scripts')
-
     <script type="module">
         $("#close").click(function(){
             $(".alert").hide();
         });
     </script>
-
 @endpush

@@ -106,15 +106,34 @@ class SuratJalanController extends Controller
         ]);
     }
 
-    public function getProducts($salesOrderId)
+    public function getProducts(Request $request, $id)
     {
-        $salesOrder = SalesOrder::with(['products','products.product','products.variant','products.batch','products.product.unit'])->findOrFail($salesOrderId);
+        $products = [];
+        $outletId = null;
+        $totalQty = 0;
+        $grandTotal = 0;
+
+        if ($request->is_edit == true) {
+            $suratJalan = SuratJalan::with(['productSuratJalans','productSuratJalans.product','productSuratJalans.variant','productSuratJalans.batch','productSuratJalans.product.unit'])->findOrFail($id);
+            
+            $outletId = $suratJalan?->salesorder?->outlet_id;
+            $totalQty = $suratJalan->total_qty;
+            $grandTotal = $suratJalan->grand_total;
+            $products = $suratJalan->productSuratJalans;
+        } else {
+            $salesOrder = SalesOrder::with(['products','products.product','products.variant','products.batch','products.product.unit'])->findOrFail($id);
+            
+            $outletId = $salesOrder->outlet_id;
+            $totalQty = $salesOrder->total_qty;
+            $grandTotal = $salesOrder->grandtotal;
+            $products = $salesOrder->products;
+        }
         
         return response()->json([
-            'products' => $salesOrder->products,
-            'outlet_id' => $salesOrder->outlet_id,
-            'total_qty' => $salesOrder->total_qty,
-            'grand_total' => $salesOrder->grandtotal
+            'products' => $products,
+            'outlet_id' => $outletId,
+            'total_qty' => $totalQty,
+            'grand_total' => $grandTotal
         ]);
     }
     /**
@@ -230,7 +249,8 @@ class SuratJalanController extends Controller
                 'due_date' => $request->due_date,
                 'total_qty' => $request->summary['total_adjusted_qty'] ?? 0, 
                 'grand_total' => $request->summary['total_adjusted_amount'] ?? 0,
-                'packer' => $request->packer
+                'packer' => $request->packer,
+                'reference_no' =>  'SJ-' . time(),
             ]);
 
             SalesOrder::findOrFail($request->sales_order_id)->update([
@@ -439,6 +459,9 @@ class SuratJalanController extends Controller
             'products.*.batch_id.exists' => 'The selected batch id is invalid.',
 
         ]);
+
+        DB::beginTransaction();
+
         try {
             $suratJalan = SuratJalan::findOrFail($id);
             $suratJalan->update([
@@ -472,11 +495,16 @@ class SuratJalanController extends Controller
                 }
             }
 
+            DB::commit();
+
+            return response()->json(['success' => true, 'message' => 'Surat Jalan updated successfully'], 200);
+
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+            DB::rollBack();
+            Log::error('Error in update method: ' . $e->getMessage());
+
+            return response()->json(['success' => false, 'error' => $e->getMessage()], 500);
         }
-    
-        return redirect()->back()->with('success', 'Surat Jalan updated successfully');
     }
     
 
@@ -488,7 +516,33 @@ class SuratJalanController extends Controller
      */
     public function destroy($id)
     {
-        SuratJalan::findOrFail($id)->delete();
-        return response()->json(['message' => 'Surat Jalan deleted successfully']);
+        DB::beginTransaction();
+        $suratJalan = SuratJalan::findOrFail($id);
+
+        if ($suratJalan?->salesorder?->status == 'completed') {
+            return redirect()
+                ->route('suratjalan.index')
+                ->with('error', __('Surat Jalan failed to delete. Sales Order already completed.'));
+        }
+
+        try{
+            $suratJalan?->salesorder?->update([
+                'status' => 'pending'
+            ]);
+
+            $suratJalan->delete();
+            DB::commit();
+
+            return redirect()
+                ->route('suratjalan.index')
+                ->with('message', __('Surat Jalan deleted successfully.'));
+        } catch (\Exception $e){
+            Log::error('Surat Jalan Error in destroy method: ' . $e->getMessage());
+            DB::rollBack();
+
+            return redirect()
+                ->route('suratjalan.index')
+                ->with('error', __('Surat Jalan failed to delete.'));
+        }
     }
 }
