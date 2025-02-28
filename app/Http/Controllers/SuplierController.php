@@ -173,7 +173,6 @@ class SuplierController extends Controller
             ]);
             return redirect()->route('supplier.index')->with('message', 'Data berhasil diupdate');
         } catch (\Exception $e) {
-            dd($e);
             return redirect()->back()->with('error', 'Data gagal diupdate');
         }
     }
@@ -186,10 +185,12 @@ class SuplierController extends Controller
      */
     public function destroy($id)
     {
+        // dd($id);
         try {
             Suplier::find($id)->delete();
             return redirect()->back()->with('message', 'Data berhasil dihapus');
         } catch (\Exception $e) {
+            // dd($e);
             return redirect()->back()->with('error', 'Data gagal dihapus');
         }
     }

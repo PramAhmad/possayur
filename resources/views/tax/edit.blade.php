@@ -50,14 +50,7 @@
                         </div>
     
                         {{--Status select--}}
-                        <div class="input-area">
-                            <label for="is_active" class="form-label">{{ __('Status') }}</label>
-                            <select name="is_active" id="is_active" class="form-control">
-                                <option value="0" {{ !$tax->is_active ? 'selected' : '' }}>{{ __('Inactive') }}</option>
-                                <option value="1" {{ $tax->is_active ? 'selected' : '' }}>{{ __('Active') }}</option>
-                            </select>
-                            <x-input-error :messages="$errors->get('is_active')" class="mt-2"/>
-                        </div>
+                    
                     </div>
     
                     <button type="submit" class="btn  btn-dark mt-3">Submit</button>

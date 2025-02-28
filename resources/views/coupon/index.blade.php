@@ -46,6 +46,7 @@
                                     <tr>
                                         <th scope="col" class="table-th">{{ __('Sl No') }}</th>
                                         <th scope="col" class="table-th">{{ __('Code') }}</th>
+                                        <th scope="col" class="table-th">{{ __('Outlet') }}</th>
                                         <th scope="col" class="table-th">{{ __('Type') }}</th>
                                         <th scope="col" class="table-th">{{ __('Amount') }}</th>
                                         <th scope="col" class="table-th">{{ __('Min Amount') }}</th>
@@ -62,6 +63,7 @@
                                         <tr>
                                             <td class="table-td"># {{ $coupon->id }}</td>
                                             <td class="table-td">{{ $coupon->code }}</td>
+                                            <td class="table-td">{{ $coupon->outlet?->name }}</td>
                                             <td class="table-td">{{ ucfirst($coupon->type) }}</td>
                                             <td class="table-td">{{ number_format($coupon->amount) }}</td>
                                             <td class="table-td">{{ number_format($coupon->min_amount) }}</td>

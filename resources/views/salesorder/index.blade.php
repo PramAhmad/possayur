@@ -151,7 +151,7 @@
                                     <tr>
                                         <td class="table-td">{{ $order->reference_no }}</td>
                                         <td class="table-td">{{ $order->created_at }}</td>
-                                        <td class="table-td">{{ $order->customer->name }}</td>
+                                        <td class="table-td">{{ $order->customer?->name }}</td>
                                         <td class="table-td">{{ $order->total_qty }}</td>
                                         <td class="table-td">{{ currency($order->grandtotal) }}</td>
                                         <td class="table-td">

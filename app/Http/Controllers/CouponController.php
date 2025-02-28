@@ -36,6 +36,7 @@ class CouponController extends Controller
         // coulet
         if ($user->getRoleNames()[0] == 'super-admin') {
             $coupons = QueryBuilder::for(Coupon::class)
+            ->with('outlet')
             ->allowedSorts(['name', 'code', 'discount', 'start_date', 'end_date'])
             ->where('code', 'like', "%$q%")
             ->latest()
@@ -45,6 +46,7 @@ class CouponController extends Controller
         } else {
             $outlets = Outlet::where('id', auth()->user()->outlet_id)->get();
             $coupons = QueryBuilder::for(Coupon::class)
+            ->with('outlet')
             ->allowedSorts(['name', 'code', 'discount', 'start_date', 'end_date'])
             ->where('code', 'like', "%$q%")
             ->where('outlet_id', auth()->user()->outlet_id)

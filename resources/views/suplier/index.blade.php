@@ -8,6 +8,10 @@
         @if (session('message'))
             <x-alert :message="session('message')" :type="'success'" />
         @endif
+        @if (session('error'))
+            <x-alert :message="session('error')" :type="'info'" />
+          
+        @endif
         <div class=" space-y-5">
             <div class="card">
               <header class=" card-header noborder">
@@ -108,12 +112,14 @@
                                         </li>
                                         <li>
                                       
-                                          <a
-                                          id="delete"
-                                            href="{{route('supplier.destroy', $s->id)}}"
-                                            class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
-                                              dark:hover:text-white">
-                                            Delete</a>
+                                        <form id="deleteForm{{ $s->id }}" method="POST" action="{{ route('supplier.destroy', $s) }}">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <a class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
+                                              dark:hover:text-white" onclick="sweetAlertDelete(event, 'deleteForm{{ $s->id }}')" type="submit">
+                                                                delete
+                                                            </a>
+                                                        </form>
                                         </li>
                                       </ul>
                                     </div>
@@ -161,38 +167,21 @@
         <!-- alert confirm using swal cdn  for id dlete-->
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
         <script>
-            $('a#delete').on('click', function (e) {
-                e.preventDefault();
-                var url = $(this).attr('href');
+            function sweetAlertDelete(event, formId) {
+                event.preventDefault();
+                let form = document.getElementById(formId);
                 Swal.fire({
-                    title: 'Are you sure?',
-                    text: "You won't be able to revert this!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, delete it!'
+                    title: '@lang('Are you sure?')',
+                    icon: 'question',
+                    showDenyButton: true,
+                    confirmButtonText: '@lang('Delete')',
+                    denyButtonText: '@lang('Cancel')',
                 }).then((result) => {
                     if (result.isConfirmed) {
-                      // ajax delete
-                      $.ajax({
-                        url: url,
-                        type: 'DELETE',
-                        data: {
-                          _token: "{{ csrf_token() }}"
-                        },
-                        success: function (response) {
-                          Swal.fire(
-                            'Deleted!',
-                            'Your file has been deleted.',
-                            'success'
-                          )
-                          location.reload();
-                        }
-                      });
+                        form.submit();
                     }
                 })
-            });
+            }
         </script>
     @endpush
 </x-app-layout>

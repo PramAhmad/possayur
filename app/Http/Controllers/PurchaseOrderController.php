@@ -21,12 +21,10 @@ class PurchaseOrderController extends Controller
      */
     public function index(Request $request)
     {
-        
         $q = $request->input('q', ''); 
         $perPage = $request->input('per_page', 10); 
         $sort = $request->input('sort', 'latest'); 
-
-        
+    
         $breadcrumbItems = [
             [
                 'name' => 'Settings',
@@ -45,20 +43,22 @@ class PurchaseOrderController extends Controller
             ->allowedSorts(['reference_no', 'total_cost', 'grand_total', 'status', 'created_at'])
             ->allowedFilters([
                 AllowedFilter::partial('reference_no'),
-                AllowedFilter::partial('status'),      
+                AllowedFilter::partial('status'),
+                AllowedFilter::exact('supplier_id'), // Tambahkan filter untuk supplier
             ])
-            ->with(['supplier', 'user', 'outlet','productPurchase']) 
+            ->with(['supplier', 'user', 'outlet', 'productPurchase']) 
             ->where('reference_no', 'like', "%$q%") 
             ->latest() 
             ->paginate($perPage) 
             ->appends(['per_page' => $perPage, 'q' => $q, 'sort' => $sort]); 
-
-            return view('purchaseorder.index', [
-                'purchaseOrders' => $purchaseOrders,
-                'breadcrumbItems' => $breadcrumbItems,
-                'pageTitle' => $pageTitle,
-            ]);
-    }
+            $suppliers = Suplier::all();
+        return view('purchaseorder.index', [
+            'suppliers' => $suppliers,
+            'purchaseOrders' => $purchaseOrders,
+            'breadcrumbItems' => $breadcrumbItems,
+            'pageTitle' => $pageTitle,
+        ]);
+}
 
 
     /**

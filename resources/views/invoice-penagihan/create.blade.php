@@ -267,13 +267,35 @@
             type: 'POST',
             data: JSON.stringify(formData),
             contentType: 'application/json',
+            beforeSend: function() {
+                // swal
+                Swal.fire({
+                    title: 'Please wait...',
+                    html: 'Creating invoice...',
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+            },
             success: function(response) {
-                alert('Invoice berhasil dibuat');
-                window.location.href = '{{ route('invoice.index') }}';
+                // swal
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: 'Invoice created successfully.'
+                }).then(function() {
+                    window.location.href = `{{ route('invoice.index') }}`;
+                });
+                
             },
             error: function(xhr) {
                 console.error('Error creating invoice:', xhr);
-                alert('Error occurred. Please try again.');
+                // swal
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Error creating invoice. Please try again.'
+                });
             }
         });
     });

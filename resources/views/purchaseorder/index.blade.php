@@ -12,7 +12,7 @@
             <header class="card-header noborder">
                 <div class="justify-end flex gap-3 items-center flex-wrap">
                     @can('purchase create')
-                    <a class="btn inline-flex justify-center btn-dark rounded-[25px] items-center !p-2 !px-3" href="{{ route('invoicepurchase.create') }}">
+                    <a class="btn inline-flex justify-center btn-dark rounded-[25px] items-center !p-2 !px-3" href="{{ route('purchasepos.index') }}">
                         <iconify-icon icon="ic:round-plus" class="text-lg mr-1"></iconify-icon>
                         {{ __('Purchase Order') }}
                     </a>
@@ -22,15 +22,22 @@
                         <iconify-icon icon="mdi:refresh" class="text-xl"></iconify-icon>
                     </a>
                 </div>
-
                 <div class="justify-center flex flex-wrap sm:flex items-center lg:justify-end gap-3">
-                    <div class="relative w-full sm:w-auto flex items-center">
-                        <form id="searchForm" method="get" action="{{ route('purchaseorder.index') }}">
-                            <input name="q" type="text" class="inputField pl-8 p-2 border border-slate-200 dark:border-slate-700 rounded-md dark:bg-slate-900" placeholder="Search purchase order" value="{{ request()->q }}">
-                        </form>
-                        <iconify-icon class="absolute text-textColor left-2 dark:text-white" icon="quill:search-alt"></iconify-icon>
-                    </div>
-                </div>
+    <div class="relative w-full sm:w-auto flex items-center">
+        <form id="searchForm" method="get" action="{{ route('purchaseorder.index') }}">
+            <input name="q" type="text" class="inputField pl-8 p-2 border border-slate-200 dark:border-slate-700 rounded-md dark:bg-slate-900" placeholder="Search purchase order" value="{{ request()->q }}">
+        </form>
+        <iconify-icon class="absolute text-textColor left-2 dark:text-white" icon="quill:search-alt"></iconify-icon>
+    </div>
+    <div class="relative w-full sm:w-auto flex items-center">
+        <select name="supplier_id" class="inputField pl-8 p-2 border border-slate-200 dark:border-slate-700 rounded-md dark:bg-slate-900" onchange="this.form.submit()">
+            <option value="">All Suppliers</option>
+            @foreach($suppliers as $supplier)
+                <option value="{{ $supplier->id }}" {{ request()->supplier_id == $supplier->id ? 'selected' : '' }}>{{ $supplier->name }}</option>
+            @endforeach
+        </select>
+    </div>
+</div>
             </header>
 
             <div class="card-body px-6 pb-6">
@@ -161,14 +168,14 @@
             event.preventDefault();
             let form = document.getElementById(formId);
             Swal.fire({
-                title: '@lang('
-                Are you sure ? ')',
+                title: `@lang('
+                Are you sure ? ')`,
                 icon : 'question',
                 showDenyButton: true,
-                confirmButtonText: '@lang('
-                Delete ')',
-                denyButtonText: '@lang('
-                Cancel ')',
+                confirmButtonText: `@lang('
+                Delete ')`,
+                denyButtonText: `@lang('
+                Cancel ')`,
             }).then((result) => {
                 if (result.isConfirmed) {
                     form.submit();

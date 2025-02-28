@@ -104,9 +104,9 @@
                                         <form id="deleteForm{{ $c->id }}" method="POST" action="{{ route('customer.destroy', $c) }}">
                                                             @csrf
                                                             @method('DELETE')
-                                                            <a class="action-btn cursor-pointer" onclick="sweetAlertDelete(event, 'deleteForm{{ $c->id }}')" type="submit">
-                                                                <iconify-icon icon="heroicons:trash"></iconify-icon>
-                                                            </a>
+                                                          <a class="action-btn cursor-pointer" onclick="sweetAlertDelete(event, 'deleteForm{{ $c->id }}')" type="submit">
+                                                              <iconify-icon icon="heroicons:trash"></iconify-icon>
+                                                          </a>
                                                         </form>
 
                                     </div>
