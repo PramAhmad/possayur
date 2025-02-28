@@ -289,8 +289,6 @@ class SalesOrderExportController extends Controller
         $pdf = Pdf::loadView('salesorder.print', compact('salesOrder'));
 
         return $pdf->download('Sales Order ' . $salesOrder->reference_no . ' '. now()->format('Ymd_His') .'.pdf');
-        // $content = $pdf->download()->getOriginalContent();
-        // $filename = 'sales-order_' . $id . '.pdf';
     }
 
     public function print(Request $request, $id)

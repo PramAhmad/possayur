@@ -153,14 +153,14 @@
                 </ul>
             </li>
 
-            <li>
+            {{-- <li>
                 <a href="{{ route('suratjalan.index') }}" class="navItem {{ (request()->is('suratjalan*')) ? 'active' : '' }}">
                     <span class="flex items-center">
                         <iconify-icon class=" nav-icon" icon="heroicons-outline:forward"></iconify-icon>
                         <span>{{ __('Surat Jalan') }}</span>
                     </span>
                 </a>
-            </li>
+            </li> --}}
             <li class="
                 {{
                     request()->is('stock*') ||

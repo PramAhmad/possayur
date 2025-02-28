@@ -39,7 +39,7 @@ use App\Http\Controllers\PurchasePOSController;
 use App\Http\Controllers\ReturnPurchaseController;
 use App\Http\Controllers\ReturnSalesOrderController;
 use App\Http\Controllers\ReturnSalesOrderExportController;
-use App\Http\Controllers\SalesOrderControllre;
+use App\Http\Controllers\SalesOrderController;
 use App\Http\Controllers\SalesOrderExportController;
 use App\Http\Controllers\StockOpNameController;
 use App\Http\Controllers\SuplierController;
@@ -142,7 +142,7 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
 
 
     // sales order 
-    Route::resource('salesorder', SalesOrderControllre::class);
+    Route::resource('salesorder', SalesOrderController::class);
 
     // surat jalan
     Route::resource('suratjalan', SuratJalanController::class);

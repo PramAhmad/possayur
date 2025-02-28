@@ -5,7 +5,11 @@
         </div>
 
         @if (session('message'))
-        <x-alert :message="session('message')" :type="'success'" />
+            <x-alert :message="session('message')" :type="'success'" />
+        @endif
+
+        @if (session('error'))
+            <x-alert :message="session('error')" :type="'danger'" />
         @endif
 
         <div class="card">
@@ -90,30 +94,30 @@
                                         <td class="table-td">
                                             <div class="flex space-x-3 rtl:space-x-reverse">
                                                 @can('suratjalan view')
-                                                <a class="action-btn" href="{{ route('suratjalan.show', ['suratjalan' => $order]) }}">
-                                                    <iconify-icon icon="heroicons:eye"></iconify-icon>
-                                                </a>
+                                                    <a class="action-btn" href="{{ route('suratjalan.show', ['suratjalan' => $order]) }}">
+                                                        <iconify-icon icon="heroicons:eye"></iconify-icon>
+                                                    </a>
                                                 @endcan
                                                 @can('suratjalan export')
-                                                <a href="{{ route('suratJalan.pdf', $order->id) }}" class="action-btn" data-tippy-content="Download PDF">
-                                                    <iconify-icon icon="heroicons:arrow-down-tray"></iconify-icon>
-                                                </a>
+                                                    <a href="{{ route('suratJalan.pdf', $order->id) }}" class="action-btn" data-tippy-content="Download PDF" target="_blank">
+                                                        <iconify-icon icon="heroicons:arrow-down-tray"></iconify-icon>
+                                                    </a>
                                                 @endcan
 
                                                 @can('suratjalan edit')
-                                                <a class="action-btn" href="{{ route('suratjalan.edit', ['suratjalan' => $order->id]) }}">
-                                                    <iconify-icon icon="heroicons:pencil-square"></iconify-icon>
-                                                </a>
+                                                    <a class="action-btn" href="{{ route('suratjalan.edit', ['suratjalan' => $order->id]) }}">
+                                                        <iconify-icon icon="heroicons:pencil-square"></iconify-icon>
+                                                    </a>
                                                 @endcan
 
                                                 @can('suratjalan delete')
-                                                <form id="deleteForm{{ $order->id }}" method="POST" action="{{ route('suratjalan.destroy', $order) }}">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <a class="action-btn cursor-pointer" onclick="sweetAlertDelete(event, 'deleteForm{{ $order->id }}')" type="submit">
-                                                        <iconify-icon icon="heroicons:trash"></iconify-icon>
-                                                    </a>
-                                                </form>
+                                                    <form id="deleteForm{{ $order->id }}" method="POST" action="{{ route('suratjalan.destroy', $order) }}">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <a class="action-btn cursor-pointer" onclick="sweetAlertDelete(event, 'deleteForm{{ $order->id }}')" type="submit">
+                                                            <iconify-icon icon="heroicons:trash"></iconify-icon>
+                                                        </a>
+                                                    </form>
                                                 @endcan
                                             </div>
                                         </td>
@@ -138,25 +142,22 @@
     </div>
 
     @push('scripts')
-    <script>
-        function sweetAlertDelete(event, formId) {
-            event.preventDefault();
-            let form = document.getElementById(formId);
-            Swal.fire({
-                title: '@lang('
-                Are you sure ? ')',
-                icon : 'question',
-                showDenyButton: true,
-                confirmButtonText: '@lang('
-                Delete ')',
-                denyButtonText: '@lang('
-                Cancel ')',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    form.submit();
-                }
-            })
-        }
-    </script>
+        <script>
+            function sweetAlertDelete(event, formId) {
+                event.preventDefault();
+                let form = document.getElementById(formId);
+                Swal.fire({
+                    title: `@lang('Are you sure?')`,
+                    icon: 'question',
+                    showDenyButton: true,
+                    confirmButtonText: `@lang('Delete')`,
+                    denyButtonText: `@lang('Cancel')`,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                })
+            }
+        </script>
     @endpush
 </x-app-layout>

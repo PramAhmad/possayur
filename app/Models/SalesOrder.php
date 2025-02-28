@@ -78,7 +78,7 @@ class SalesOrder extends Model
         return $this->hasOne(SuratJalan::class);
     }
     // pivot product
-public function productSalesOrders()
+    public function productSalesOrders()
     {
         return $this->belongsToMany(Product::class, 'product_sales_orders')->withPivot('qty', 'unit_price', 'total_price', 'discount', 'tax');
     }

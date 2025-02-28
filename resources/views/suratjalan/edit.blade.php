@@ -67,9 +67,9 @@
                             <tfoot class="bg-gray-50">
                                 <tr>
                                     <td colspan="2" class="px-6 py-4 font-semibold">Totals:</td>
-                                    <td class="px-6 py-4" id="total-original-qty">0</td>
+                                    <td class="px-6 py-4 text-center" id="total-original-qty">0</td>
                                     <td class="px-6 py-4" id="total-original-amount">0</td>
-                                    <td class="px-6 py-4" id="total-adjusted-qty">0</td>
+                                    <td class="px-6 py-4 text-center" id="total-adjusted-qty">0</td>
                                     <td class="px-6 py-4" id="total-adjusted-amount">0</td>
                                 </tr>
                             </tfoot>
@@ -126,10 +126,11 @@
             }
 
             function loadProducts() {
-                const salesOrderId = $('#sales_order_id').val();
-                if (salesOrderId) {
+                const suratJalanId = {{ $suratJalan->id }};
+
+                if (suratJalanId) {
                     $.ajax({
-                        url: `/suratjalan/get-products/${salesOrderId}`,
+                        url: `/suratjalan/get-products/${suratJalanId}?is_edit=true`,
                         type: 'GET',
                         success: function(response) {
                             const tableBody = $('#products-table-body');
@@ -147,7 +148,7 @@
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         ${formatCurrency(item.unit_price)}
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
+                                    <td class="px-6 py-4 whitespace-nowrap text-center">
                                         ${item.qty}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
@@ -156,10 +157,10 @@
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <input type="number" 
                                             name="adjusted_quantities[]" 
-                                            class="form-control qty-input" 
+                                            class="form-control qty-input text-center" 
                                             value="${adjustedQty}"
                                             min="0"
-                                            max="${item.qty}"
+                                            max="${item.product.qty}"
                                             required>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap adjusted-subtotal">

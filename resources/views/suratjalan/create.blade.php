@@ -158,6 +158,7 @@
                     tableBody.empty();
 
                     response.products.forEach(function(item) {
+                        console.log();
                         // Prepare variant and batch information
                         const variantInfo = item.variant 
                             ? ` (Variant: ${item.variant.name})` 
@@ -189,10 +190,10 @@
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <input type="number" 
                                        name="adjusted_quantities[]" 
-                                       class="form-control qty-input" 
+                                       class="form-control qty-input text-center" 
                                        value="${item.qty}"
                                        min="0"
-                                       max="${item.qty}"
+                                       max="${item.product.qty}"
                                        required>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap adjusted-subtotal">

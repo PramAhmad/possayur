@@ -6,7 +6,7 @@ use App\Models\SalesOrder;
 use Illuminate\Http\Request;
 use Spatie\QueryBuilder\QueryBuilder;
 
-class SalesOrderControllre extends Controller
+class SalesOrderController extends Controller
 {
     /**
      * Display a listing of the resource.
