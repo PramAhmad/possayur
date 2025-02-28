@@ -78,7 +78,6 @@ class InvoicePenagihanController extends Controller
         }
 
         return view('invoice-penagihan.create', [
-            'outlets' => $outlets,
             'salesOrders' => $salesOrders,
             'breadcrumbItems' => $breadcrumbItems,
             'pageTitle' => 'Tambah Invoice Penagihan',
@@ -170,15 +169,13 @@ class InvoicePenagihanController extends Controller
     
             // Commit transaction
             DB::commit();
-    
-            return redirect()->route('invoice.index')->with('success', 'Invoice berhasil dibuat');
+
+            return response()->json(['id' => $invoice->id], 201);
         } catch (\Exception $e) {
-            return $e->getMessage();
-            Log::error('Error in store method: ' . $e->getMessage());
-    
-            // Rollback transaction and return error response
             DB::rollBack();
-            return redirect()->back()->with('error', 'An error occurred while processing your request.');
+            Log::error('Error in store method: ' . $e->getMessage());
+
+            return response()->json('', 400);
         }
     }
     
@@ -281,6 +278,7 @@ class InvoicePenagihanController extends Controller
             'salesorder' => $salesOrder,
             'total_qty' => $salesOrder->total_qty,
             'outlet_id' => $salesOrder->outlet_id,
+            'outlet_name' => $salesOrder?->outlet?->name,
         ]);
     }
 }

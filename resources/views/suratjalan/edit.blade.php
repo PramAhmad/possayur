@@ -13,7 +13,6 @@
                         <label for="sales_order_id" class="form-label">{{ __('No PO') }}</label>
                         <select name="sales_order_id" id="sales_order_id" class="form-control" disabled>
                             <option value="{{ $suratJalan->sales_order_id }}">{{ $suratJalan->salesOrder->reference_no }}</option>
-                           
                         </select>
                         <div class="error-message text-red-500 mt-1" id="sales_order_id_error"></div>
                     </div>
@@ -127,67 +126,67 @@
             }
 
             function loadProducts() {
-    const salesOrderId = $('#sales_order_id').val();
-    if (salesOrderId) {
-        $.ajax({
-            url: `/suratjalan/get-products/${salesOrderId}`,
-            type: 'GET',
-            success: function(response) {
-                const tableBody = $('#products-table-body');
-                tableBody.empty();
+                const salesOrderId = $('#sales_order_id').val();
+                if (salesOrderId) {
+                    $.ajax({
+                        url: `/suratjalan/get-products/${salesOrderId}`,
+                        type: 'GET',
+                        success: function(response) {
+                            const tableBody = $('#products-table-body');
+                            tableBody.empty();
 
-                response.products.forEach(function(item) {
-                    const adjustedQty = item.adjusted_qty !== undefined ? item.adjusted_qty : item.qty;
-                    
-                    const row = `
-                    <tr data-price="${item.unit_price}" data-original-qty="${item.qty}">
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            ${item.product.name}
-                            <input type="hidden" name="product_ids[]" value="${item.product_id}">
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            ${formatCurrency(item.unit_price)}
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            ${item.qty}
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            ${formatCurrency(item.unit_price * item.qty)}
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <input type="number" 
-                                   name="adjusted_quantities[]" 
-                                   class="form-control qty-input" 
-                                   value="${adjustedQty}"
-                                   min="0"
-                                   max="${item.qty}"
-                                   required>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap adjusted-subtotal">
-                            ${formatCurrency(item.unit_price * adjustedQty)}
-                        </td>
-                    </tr>
-                `;
-                    tableBody.append(row);
-                });
+                            response.products.forEach(function(item) {
+                                const adjustedQty = item.adjusted_qty !== undefined ? item.adjusted_qty : item.qty;
+                                
+                                const row = `
+                                <tr data-price="${item.unit_price}" data-original-qty="${item.qty}">
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        ${item.product.name}
+                                        <input type="hidden" name="product_ids[]" value="${item.product_id}">
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        ${formatCurrency(item.unit_price)}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        ${item.qty}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        ${formatCurrency(item.unit_price * item.qty)}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <input type="number" 
+                                            name="adjusted_quantities[]" 
+                                            class="form-control qty-input" 
+                                            value="${adjustedQty}"
+                                            min="0"
+                                            max="${item.qty}"
+                                            required>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap adjusted-subtotal">
+                                        ${formatCurrency(item.unit_price * adjustedQty)}
+                                    </td>
+                                </tr>
+                            `;
+                                tableBody.append(row);
+                            });
 
-                updateTotals();
+                            updateTotals();
 
-                $('.qty-input').on('input', function() {
-                    const row = $(this).closest('tr');
-                    const price = parseFloat(row.data('price'));
-                    const quantity = parseFloat($(this).val() || 0);
-                    row.find('.adjusted-subtotal').text(formatCurrency(price * quantity));
-                    updateTotals();
-                });
-            },
-            error: function(xhr) {
-                console.error('Error fetching products:', xhr);
-                alert('Error fetching products. Please try again.');
+                            $('.qty-input').on('input', function() {
+                                const row = $(this).closest('tr');
+                                const price = parseFloat(row.data('price'));
+                                const quantity = parseFloat($(this).val() || 0);
+                                row.find('.adjusted-subtotal').text(formatCurrency(price * quantity));
+                                updateTotals();
+                            });
+                        },
+                        error: function(xhr) {
+                            console.error('Error fetching products:', xhr);
+                            alert('Error fetching products. Please try again.');
+                        }
+                    });
+                }
             }
-        });
-    }
-}
 
             // Load initial data
             loadProducts();

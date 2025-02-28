@@ -14,7 +14,7 @@
                         <select name="sales_order_id" id="sales_order_id" class="form-control">
                             <option value="">{{ __('Select No PO') }}</option>
                             @foreach ($salesOrder as $s)
-                            <option value="{{ $s->id }}">{{ $s->reference_no }}</option>
+                                <option value="{{ $s->id }}">{{ $s->reference_no }}</option>
                             @endforeach
                         </select>
                         <div class="error-message text-red-500 mt-1" id="sales_order_id_error"></div>
@@ -75,12 +75,12 @@
                             </tbody>
                             <tfoot>
                         <tr>
-                            <td colspan="2" class="font-semibold">Totals:</td>
-                            <td id="total-original-qty">0</td>
+                            <td colspan="3" class="font-semibold">Totals:</td>
+                            <td id="total-original-qty" class="text-center">0</td>
                             <td id="total-original-amount">0</td>
-                            <td id="total-adjusted-qty">0</td>
+                            <td id="total-adjusted-qty" class="text-center">0</td>
                             <td id="total-adjusted-amount">0</td>
-                            <td id="total-return-qty">0</td>
+                            {{-- <td id="total-return-qty">0</td> --}}
                         </tr>
                     </tfoot>
 
@@ -178,9 +178,9 @@
                                 ${formatCurrency(item.unit_price)}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                ${item.product.unit.name}
+                                ${item.product?.unit?.name ?? '-'}
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
+                            <td class="px-6 py-4 whitespace-nowrap text-center">
                                 ${item.qty}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
@@ -291,10 +291,10 @@
                     cancelButtonText: 'Tidak'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                    window.open(`/print/suratjalan/${response.id}`, '_blank');
-                    } else {
-                        window.location.href = '/suratjalan';
+                        window.open(`/print/suratjalan/${response.id}`, '_blank');
                     }
+
+                    window.location.href = '/suratjalan';
                 });
             },
             error: function(xhr) {

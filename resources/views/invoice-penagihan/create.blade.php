@@ -13,7 +13,7 @@
                         <select name="sales_order_id" id="sales_order_id" class="form-control">
                             <option value="">{{ __('Select Sales Order') }}</option>
                             @foreach ($salesOrders as $so)
-                            <option value="{{ $so->id }}">{{ $so->reference_no }}</option>
+                                <option value="{{ $so->id }}">{{ $so->reference_no }}</option>
                             @endforeach
                         </select>
                         <div class="error-message text-red-500 mt-1" id="sales_order_id_error"></div>
@@ -22,7 +22,6 @@
                     <div class="input-area">
                         <label for="outlet_id" class="form-label">{{ __('Outlet') }}</label>
                         <input type="text" id="outlet_name" class="form-control" readonly>
-                        <input type="hidden" name="outlet_id" id="outlet_id">
                     </div>
 
                     <div class="input-area">
@@ -49,7 +48,7 @@
                             <tbody id="products-table-body" class="bg-white divide-y divide-gray-200"></tbody>
                             <tfoot class="bg-gray-50">
                                 <tr>
-                                    <td colspan="3" class="px-6 py-4 font-semibold">{{ __('Totals') }}:</td>
+                                    <td colspan="4" class="px-6 py-4 font-semibold">{{ __('Totals') }}:</td>
                                     <td class="px-6 py-4"></td> <!-- Surat Jalan Qty total -->
                                     <td class="px-6 py-4" id="total-invoice-qty">0</td>
                                     <td class="px-6 py-4" id="total-amount">0</td>
@@ -157,13 +156,13 @@
                                     </div>
                                 </td>
                                 <td>${formatCurrency(item.unit_price)}</td>
-                                <td>${item.product.unit.name}</td>
-                                <td>${item.qty}</td>
-                                <td>${suratJalanQty}</td>
-                                <td>
+                                <td>${item.product?.unit?.name ?? '-'}</td>
+                                <td class="text-center">${item.qty}</td>
+                                <td class="text-center">${suratJalanQty}</td>
+                                <td class="text-center">
                                     <input type="number" 
                                            name="invoice_quantities[]" 
-                                           class="form-control qty-input" 
+                                           class="form-control qty-input text-center" 
                                            value="${suratJalanQty}" 
                                            min="0"
                                            max="${item.qty}">
@@ -269,7 +268,8 @@
             data: JSON.stringify(formData),
             contentType: 'application/json',
             success: function(response) {
-                alert('Invoice created successfully.');
+                alert('Invoice berhasil dibuat');
+                window.location.href = '{{ route('invoice.index') }}';
             },
             error: function(xhr) {
                 console.error('Error creating invoice:', xhr);

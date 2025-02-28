@@ -3,6 +3,8 @@
 /public/hot
 /public/storage
 /storage/*.key
+/public/*.pem
+/public/*.crt
 /vendor
 .env
 .env.testing
