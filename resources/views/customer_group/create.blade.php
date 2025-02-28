@@ -19,7 +19,7 @@
                         </div>
                     </header>
                     <div class="card-text h-full">
-                        <form class="space-y-4" method="post" action="{{route('customer_group.store')}}" enctype="multipart/form-data">
+                        <form class="space-y-4" method="post" action="{{route('group_customer.store')}}" enctype="multipart/form-data">
                             @csrf
                             @method('POST')
                             <div class="grid">
@@ -74,7 +74,7 @@
                             <!-- percentage -->
                            
                             <button type="submit" class="btn  btn-dark mt-3">Submit</button>
-                            <a href="{{ route('customer_group.index') }}" class="btn py-3 btn-outline-dark mt-3">Kembali</a>
+                            <a href="{{ route('group_customer.index') }}" class="btn py-3 btn-outline-dark mt-3">Kembali</a>
                         </form>
                     </div>
                 </div>

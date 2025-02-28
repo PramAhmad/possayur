@@ -86,7 +86,7 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
     // data master
     Route::resource('category', CategoryController::class);
     Route::resource('brand', BrandController::class);
-    Route::resource('customer_group', CustomerGroupController::class);
+    Route::resource('group_customer', CustomerGroupController::class);
     Route::resource('customer', CustomerController::class);
     Route::resource('supplier', SuplierController::class);
     Route::resource('coupon', CouponController::class);

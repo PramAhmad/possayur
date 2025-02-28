@@ -61,7 +61,7 @@ class SalesOrderExportController extends Controller
     $sheet->getStyle('A7')->getAlignment()->setWrapText(false);
 
     // Jarak antara header dan tabel
-    $sheet->setCellValue('A9', ''); // Spacer
+    $sheet->setCellValue('A9', ''); 
 
     // Table headers
     $sheet->setCellValue('A10', 'NO')->getStyle('A10')->getFont()->setBold(true)->setSize(12);
@@ -159,7 +159,6 @@ $sheet->getStyle('I' . $grandTotalRow)->getAlignment()->setHorizontal(Alignment:
     $sheet->getStyle('A10:J' . $grandTotalRow)->applyFromArray($styleArray);
     
     // Remove borders between merged cells
-    // For product columns (B-D)
     $noBorderStyle = [
         'borders' => [
             'right' => [
@@ -168,7 +167,6 @@ $sheet->getStyle('I' . $grandTotalRow)->getAlignment()->setHorizontal(Alignment:
         ],
     ];
     
-    // Apply no-border style to B and C columns for all data rows
     for ($i = 11; $i < $grandTotalRow; $i++) {
         $sheet->getStyle('A' . $i)->applyFromArray($noBorderStyle);
         $sheet->getStyle('B' . $i)->applyFromArray($noBorderStyle);
@@ -186,7 +184,6 @@ $sheet->getStyle('I' . $grandTotalRow)->getAlignment()->setHorizontal(Alignment:
         ],
     ]);
     
-    // Make sure the bottom border remains for all cells in the grand total row
     $sheet->getStyle('A' . $grandTotalRow . ':J' . $grandTotalRow)->applyFromArray([
         'borders' => [
             'bottom' => [
@@ -196,17 +193,14 @@ $sheet->getStyle('I' . $grandTotalRow)->getAlignment()->setHorizontal(Alignment:
         ],
     ]);
 
-    // Add signature section with 4 columns
     $signatureRow = $grandTotalRow + 5;
     
-    // Header for signature section
     $sheet->setCellValue('A' . $signatureRow, 'Penerima,')->getStyle('A' . $signatureRow)->getFont()->setSize(12);
     $sheet->getStyle('A' . $signatureRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
     
     $sheet->setCellValue('I' . $signatureRow, 'Hormat kami,')->getStyle('I' . $signatureRow)->getFont()->setSize(12);
     $sheet->getStyle('I' . $signatureRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_RIGHT);
     
-    // Add space for signatures (5 rows down)
     $signatureSpace = $signatureRow + 5;
     
     // First row of signatures (Customer and Company)

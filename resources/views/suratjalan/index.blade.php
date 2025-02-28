@@ -101,7 +101,7 @@
                                                 @endcan
 
                                                 @can('suratjalan edit')
-                                                <a class="action-btn" href="{{ route('suratjalan.edit', ['suratjalan' => $order]) }}">
+                                                <a class="action-btn" href="{{ route('suratjalan.edit', ['suratjalan' => $order->id]) }}">
                                                     <iconify-icon icon="heroicons:pencil-square"></iconify-icon>
                                                 </a>
                                                 @endcan

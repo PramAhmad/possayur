@@ -119,8 +119,9 @@
                 url: `/invoice/get-products/${salesOrderId}`,
                 type: 'GET',
                 success: function(response) {
-                    $('#outlet_id').val(response.outlet_id);
-                    $('#outlet_name').val(response.outlet_name);
+                    console.log('Sales Order details:', response);
+                    $('#outlet_id').val(response.salesorder.outlet.id);
+                    $('#outlet_name').val(response.salesorder.outlet.name);
                     const tableBody = $('#products-table-body');
                     tableBody.empty();
                     $('#products-list').removeClass('hidden');

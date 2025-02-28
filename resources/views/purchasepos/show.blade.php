@@ -368,60 +368,63 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+   
+      
+<script>
+    $(document).ready(function() {
+        $('html').addClass('horizontalMenu');
+        const CART_KEY = 'pochart';
+        let currentDiscount = 0;
+        $('#search-table').hide();
+        
+        // gice default menu is gridMode
+        $('#gridMode').removeClass('bg-white text-blue-gray-500').addClass('bg-sky-500 text-white');
+        $('#tableMode, #gridMode').on('click', function() {
+            let mode = $(this).attr('id').replace('Mode', '').toLowerCase();
 
+            // Remove active state from all mode buttons
+            $('#tableMode, #gridMode').removeClass('bg-sky-500 text-white').addClass('bg-white text-blue-gray-500');
 
-    <script>
-        $(document).ready(function() {
-            $('html').addClass('horizontalMenu');
-            const CART_KEY = 'pochart';
-            let currentDiscount = 0;
-            $('#search-table').hide();
-            $('#tableMode, #gridMode').on('click', function() {
-                let mode = $(this).attr('id').replace('Mode', '').toLowerCase();
+            // Add active state to clicked button
+            $(this).removeClass('bg-white text-blue-gray-500').addClass('bg-sky-500 text-white');
 
-                // Remove active state from all mode buttons
-                $('#tableMode, #gridMode').removeClass('bg-sky-500 text-white').addClass('bg-white text-blue-gray-500');
-
-                // Add active state to clicked button
-                $(this).removeClass('bg-white text-blue-gray-500').addClass('bg-sky-500 text-white');
-
-                if (mode === 'table') {
-                    $('#search-table').show();
-                    $('#search-grid').hide();
-                    $('#product-grid').hide();
-                    $('#chart-grid').removeClass('lg:w-5/12').addClass('lg:w-5/12');
-                    $('#chart-table').show();
-                } else {
-                    $('#search-grid').show();
-                    $('#search-table').hide();
-                    $('#product-grid').show();
-                    $('#chart-grid').removeClass('lg:w-5/12').addClass('lg:w-5/12');
-                    $('#chart-table').hide();
-                }
-
-                updateCartUI(JSON.parse(localStorage.getItem(CART_KEY)) || [], mode);
-            });
-
-            function getCurrentMode() {
-                return $('#tableMode').hasClass('bg-sky-500') ? 'table' : 'grid';
+            if (mode === 'table') {
+                $('#search-table').show();
+                $('#search-grid').hide();
+                $('#product-grid').hide();
+                $('#chart-grid').removeClass('lg:w-5/12').addClass('lg:w-5/12');
+                $('#chart-table').show();
+            } else {
+                $('#search-grid').show();
+                $('#search-table').hide();
+                $('#product-grid').show();
+                $('#chart-grid').removeClass('lg:w-5/12').addClass('lg:w-5/12');
+                $('#chart-table').hide();
             }
 
-            function loadCart() {
-                const cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
-                updateCartUI(cart, getCurrentMode());
-            }
+            updateCartUI(JSON.parse(localStorage.getItem(CART_KEY)) || [], mode);
+        });
 
-            function updateCart(cart) {
-                localStorage.setItem(CART_KEY, JSON.stringify(cart));
-                updateCartUI(cart, getCurrentMode());
+        function getCurrentMode() {
+            return $('#tableMode').hasClass('bg-sky-500') ? 'table' : 'grid';
+        }
+
+        function loadCart() {
+            const cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
+            updateCartUI(cart, getCurrentMode());
+        }
+
+        function updateCart(cart) {
+            localStorage.setItem(CART_KEY, JSON.stringify(cart));
+            updateCartUI(cart, getCurrentMode());
 
 
-            }
+        }
 
 
 
 
-            function updateCartUI(cart, mode) {
+        function updateCartUI(cart, mode) {
                 let totalPrice = 0;
                 let discount = 0;
                 console.log(cart);
@@ -443,7 +446,7 @@
                         $("#cart-items").show();
                         console.log('cart empty di table');
                         let cartItemsHtml = '';
-                        cart.forEach(function(item) {
+                        cart.forEach(function (item) {
                             totalPrice += item.price * item.qty;
                             cartItemsHtml += `
                     <div class="select-none mb-3 bg-blue-gray-50 rounded-lg w-full text-blue-gray-700 py-3 px-2 flex justify-center">
@@ -453,10 +456,9 @@
                             <div class="flex items-center space-x-3">
                                 <div class="flex items-center">
                                     <input 
-                                        type="number" 
-                                        class="qty-edit w-16 h-8 text-sm bg-gray-50 rounded border border-gray-100 px-2" 
+                                        type="text" 
+                                        class="qty-edit number_format w-16 h-8 text-sm bg-gray-50 rounded border border-gray-100 px-2" 
                                         value="${item.qty}" 
-                                        min="1"
                                         data-product-id="${item.id}"
                                     >
                                     <span class="text-sm ml-1">pcs</span>
@@ -464,8 +466,8 @@
                                 <div class="flex items-center">
                                     <span class="text-sm mr-1">Rp</span>
                                     <input 
-                                        type="number" 
-                                        class="price-edit w-24 h-8 text-sm bg-gray-50 rounded border border-gray-100 px-2" 
+                                        type="text" 
+                                        class="price-edit number_format w-24 h-8 text-sm bg-gray-50 rounded border border-gray-100 px-2" 
                                         value="${item.price}" 
                                         min="0"
                                         data-product-id="${item.id}"
@@ -490,7 +492,7 @@
                     $('#cart-items-list').hide();
                     if (cart.length === 0) {
                         $("#chart-table tbody").append(`
-                           <tr class="border border-slate-100 dark:border-slate-900 relative">
+                            <tr class="border border-slate-100 dark:border-slate-900 relative">
             <td class="table-cell text-center" colspan="8">
                 <img src="{{asset('images/result-not-found.svg')}}" alt="page not found" class="w-64 m-auto" />
                 <h2 class="text-xl text-slate-700 mb-8 -mt-4">Cart Empty.</h2>
@@ -501,7 +503,7 @@
                     } else {
 
                         $("#chart-table tbody").html('');
-                        cart.forEach(function(item) {
+                        cart.forEach(function (item) {
                             totalPrice += item.price * item.qty;
                             const rowHtml = `
                     <tr>
@@ -509,13 +511,20 @@
                             <img src="${item.image}" class="w-12 h-12 object-cover rounded-lg" alt="${item.name}">
                         </td>
                         <td class="px-4 py-2">${item.name}</td>
-                        <td class="px-4 py-2">Rp ${Intl.NumberFormat().format(item.price)}</td>
+                            <td class="px-4 py-2">
+                        <input 
+                            type="text" 
+                            class="price-edit-table number_format w-24 h-8 text-sm bg-gray-50 rounded border border-gray-100 px-2" 
+                            value="${item.price}" 
+                            min="0"
+                            data-product-id="${item.id}"
+                        >
+                    </td>
                         <td class="px-4 py-2">
                             <input 
-                                type="number" 
-                                class="qty-edit-table w-16 h-8 text-sm bg-gray-50 rounded border border-gray-100 px-2" 
+                                type="text" 
+                                class="qty-edit-table number_format w-16 h-8 text-sm bg-gray-50 rounded border border-gray-100 px-2" 
                                 value="${item.qty}" 
-                                min="1"
                                 data-product-id="${item.id}"
                             >
                         </td>
@@ -527,18 +536,67 @@
                 }
                 updateSubtotalAndDiscount(totalPrice, currentDiscount);
                 $("#total-price").text("Rp " + Intl.NumberFormat().format(totalPrice - currentDiscount));
+                $("#subtotal").text("Rp " + Intl.NumberFormat().format(totalPrice));
+                $("#discount").text("Rp " + Intl.NumberFormat().format(currentDiscount));
                 $("#cart-count").text(cart.length);
+                $('.number_format').each(function () {
+                    new Cleave(this, {
+                        numeral: true,
+                        numeralThousandsGroupStyle: 'thousand'
+                    });
+                });
+               
             }
             // Tambahkan item ke keranjang
-            $(".add-to-cart").click(function() {
-                let productId = $(this).data("product-id");
+            $(".add-to-cart").click(function () {
+                let productId = parseInt($(this).data("product-id"));
                 const name = $(this).data("product-name");
-                const price = $(this).data("product-price");
+                const price = parseFloat($(this).data("product-price"));
                 const image = $(this).data("product-image");
                 const variantId = $(this).data("variant-id") || null;
                 const batchId = $(this).data("batch-id") || null;
 
-                let cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
+                let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+                const index = cart.findIndex(
+                    (item) =>
+                        item.id === productId &&
+                        item.variantId === variantId &&
+                        item.batchId === batchId
+                );
+
+                if (index >= 0) {
+                    cart[index].qty += 1;
+                } else {
+                    cart.push({
+                        id: productId,
+                        variantId,
+                        batchId,
+                        name,
+                        price,
+                        image,
+                        qty: 1,
+                    });
+                }
+
+                localStorage.setItem("cart", JSON.stringify(cart));
+
+                updateCart(cart);
+                updateCartUI(cart, getCurrentMode());
+            });
+
+        $("#product-select").change(function() {
+            const selectedOptions = $(this).find(":selected");
+            let cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
+
+            selectedOptions.each(function() {
+                let productId = $(this).val();
+                const name = $(this).text();
+                const price = $(this).data("price");
+                const image = $(this).data("image");
+                const variantId = $(this).data("variant-id") || null;
+                const batchId = $(this).data("batch-id") || null;
+
                 const index = cart.findIndex(
                     (item) =>
                     item.productId === productId &&
@@ -556,348 +614,311 @@
                         name,
                         price,
                         image,
-                        qty: 1
+                        qty: 1,
                     });
                 }
-                localStorage.setItem(CART_KEY, JSON.stringify(cart));
-                updateCart(cart)
-                updateCartUI(cart, getCurrentMode());
             });
 
-            $("#product-select").change(function() {
-                const selectedOptions = $(this).find(":selected");
-                let cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
+            localStorage.setItem(CART_KEY, JSON.stringify(cart));
+            updateCartUI(cart, getCurrentMode());
+        });
 
-                selectedOptions.each(function() {
-                    let productId = $(this).val();
-                    const name = $(this).text();
-                    const price = $(this).data("price");
-                    const image = $(this).data("image");
-                    const variantId = $(this).data("variant-id") || null;
-                    const batchId = $(this).data("batch-id") || null;
 
-                    const index = cart.findIndex(
-                        (item) =>
-                        item.productId === productId &&
-                        item.variantId === variantId &&
-                        item.batchId === batchId
-                    );
-                    productId = parseInt(productId);
+        // search in  grid mode
+        $('#search-grid #search-input').on('input', function() {
+            const searchTerm = $(this).val().toLowerCase();
+            $('.product-grid > div').each(function() {
+                const $productCard = $(this).find('.add-to-cart');
+                const productName = $productCard.data('product-name').toLowerCase();
+                if (productName.includes(searchTerm)) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+        });
+
+
+
+        // search in table mode
+        $('#search-table #search-input').on('input', function() {
+            const searchTerm = $(this).val().toLowerCase();
+            $('#chart-table tbody tr').each(function() {
+                const productName = $(this).find('td:nth-child(2)').text().toLowerCase();
+                if (productName.includes(searchTerm)) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+        });
+
+        // reset search handler
+        $('#tableMode, #gridMode').on('click', function() {
+            $('#search-grid #search-input, #search-table #search-input').val('');
+            $('.product-grid > div, #chart-table tbody tr').show();
+        });
+
+
+        $(document).on("click", ".delete-item", function() {
+            const productId = $(this).data("product-id");
+            let cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
+            const index = cart.findIndex(item => item.id === productId);
+            if (index >= 0) {
+                cart.splice(index, 1);
+                updateCart(cart);
+            }
+        });
+
+        $(document).on("change", ".qty-edit", function() {
+            const productId = $(this).data("product-id");
+            let newQty = parseFloat($(this).val()) ;
+
+            
+
+            let cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
+            const index = cart.findIndex(item => item.id === productId);
+            // validate qty dari table product
+            
+            if (index >= 0) {
+                cart[index].qty = newQty;
+                updateCart(cart);
+            }
+
+        });
+        // qty-edit-table
+        $(document).on("change", ".qty-edit-table", function() {
+            const productId = $(this).data("product-id");
+            let newQty = parseInt($(this).val()) || 1;
+
+            if (newQty < 1) {
+                newQty = 1;
+                $(this).val(1);
+            }
+
+            let cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
+            const index = cart.findIndex(item => item.id === productId);
+            if (index >= 0) {
+                cart[index].qty = newQty;
+                updateCart(cart, 'table');
+                updateCartUI(cart, 'table');
+            }
+
+        });
+
+   
+        $(document).on("change", ".price-edit", function () {
+                    const productId = $(this).data("product-id");
+                    let newPrice = parseInt($(this).val().replace(/,/g, '')) || 0;
+
+                    if (newPrice < 0) {
+                        newPrice = 0;
+                        $(this).val(0);
+                    }
+
+                    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+                    const index = cart.findIndex(item => item.id === productId);
                     if (index >= 0) {
-                        cart[index].qty += 1;
-                    } else {
-                        cart.push({
-                            id: productId,
-                            variantId,
-                            batchId,
-                            name,
-                            price,
-                            image,
-                            qty: 1,
-                        });
+                        cart[index].price = newPrice;
+                        updateCart(cart, getCurrentMode());
+                        updateCartUI(cart, getCurrentMode());
                     }
                 });
+        $("#clear-cart").click(function() {
+            localStorage.removeItem(CART_KEY);
+            loadCart();
+        });
 
-                localStorage.setItem(CART_KEY, JSON.stringify(cart));
-                updateCartUI(cart, getCurrentMode());
-            });
+        // change price by custpm
+        $("#customer").change(function() {
+            const customerId = $(this).val();
+            const cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
 
-
-            // search in  grid mode
-            $('#search-grid #search-input').on('input', function() {
-                const searchTerm = $(this).val().toLowerCase();
-                $('.product-grid > div').each(function() {
-                    const $productCard = $(this).find('.add-to-cart');
-                    const productName = $productCard.data('product-name').toLowerCase();
-                    if (productName.includes(searchTerm)) {
-                        $(this).show();
-                    } else {
-                        $(this).hide();
-                    }
-                });
-            });
-
-
-
-            // search in table mode
-            $('#search-table #search-input').on('input', function() {
-                const searchTerm = $(this).val().toLowerCase();
-                $('#chart-table tbody tr').each(function() {
-                    const productName = $(this).find('td:nth-child(2)').text().toLowerCase();
-                    if (productName.includes(searchTerm)) {
-                        $(this).show();
-                    } else {
-                        $(this).hide();
-                    }
-                });
-            });
-
-            // reset search handler
-            $('#tableMode, #gridMode').on('click', function() {
-                $('#search-grid #search-input, #search-table #search-input').val('');
-                $('.product-grid > div, #chart-table tbody tr').show();
-            });
-
-
-            $(document).on("click", ".delete-item", function() {
-                const productId = $(this).data("product-id");
-                let cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
-                const index = cart.findIndex(item => item.id === productId);
-                if (index >= 0) {
-                    cart.splice(index, 1);
-                    updateCart(cart);
-                }
-            });
-
-            $(document).on("change", ".qty-edit", function() {
-                const productId = $(this).data("product-id");
-                let newQty = parseInt($(this).val()) || 1;
-
-                if (newQty < 1) {
-                    newQty = 1;
-                    $(this).val(1);
-                }
-
-
-                let cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
-                const index = cart.findIndex(item => item.id === productId);
-                // validate qty dari table product
-                
-                if (index >= 0) {
-                    cart[index].qty = newQty;
-                    updateCart(cart);
-                }
-
-            });
-            // qty-edit-table
-            $(document).on("change", ".qty-edit-table", function() {
-                const productId = $(this).data("product-id");
-                let newQty = parseInt($(this).val()) || 1;
-
-                if (newQty < 1) {
-                    newQty = 1;
-                    $(this).val(1);
-                }
-
-                let cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
-                const index = cart.findIndex(item => item.id === productId);
-                if (index >= 0) {
-                    cart[index].qty = newQty;
-                    updateCart(cart, 'table');
-                    updateCartUI(cart, 'table');
-                }
-
-            });
-
-            $(document).on("change", ".price-edit", function() {
-                const productId = $(this).data("product-id");
-                let newPrice = parseInt($(this).val()) || 0;
-
-                if (newPrice < 0) {
-                    newPrice = 0;
-                    $(this).val(0);
-                }
-
-                let cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
-                const index = cart.findIndex(item => item.id === productId);
-                if (index >= 0) {
-                    cart[index].price = newPrice;
-                    updateCart(cart, getCurrentMode());
-                    updateCartUI(cart, getCurrentMode());
-                }
-            });
-
-            $("#clear-cart").click(function() {
-                localStorage.removeItem(CART_KEY);
-                loadCart();
-            });
-
-            // change price by custpm
-            $("#customer").change(function() {
-                const customerId = $(this).val();
-                const cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
-
-                if (customerId) {
-                    $.ajax({
-                        url: "{{ route('pos.getPriceByCustomer') }}",
-                        type: "GET",
-                        data: {
-                            _token: "{{ csrf_token() }}",
-                            customer: customerId,
-                        },
-                        success: function(response) {
-                            let cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
-
-                            cart.forEach((item) => {
-                                const productData = response.find(p => p.product_id === item.id);
-                                if (productData) {
-                                    item.price = productData.price;
-                                }
-                            });
-
-                            localStorage.setItem(CART_KEY, JSON.stringify(cart));
-
-                            updateCart(cart, getCurrentMode());
-
-                        },
-
-                        error: function(xhr, status, error) {
-                            console.error(error);
-                        }
-                    });
-                }
-
-            });
-
-            $("#submit-payment").click(function() {
-                console.log("Submit payment");
-                const cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
-                const cash = parseInt($("#cash").val()) || 0;
-                const totalPrice = cart.reduce((total, item) => total + (item.price * item.qty), 0);
-                const change = cash - totalPrice;
-                const customer = $("select[name='customer']").val();
-
-                if (change < 0) {
-                    $("#error-message").text("Nominal uang kurang!");
-                    $("#error-info").show();
-                    $("#change-info").hide();
-                    return;
-                }
-                if (cash === 0) {
-                    $("#error-message").text("Nominal uang tidak boleh 0!");
-                    $("#error-info").show();
-                    $("#change-info").hide();
-                    return;
-                }
-                if (customer === "") {
-                    $("#error-message").text("Customer harus diisi!");
-                    $("#error-info").show();
-                    $("#change-info").hide();
-                    return;
-                }
-
-                $("#receiptNo").text(new Date().getTime());
-                $("#receiptDate").text(new Date().toLocaleString());
-                $("#totalPrice").text("Rp " + totalPrice.toLocaleString());
-                $("#payAmount").text("Rp " + cash.toLocaleString());
-                $("#changeAmount").text("Rp " + change.toLocaleString());
-
-                let receiptItemsHtml = '';
-                cart.forEach((item, index) => {
-                    receiptItemsHtml += `
-        <tr>
-          <td class="py-2 text-center">${index + 1}</td>
-          <td class="py-2 text-left">
-            ${item.name}<br/>
-            <small>Rp ${item.price.toLocaleString()}</small>
-          </td>
-          <td class="py-2 text-center">${item.qty}</td>
-          <td class="py-2 text-right">Rp ${(item.price * item.qty).toLocaleString()}</td>
-        </tr>
-      `;
-                });
-                $("#receiptItems").html(receiptItemsHtml);
-
-                $("#modalReceipt").fadeIn();
-            });
-
-            $("#modalOverlay").click(function() {
-                $("#modalReceipt").fadeOut();
-            });
-
-            $("#proceedButton").click(function() {
-
-                $("#modalReceipt").fadeOut();
-                const item = JSON.parse(localStorage.getItem(CART_KEY)) || [];
-                const cash = parseInt($("#cash").val()) || 0;
-                const totalPrice = item.reduce((total, item) => total + (item.price * item.qty), 0);
-                const change = cash - totalPrice;
-                const customer = $("select[name='customer']").val();
-                const outlet = "{{ $outlet->id }}";
-
+            if (customerId) {
                 $.ajax({
-                    url: "{{ route('pos.store') }}",
-                    type: "POST",
+                    url: "{{ route('pos.getPriceByCustomer') }}",
+                    type: "GET",
                     data: {
                         _token: "{{ csrf_token() }}",
-                        items: item,
-                        cash,
-                        total: totalPrice,
-                        change,
-                        customer,
-                        outlet
+                        customer: customerId,
+                    },
+                    success: function(response) {
+                        let cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
+
+                        cart.forEach((item) => {
+                            const productData = response.find(p => p.product_id === item.id);
+                            if (productData) {
+                                item.price = productData.price;
+                            }
+                        });
+
+                        localStorage.setItem(CART_KEY, JSON.stringify(cart));
+
+                        updateCart(cart, getCurrentMode());
+
+                    },
+
+                    error: function(xhr, status, error) {
+                        console.error(error);
+                    }
+                });
+            }
+
+        });
+
+        $("#submit-payment").click(function() {
+            console.log("Submit payment");
+            const cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
+            const totalPrice = cart.reduce((total, item) => total + (item.price * item.qty), 0);
+            const cash = parseInt($("#cash").val().replace(/[^0-9]/g, '')) || 0;
+            const change = cash - totalPrice;
+            const customer = $("select[name='customer']").val();
+            // cash change to Intl
+            console.log(cash)
+
+
+            if (change < 0) {
+                $("#error-message").text("Nominal uang kurang!");
+                $("#error-info").show();
+                $("#change-info").hide();
+                return;
+            }
+            if (cash === 0) {
+                $("#error-message").text("Nominal uang tidak boleh 0!");
+                $("#error-info").show();
+                $("#change-info").hide();
+                return;
+            }
+            if (customer === "") {
+                $("#error-message").text("Customer harus diisi!");
+                $("#error-info").show();
+                $("#change-info").hide();
+                return;
+            }
+
+            $("#receiptNo").text(new Date().getTime());
+            $("#receiptDate").text(new Date().toLocaleString());
+            $("#totalPrice").text("Rp " + totalPrice.toLocaleString());
+            $("#payAmount").text("Rp " + cash.toLocaleString());
+            $("#changeAmount").text("Rp " + change.toLocaleString());
+
+            let receiptItemsHtml = '';
+            cart.forEach((item, index) => {
+                receiptItemsHtml += `
+    <tr>
+        <td class="py-2 text-center">${index + 1}</td>
+        <td class="py-2 text-left">
+        ${item.name}<br/>
+        <small>Rp ${item.price.toLocaleString()}</small>
+        </td>
+        <td class="py-2 text-center">${item.qty}</td>
+        <td class="py-2 text-right">Rp ${(item.price * item.qty).toLocaleString()}</td>
+    </tr>
+    `;
+            });
+            $("#receiptItems").html(receiptItemsHtml);
+
+            $("#modalReceipt").fadeIn();
+        });
+
+        $("#modalOverlay").click(function() {
+            $("#modalReceipt").fadeOut();
+        });
+
+        $("#proceedButton").click(function() {
+
+            $("#modalReceipt").fadeOut();
+            const item = JSON.parse(localStorage.getItem(CART_KEY)) || [];
+            const cash = parseInt($("#cash").val()) || 0;
+            const totalPrice = item.reduce((total, item) => total + (item.price * item.qty), 0);
+            const change = cash - totalPrice;
+            const supplier = $("select[name='supplier']").val();
+            const outlet = "{{ $outlet->id }}";
+
+            $.ajax({
+                url: "{{ route('purchasepos.store') }}",
+                type: "POST",
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    items: item,
+                    cash,
+                    total: totalPrice,
+                    change,
+                    supplier,
+                    outlet
+                },
+                success: function(response) {
+                    console.log(response);
+                    localStorage.removeItem(CART_KEY);
+                    loadCart();
+                    $("#cash").val("");
+                    $("#total-price").text("Rp 0");
+
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: 'Transaction success',
+                    });
+                },
+                error: function(xhr, status, error) {
+                    console.error(error);
+                }
+            });
+
+        });
+        // dynamix update total
+
+        $("#coupon").change(function() {
+            const couponId = $(this).val();
+            const cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
+            let subtotal = 0;
+            cart.forEach(item => {
+                subtotal += item.price * item.qty;
+            });
+
+            // reset if no coupon
+            currentDiscount = 0;
+
+            if (couponId) {
+                $.ajax({
+                    url: `{{ route('coupon.get') }}`,
+                    type: "GET",
+                    data: {
+                        coupon_id: couponId
                     },
                     success: function(response) {
                         console.log(response);
-                        localStorage.removeItem(CART_KEY);
-                        loadCart();
-                        $("#cash").val("");
-                        $("#total-price").text("Rp 0");
+                        if (response.type === 'percentage') {
+                            currentDiscount = subtotal * (response.value / 100);
+                        } else {
+                            currentDiscount = response.amount;
+                        }
 
-
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Success',
-                            text: 'Transaction success',
-                        });
+                        updateSubtotalAndDiscount(subtotal, currentDiscount);
+                        updateCart(cart);
+                        
                     },
                     error: function(xhr, status, error) {
                         console.error(error);
                     }
                 });
-
-            });
-            // dynamix update total
-
-            $("#coupon").change(function() {
-                const couponId = $(this).val();
-                const cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
-                let subtotal = 0;
-                cart.forEach(item => {
-                    subtotal += item.price * item.qty;
-                });
-
-                // reset if no coupon
-                currentDiscount = 0;
-
-                if (couponId) {
-                    $.ajax({
-                        url: `{{ route('coupon.get') }}`,
-                        type: "GET",
-                        data: {
-                            coupon_id: couponId
-                        },
-                        success: function(response) {
-                            console.log(response);
-                            if (response.type === 'percentage') {
-                                currentDiscount = subtotal * (response.value / 100);
-                            } else {
-                                currentDiscount = response.amount;
-                            }
-
-                            updateSubtotalAndDiscount(subtotal, currentDiscount);
-                            updateCart(cart, getCartMode());
-                        },
-                        error: function(xhr, status, error) {
-                            console.error(error);
-                        }
-                    });
-                } else {
-                    updateSubtotalAndDiscount(subtotal, 0);
-                }
-            });
-
-            function updateSubtotalAndDiscount(subtotal, discount) {
-                currentDiscount = discount; 
-                const total = subtotal - discount;
-                console.log(total)
-                $("#subtotal").text("Rp " + subtotal);
-                $("#discount").text("Rp " + discount);
-                $("#total-price").text("Rp " + total);
-            }   
-            loadCart();
+            } else {
+                updateSubtotalAndDiscount(subtotal, 0);
+            }
         });
-    </script>
+
+        function updateSubtotalAndDiscount(subtotal, discount) {
+            currentDiscount = discount; 
+            const total = subtotal - discount;
+            console.log(total)
+            $("#subtotal").text("Rp " + subtotal);
+            $("#discount").text("Rp " + discount);
+            $("#total-price").text("Rp " + total);
+        }   
+        loadCart();
+    });
+</script>
     <script>
         $(document).ready(function() {
             let subtotal = 0;
@@ -943,12 +964,12 @@
                 });
             });
 
-
-
+            
         });
     </script>
     <script src="{{asset('js/preline.js')}}"></script>
     <script src="{{ asset('js/app.js') }}"></script>
+    
     @endpush
 
 </x-app-layout>

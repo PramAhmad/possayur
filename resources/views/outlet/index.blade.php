@@ -128,19 +128,18 @@
     </div>
 
     @push('scripts')
+    <!-- swal cdn -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <script>
         function sweetAlertDelete(event, formId) {
             event.preventDefault();
             let form = document.getElementById(formId);
             Swal.fire({
-                title: '@lang('
-                Are you sure ? ')',
-                icon : 'question',
+                title: `{{ __('Are you sure?') }}`,
+                icon: 'question',
                 showDenyButton: true,
-                confirmButtonText: '@lang('
-                Delete ')',
-                denyButtonText: '@lang('
-                Cancel ')',
+                confirmButtonText: `{{ __('Delete') }}`,
+                denyButtonText: `{{ __('Cancel') }}`,
             }).then((result) => {
                 if (result.isConfirmed) {
                     form.submit();

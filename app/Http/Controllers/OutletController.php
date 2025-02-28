@@ -116,7 +116,7 @@ class OutletController extends Controller
             'logo' => $logoName,
         ]);
         
-        return redirect()->route('outlets.index')->with('success', 'Outlet created successfully');
+        return redirect()->route('outlets.index')->with('message', 'Outlet created successfully');
     }
     /**
      * Display the specified resource.
@@ -205,7 +205,7 @@ class OutletController extends Controller
             'logo' => $logoName,
         ]);
     
-        return redirect()->route('outlets.index')->with('success', 'Outlet updated successfully');
+        return redirect()->route('outlets.index')->with('message', 'Outlet updated successfully');
     }
 
     /**

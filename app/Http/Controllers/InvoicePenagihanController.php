@@ -71,10 +71,10 @@ class InvoicePenagihanController extends Controller
         ];
         if (auth()->user()->hasRole('super-admin')) {
             $outlets = Outlet::all();
-            $salesOrders = SalesOrder::all();
+            $salesOrders = SalesOrder::orderBy('created_at', 'desc')->get();
         } else {
             $outlets = Outlet::where('id', auth()->user()->outlet_id)->first();
-            $salesOrders = SalesOrder::where('outlet_id', auth()->user()->outlet_id)->get();
+            $salesOrders = SalesOrder::where('outlet_id', auth()->user()->outlet_id)->orderBy('created_at', 'desc')->get();
         }
 
         return view('invoice-penagihan.create', [
@@ -244,6 +244,7 @@ class InvoicePenagihanController extends Controller
     public function getProducts($salesOrderId)
     {
         $salesOrder = SalesOrder::with([
+            'outlet',
             'products', 
             'products.product', 
             'products.product.unit', 

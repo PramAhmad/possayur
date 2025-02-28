@@ -139,47 +139,46 @@
     }
 
     function fetchProductsForPurchaseOrder(purchaseOrderId) {
-        if (!purchaseOrderId) return;
+    if (!purchaseOrderId) return;
 
-        $.ajax({
-            url: `/invoicepurchase/get-products/${purchaseOrderId}`,
-            method: 'GET',
-            success: function(response) {
-                $productsTableBody.empty();
+    $.ajax({
+        url: `/invoicepurchase/get-products/${purchaseOrderId}`,
+        method: 'GET',
+        success: function(response) {
+            $productsTableBody.empty();
+            console.log(response);
+            response.products.forEach(function(productItem) {
+                const product = productItem.product;
+                const row = `
+                    <tr data-product-id="${product.id}" 
+                        data-unit-price="${product.cost_price}"
+                        data-original-qty="${productItem.quantity}"> <!-- Gunakan quantity dari ProductPurchase -->
+                        <td>${product.name}</td>
+                        <td>${formatCurrency(product.cost_price)}</td>
+                        <td>${productItem.quantity}</td> <!-- Tampilkan quantity dari ProductPurchase -->
+                        <td>
+                            <input type="number" 
+                                class="form-control invoiced-qty" 
+                                max="${productItem.quantity}" 
+                                min="0" 
+                                value="${productItem.quantity}">
+                        </td>
+                        <td class="return-qty">0</td>
+                        <td class="invoice-subtotal">${formatCurrency(0)}</td>
+                        <td class="return-subtotal">${formatCurrency(0)}</td>
+                    </tr>
+                `;
+                $productsTableBody.append(row);
+            });
 
-                response.products.forEach(function(productItem) {
-                    const product = productItem.product;
-                    const row = `
-                        <tr data-product-id="${product.id}" 
-                            data-unit-price="${product.cost_price}"
-                            data-original-qty="${product.qty}">
-                            <td>${product.name}</td>
-                            <td>${formatCurrency(product.cost_price)}</td>
-                            <td>${product.qty}</td>
-                            <td>
-                                <input type="number" 
-                                       class="form-control invoiced-qty" 
-                                       max="${product.qty}" 
-                                       min="0" 
-                                       value="0">
-                            </td>
-                            <td class="return-qty">0</td>
-                            <td class="invoice-subtotal">${formatCurrency(0)}</td>
-                            <td class="return-subtotal">${formatCurrency(0)}</td>
-                        </tr>
-                    `;
-                    $productsTableBody.append(row);
-                });
-
-                $productsTableBody.find('.invoiced-qty').on('input', updateTableTotals);
-                updateTableTotals();
-            },
-            error: function() {
-                alert('Failed to load products for the selected purchase order.');
-            }
-        });
-    }
-
+            $productsTableBody.find('.invoiced-qty').on('input', updateTableTotals);
+            updateTableTotals();
+        },
+        error: function() {
+            alert('Failed to load products for the selected purchase order.');
+        }
+    });
+}
     function handleInvoicePurchaseSubmit(e) {
     e.preventDefault();
 

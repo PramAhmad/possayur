@@ -1,172 +1,182 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Invoice</title>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>PRINT ORDER</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style>
+        /* CSS yang sudah kita buat sebelumnya */
+        @page {
+            margin: 0;
+        }
+
         body {
+            margin: 0;
             font-family: Arial, sans-serif;
-            font-size: 12px;
+        }
+
+        .sheet {
             margin: 0;
-            padding: 0;
-        }
-
-        .kop-surat {
-            border-bottom: 2px solid #000;
-            padding: 10px 0;
-            margin-bottom: 20px;
-        }
-
-        .kop-surat table {
-            width: 100%;
-            border: none; /* Hilangkan border tabel kop surat */
-            border-collapse: collapse; /* Pastikan tidak ada garis antar sel */
-        }
-
-        .kop-surat td {
-            vertical-align: middle;
-            border: none; /* Hilangkan border setiap sel */
-            padding: 5px; /* Pastikan tata letak tetap rapi */
-        }
-
-        .logo-container {
-            width: 100px;
-            text-align: left;
-        }
-
-        .logo-container img {
-            max-width: 100%;
-            height: auto;
-        }
-
-        .outlet-header {
-            text-align: left;
-            padding-left: 20px;
-        }
-
-        .outlet-header h1 {
-            font-size: 18px;
-            margin: 0;
-            font-weight: bold;
-        }
-
-        .outlet-header p {
-            margin: 3px 0;
-            font-size: 12px;
-        }
-
-        .details {
-            text-align: right;
-            padding-right: 20px;
-        }
-
-        .details p {
-            margin: 3px 0;
-            font-size: 12px;
+            overflow: hidden;
+            position: relative;
+            box-sizing: border-box;
+            page-break-after: always;
+            padding: 10mm;
         }
 
         table {
-            width: 100%;
             border-collapse: collapse;
-            margin-top: 10px;
+            width: 100%;
+            font-size: 12px;
         }
 
-        th, td {
-            padding: 6px;
-            text-align: left;
-            border: 1px solid #ddd;
+        table,
+        td,
+        th {
+            border: 1px solid black;
+            padding: 5px;
         }
 
         th {
-            background-color: #f4f4f4;
+            background-color: #f2f2f2;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        td {
+            text-align: left;
+        }
+
+        .text-center {
+            text-align: center;
         }
 
         .text-right {
             text-align: right;
         }
 
-        .font-bold {
+        .text-bold {
             font-weight: bold;
         }
 
-        .footer {
-            margin-top: 20px;
-            text-align: center;
-            font-size: 12px;
+        .logo {
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            height: 80px;
+            width: 150px;
         }
     </style>
 </head>
+
 <body>
-    <!-- Kop Surat -->
-    <div class="kop-surat">
-        <table border="0">
-            <tr>
-                <td class="logo-container">
-                    <img src="{{ public_path('upload/outlets/' . $salesOrder->outlet->logo) }}" alt="{{ $salesOrder->outlet->name }}">
-                </td>
-                <td class="outlet-header">
-                    <h1>{{ $salesOrder->outlet->name }}</h1>
-                    <p>{{ $salesOrder->outlet->address }}</p>
-                    <p>Telepon: +62 851-9898-9744 | Email: info@gubugbuah.com</p>
-                </td>
-                <td class="details">
-                    <p><strong>Tanggal:</strong> {{ $salesOrder->created_at->format('d M Y') }}</p>
-                    <p><strong>No Invoice:</strong> INV-{{ $salesOrder->id }}</p>
-                    <p><strong>Kepada Yth:</strong> {{ $salesOrder->customer->name }}</p>
-                    <p><strong>Alamat:</strong> {{ $salesOrder->customer->address }}</p>
-                </td>
-            </tr>
+    <section class="sheet">
+        <table>
+            <thead>
+                <tr>
+                    <td colspan="2" rowspan="3" class="logo" style='background-image: url("logo.png") ;>'"></td> 
+                    <td colspan="3"></td>
+                    <td colspan="2" class="text-right">Bandung, {{ date('d M Y') }}</td>
+                </tr>
+                <tr>
+                    <td colspan="3"></td>
+                    <td colspan="2" class="text-right">Kepada Yth.</td>
+                </tr>
+                <tr>
+                    <td colspan="3"></td>
+                    <td colspan="2" class="text-right">{{ $salesOrder->customer->name }}</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan="7"></td>
+                </tr>
+                <tr>
+                    <td colspan="2">No. Faktur: INV-{{ $salesOrder->id }}</td>
+                    <td colspan="5"></td>
+                </tr>
+                <tr class="text-bold text-center">
+                    <th>No</th>
+                    <th colspan="2">Nama Barang</th>
+                    <th>QTY</th>
+                    <th>UNIT</th>
+                    <th>Harga</th>
+                    <th>Total</th>
+                </tr>
+                @php
+                    $no = 1;
+                    $grandTotal = 0;
+                @endphp
+                @foreach ($salesOrder->products as $product)
+                    @php
+                        $productName = $product->product->name;
+                        if ($product->variant) {
+                            $productName .= ' (Var: ' . $product->variant->name . ')';
+                        }
+                        if ($product->batch) {
+                            $productName .= ' (Batch: ' . $product->batch->batch_no . ')';
+                        }
+                        $grandTotal += $product->total_price;
+                    @endphp
+                    <tr>
+                        <td class="text-center">{{ $no++ }}</td>
+                        <td colspan="2">{{ $productName }}</td>
+                        <td class="text-right">{{ $product->qty }}</td>
+                        <td>{{ $product->product->unit->name }}</td>
+                        <td class="text-right">Rp {{ number_format($product->unit_price, 0, ',', '.') }}</td>
+                        <td class="text-right">Rp {{ number_format($product->total_price, 0, ',', '.') }}</td>
+                    </tr>
+                @endforeach
+                <tr class="text-bold">
+                    <td colspan="5" class="text-right">GRAND TOTAL</td>
+                    <td colspan="2" class="text-right">Rp {{ number_format($grandTotal, 0, ',', '.') }}</td>
+                </tr>
+                <tr>
+                    <td colspan="7"></td>
+                </tr>
+                <tr>
+                    <td colspan="7">
+                        <table>
+                            <colgroup>
+                                <col style="width: 150px;">
+                                <col style="width: 35px;">
+                                <col style="width: 400px;">
+                                <col style="width: 35px;">
+                                <col style="width: 150px;">
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th>Hormat Kami</th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th>Penerima</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="border-bottom: 1px solid black;"></td>
+                                    <td></td>
+                                    <td style="border: 1px solid black;">
+                                        <span class="text-bold">Perhatian!!!</span><br />
+                                        <span>
+                                            1. Barang diterima dengan baik dan sesuai dengan pembelian.<br />
+                                            2. Kehilangan/kerusakan di luar toko, bukan tanggung jawab kami.<br />
+                                            3. Barang yang sudah dibeli tidak boleh dikembalikan.
+                                        </span>
+                                    </td>
+                                    <td></td>
+                                    <td style="border-bottom: 1px solid black;"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
         </table>
-    </div>
-
-    <!-- Judul Invoice -->
-    <div class="invoice-title">Sales Order</div>
-
-    <!-- Tabel Produk -->
-    <table>
-        <thead>
-            <tr>
-                <th>Product</th>
-                <th>QTY</th>
-                <th>Unit</th>
-                <th>Unit Price</th>
-
-                <th class="text-right">Total</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($salesOrder->products as $product)
-            <tr>
-                <td>
-                    {{ $product->product->name }}
-                    @if ($product->variant)
-                    <div style="font-size: 10px; color: #666;">Variant: {{ $product->variant->name }}</div>
-                    @endif
-                    @if ($product->batch)
-                    <div style="font-size: 10px; color: #666;">Batch: {{ $product->batch->batch_no }}</div>
-                    @endif
-                </td>
-                <td>{{ $product->qty }}</td>
-                <td>{{ $product->product->unit->name }}</td>
-                <td>{{ currency($product->unit_price) }}</td>
-
-                <td class="text-right">
-                    {{ currency($product->total_price) }}
-                </td>
-            </tr>
-            @endforeach
-            <tr class="font-bold">
-                <td colspan="4" class="text-right">Grand Total</td>
-                <td class="text-right">{{ currency($salesOrder->grandtotal) }}</td>
-            </tr>
-        </tbody>
-    </table>
-
-    <!-- Footer -->
-    <div class="footer">
-        <p><em>Terima kasih atas kepercayaan Anda.</em></p>
-        <p>Untuk pembayaran via transfer: BCA - 8832 901 902 a.n {{$salesOrder->outlet->name}}</p>
-    </div>
+    </section>
 </body>
+
 </html>

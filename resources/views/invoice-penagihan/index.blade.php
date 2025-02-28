@@ -39,6 +39,7 @@
                                     <tr>
                                         <th scope="col" class="table-th">{{ __('Invoice No') }}</th>
                                         <th scope="col" class="table-th">{{ __('Reference Number') }}</th>
+                                        <th scope="col" class="table-th">{{ __('Customer') }}</th>
                                         <th scope="col" class="table-th">{{ __('Outlet') }}</th>
                                         <th scope="col" class="table-th">{{ __('Total Qty') }}</th>
                                         <th scope="col" class="table-th">{{ __('Grand Total') }}</th>
@@ -52,6 +53,7 @@
                                     <tr>
                                         <td class="table-td"># {{ $invoice->id }}</td>
                                         <td class="table-td">{{ $invoice->reference_number }}</td>
+                                        <td class="table-td">{{ $invoice->customer->name ?? '-' }}</td>
                                         <td class="table-td">{{ $invoice->outlet->name ?? '-' }}</td>
 
                                         <td class="table-td">{{ $invoice->total_qty }}</td>

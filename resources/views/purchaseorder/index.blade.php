@@ -45,7 +45,6 @@
                                         <th scope="col" class="table-th">{{ __('Supplier') }}</th>
                                         <th scope="col" class="table-th">{{ __('Order Date') }}</th>
                                         <th scope="col" class="table-th">{{ __('Total Amount') }}</th>
-                                        <th scope="col" class="table-th text-center">{{ __('Products') }}</th>
                                         <th scope="col" class="table-th">{{ __('Status') }}</th>
                                         <th scope="col" class="table-th w-20">{{ __('Action') }}</th>
                                     </tr>
@@ -62,13 +61,6 @@
                                              {{Carbon\Carbon::parse($purchaseOrder->created_at)->format('d M Y')}}
                                         </td>
                                         <td class="table-td">{{ currency($purchaseOrder->grand_total) }}</td>
-                                        <td class="table-td text-center">
-                                            <div class="flex justify-center items-center">
-                                                <a href="#" class="action-btn text-center" onclick="showProductModal({{ $purchaseOrder->id }})" data-products='@json($purchaseOrder->productPurchase)'>
-                                                    <iconify-icon icon="akar-icons:eye" class="text-lg"></iconify-icon>
-                                                </a>
-                                            </div>
-                                        </td>
 
                                         <td class="table-td">
                                             @if ($purchaseOrder->status == 'pending')
