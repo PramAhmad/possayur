@@ -140,6 +140,11 @@ class PointOfSalesController extends Controller
             // total qty 
             $total_qty = ProductSalesOrder::where('sales_order_id', $salesOrder->id)->sum('qty');
             $salesOrder->update(['total_qty' => $total_qty]);
+            // qty used coupon
+            if($request->coupon){
+                $coupon = Coupon::find($request->coupon);
+                $coupon->update(['used' => $coupon->used + 1]);
+            }
         } catch (\Exception $e) {
             DB::rollBack();
             dd($e->getMessage());
