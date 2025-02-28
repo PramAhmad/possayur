@@ -9,8 +9,10 @@ use App\Models\Product;
 use App\Models\ProductPriceByCustomer;
 use App\Models\ProductSalesOrder;
 use App\Models\SalesOrder;
+use GuzzleHttp\Psr7\Query;
 use Illuminate\Http\Request;    
 use Illuminate\Support\Facades\DB;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class PointOfSalesController extends Controller
 {
@@ -44,9 +46,12 @@ class PointOfSalesController extends Controller
 
         $pageTitle = 'Point of Sales';
         if (auth()->user()->hasRole('super-admin')) {
-            $outlets = Outlet::all();
+            $outlets = QueryBuilder::for(Outlet::class)
+                ->allowedSorts(['name', 'address', 'phone', 'is_active'])
+                ->latest()
+                ->paginate(10);
         } else {
-            $outlets = Outlet::where('id', auth()->user()->outlet_id)->get();
+            $outlets = Outlet::where('id', auth()->user()->outlet_id)->paginate(10);
         }
 
         return view('pos.index', [

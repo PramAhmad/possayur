@@ -10,7 +10,7 @@
         {{-- Edit coupon form start --}} 
          <div class="card-text h-full">
 
-            <form method="POST" action="{{ route('coupon.store') }}" class="">
+            <form method="POST" action="{{ route('coupon.update',['coupon'=>$coupon]) }}" class="">
             @csrf
             @method('PUT')
             <div class="bg-white dark:bg-slate-800 rounded-md p-5 pb-6">
