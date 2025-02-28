@@ -225,6 +225,11 @@ class CouponController extends Controller
     public function update(Request $request, $id)
     {
         // dd($request->all());
+        $request->merge([
+            'amount' => str_replace(',', '', $request->amount),
+            'min_amount' => str_replace(',', '', $request->min_amount),
+            'qty' => str_replace(',', '', $request->qty),
+        ]);
         $request->validate([
             'outlet_id' => 'required|exists:outlets,id',
             'code' => 'required|string|unique:coupon,code,' . $id,
