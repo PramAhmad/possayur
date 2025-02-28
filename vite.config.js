@@ -9,6 +9,8 @@ export default defineConfig({
                 "resources/js/custom/store.js",
                 "resources/js/main.js",
                 "resources/js/app.js",
+                "resources/js/qz.io/promise-polyfill-8.1.3.min.js",
+                "resources/js/qz.io/qz-tray.js",
             ],
             refresh: true,
         }),
