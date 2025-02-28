@@ -37,6 +37,20 @@
                         <form class="space-y-4" method="post" action="{{ route('supplier.update', $supplier->id) }}">
                             @csrf
                             @method('PUT')
+                            <!-- outlets -->
+                            <div class="input-area">
+                                <label for="outlet_id" class="form-label">Outlet</label>
+                                <select name="outlet_id" id="outlet_id" class="form-control">
+                                    <option value="">Pilih Outlet</option>
+                                    @foreach ($outlets as $outlet)
+                                    <option value="{{ $outlet->id }}" {{ old('outlet_id', $supplier->outlet_id) == $outlet->id ? 'selected' : '' }}>{{ $outlet->name }}</option>
+                                    @endforeach
+                                </select>
+                                @error('outlet_id')
+                                <div class="text-red-500 mt-2 text-sm">
+                                    {{ $message }}
+                                </div>
+                                @enderror
 
                             <!-- Name, Email -->
                             <div class="grid md:grid-cols-2 gap-7">

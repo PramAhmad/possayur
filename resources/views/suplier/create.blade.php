@@ -36,6 +36,21 @@
                     <div class="card-text h-full">
                     <form class="space-y-4" method="post" action="{{ route('supplier.store') }}">
     @csrf
+    <!-- add outlet id -->
+    <div class="input-area">
+        <label for="outlet_id" class="form-label">Outlet</label>
+        <select name="outlet_id" id="outlet_id" class="form-control">
+            <option value="">Pilih Outlet</option>
+            @foreach ($outlets as $outlet)
+            <option value="{{ $outlet->id }}">{{ $outlet->name }}</option>
+            @endforeach
+        </select>
+        @error('outlet_id')
+        <div class="text-red-500 mt-2 text-sm">
+            {{ $message }}
+        </div>
+        @enderror
+    </div>
 
     <!-- Name, Email -->
     <div class="grid md:grid-cols-2 gap-7">

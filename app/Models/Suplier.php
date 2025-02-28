@@ -37,5 +37,10 @@ class Suplier extends Model
             ->logOnlyDirty()
             ->useLogName('supplier');
     }
+
+    public function outlet()
+    {
+        return $this->belongsTo(Outlet::class);
+    }
   
 }

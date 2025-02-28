@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Outlet;
 use App\Models\Suplier;
+use GuzzleHttp\Psr7\Query;
 use Illuminate\Http\Request;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class SuplierController extends Controller
 {
@@ -19,7 +22,22 @@ class SuplierController extends Controller
             ['name' => 'Dashboard', 'url' => route('dashboard.index'), 'active' => false],  
             ['name' => 'Suplier', 'url' => route('supplier.index'), 'active' => true]
         ];
-        $data['supplier'] = Suplier::all();
+        if(auth()->user()->hasRole('super-admin')){
+            $data['supplier'] = QueryBuilder::for(Suplier::class)
+             ->with('outlet')
+                ->allowedSorts(['name', 'email', 'phone', 'address', 'company', 'shop_name', 'bank_name', 'bank_branch', 'account_holder', 'account_number'])
+                ->latest()
+                ->paginate(10);
+            $data['outlets'] = Outlet::all();   
+        } else {
+            $data['supplier'] =  QueryBuilder::for(Suplier::class)
+            ->where('outlet_id', auth()->user()->outlet_id)
+            ->with('outlet')
+            ->allowedSorts(['name', 'email', 'phone', 'address', 'company', 'shop_name', 'bank_name', 'bank_branch', 'account_holder', 'account_number'])
+            ->latest()
+            ->paginate(10);
+            $data['outlets'] = Outlet::where('id', auth()->user()->outlet_id)->get();
+        }
 
         return view('suplier.index', $data);
     }
@@ -37,7 +55,11 @@ class SuplierController extends Controller
             ['name' => 'Suplier', 'url' => route('supplier.index'), 'active' => false],
             ['name' => 'Create Suplier', 'url' => route('supplier.create'), 'active' => true]
         ];
-
+        if(auth()->user()->hasRole('super-admin')){
+            $data['outlets'] = Outlet::all();   
+        } else {
+            $data['outlets'] = Outlet::where('id', auth()->user()->outlet_id)->get();
+        }
         return view('suplier.create', $data);
     }
 
@@ -124,6 +146,11 @@ class SuplierController extends Controller
             ['name' => 'Edit Suplier', 'url' => route('supplier.edit', $id), 'active' => true]
         ];
         $data['supplier'] = Suplier::find($id);
+        if(auth()->user()->hasRole('super-admin')){
+            $data['outlets'] = Outlet::all();   
+        } else {
+            $data['outlets'] = Outlet::where('id', auth()->user()->outlet_id)->get();
+        }
 
         return view('suplier.edit', $data);
     }

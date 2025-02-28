@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\SalesOrder;
+use GuzzleHttp\Psr7\Query;
 use Illuminate\Http\Request;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -42,7 +43,15 @@ class SalesOrderController extends Controller
                 ->appends(['per_page' => $perPage, 'q' => $q, 'sort' => $sort]);
 
         }else{
-            $salesOrder = SalesOrder::where('outlet_id', auth()->user()->outlet_id)->get();
+            $salesOrder = QueryBuilder::for(SalesOrder::class)
+                ->allowedSorts(['reference_no', 'tanggal', 'outlet_id', 'customer_id', 'due_date','grand_total'])
+                ->where('outlet_id', auth()->user()->outlet_id)
+                ->where('reference_no', 'like', "%$q%")
+                ->orWhere('status', 'like', "%$q%")
+                ->with(['outlet', 'customer'])
+                ->latest()
+                ->paginate($perPage)
+                ->appends(['per_page' => $perPage, 'q' => $q, 'sort' => $sort]);
         }
         // return $salesOrder;
         return view('salesorder.index', [

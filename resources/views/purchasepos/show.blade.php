@@ -251,7 +251,7 @@
                         </div>
                     </div>
 
-                    <div id="cart-items-list" class="flex-1 w-full px-4 overflow-auto">
+                    <div id="cart-items-list" class="flex-1 w-full px-4 overflow-auto max-h-[500px]">
                     </div>
                 </div>
 
@@ -263,12 +263,7 @@
                     <option value="{{ $supplier->id }}">{{ $supplier->name }}</option>
                     @endforeach
                 </select>
-                <select id="coupon" name="coupon" class="w-full mt-3 text-base lg:text-lg font-semibold text-blue-gray-700 bg-white border-2 border-gray-200 rounded-lg focus:bg-white focus:shadow-lg py-3 px-2 focus:outline-none">
-                    <option value="">- Select Coupon -</option>
-                    @foreach ($coupons as $coupon)
-                    <option value="{{ $coupon->id }}">{{ $coupon->code }}</option>
-                    @endforeach
-                </select>
+              
             </div>
                 <!-- Payment Section -->
                 <div class="select-none h-auto w-full text-center pt-3 pb-4 px-4">
@@ -335,18 +330,25 @@
                 </div>
                 <hr class="my-2">
                 <div>
+                <table class="w-full text-xs">
+                    <thead>
+                        <tr>
+                            <th class="py-1 w-1/12 text-center">#</th>
+                            <th class="py-1 text-left">Item</th>
+                            <th class="py-1 w-2/12 text-center">Qty</th>
+                            <th class="py-1 w-3/12 text-right">Subtotal</th>
+                        </tr>
+                    </thead>
+                </table>
+                <!-- Wrap the tbody in a div with max-height and overflow-y -->
+                <div style="max-height: 200px; overflow-y: auto;">
                     <table class="w-full text-xs">
-                        <thead>
-                            <tr>
-                                <th class="py-1 w-1/12 text-center">#</th>
-                                <th class="py-1 text-left">Item</th>
-                                <th class="py-1 w-2/12 text-center">Qty</th>
-                                <th class="py-1 w-3/12 text-right">Subtotal</th>
-                            </tr>
-                        </thead>
-                        <tbody id="receiptItems"></tbody>
+                        <tbody id="receiptItems">
+                            <!-- Product rows will be inserted here dynamically -->
+                        </tbody>
                     </table>
                 </div>
+            </div>
                 <hr class="my-2">
                 <div>
                     <div class="flex font-semibold">
@@ -975,7 +977,13 @@
     </script>
     <script src="{{asset('js/preline.js')}}"></script>
     <script src="{{ asset('js/app.js') }}"></script>
-    
+    <script>
+        new Cleave('#cash', {
+            numeral: true,
+            numeralThousandsGroupStyle: 'thousand',
+            noImmediatePrefix: true
+        });
+</script>
     @endpush
 
 </x-app-layout>
