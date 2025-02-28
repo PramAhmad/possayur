@@ -186,6 +186,7 @@ Route::post('download/stockopname/import-excel', [StockOpnameController::class, 
     // print
     Route::get('print/suratjalan/{id}', [SuratJalanExportController::class, 'print'])->name('suratJalan.print');
     Route::get('print/salesorder/{id}', [SalesOrderExportController::class, 'print'])->name('salesorder.print');
+    Route::get('print/invoice/{id}', [InvoicePenagihanExportController::class, 'print'])->name('invoice.print');
 
     /** CERTIFICATE SIGN QZ.IO */
     Route::get('cert-sign', [CertSignController::class, 'index'])->name('cert-sign.index');

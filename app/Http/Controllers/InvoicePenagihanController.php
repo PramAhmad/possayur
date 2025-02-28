@@ -119,7 +119,8 @@ class InvoicePenagihanController extends Controller
                 'outlet_id' => $salesOrder->outlet_id,
                 'surat_jalan_id' => $suratJalan->id,
                 'total_qty' => $request->total_qty,
-                'grandtotal' => $request->grandtotal,
+                'paid_amount' => $salesOrder->paid_amount,
+                'grandtotal' => ($request->grandtotal - $salesOrder->paid_amount),
                 'note' => $request->note,
             ]);
             
@@ -175,7 +176,7 @@ class InvoicePenagihanController extends Controller
             DB::rollBack();
             Log::error('Error in store method: ' . $e->getMessage());
 
-            return response()->json('', 400);
+            return response()->json($e->getMessage(), 400);
         }
     }
     

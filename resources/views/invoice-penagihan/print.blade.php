@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Surat Jalan PO {{ $suratJalan?->salesorder?->reference_no }}</title>
+    <title>Invoice {{ $invoice?->reference_number }}</title>
     <style>
         @page {
             size: A4;
@@ -68,28 +68,28 @@
             <tr>
                 @if (!$isDirectPrint)
                     <td class="logo-container" style="padding-right:5px">
-                        <img src="{{ $isGenereratedPdf ? public_path('upload/outlets/' . $suratJalan?->salesOrder?->outlet?->logo) : asset('upload/outlets/' . $suratJalan?->salesOrder?->outlet?->logo) }}" alt="{{ $suratJalan->salesOrder->outlet->name }}">
+                        <img src="{{ $isGenereratedPdf ? public_path('upload/outlets/' . $invoice?->salesOrder?->outlet?->logo) : asset('upload/outlets/' . $invoice?->salesOrder?->outlet?->logo) }}" alt="{{ $invoice->salesOrder->outlet->name }}">
                     </td>
                 @endif
                 <td class="outlet-header" width="{{ $isDirectPrint ? '70%' : '50%' }}">
                     <p><strong style="font-size: 16px">Koyasai</strong></p>
-                    <p style="font-size: 15px">{{ $suratJalan?->salesorder?->outlet->name }}</p>
-                    <p>{{ $suratJalan?->salesorder?->outlet->address }}</p>
+                    <p style="font-size: 15px">{{ $invoice?->salesorder?->outlet->name }}</p>
+                    <p>{{ $invoice?->salesorder?->outlet->address }}</p>
                     <p>Telepon: +62 851-9898-9744 | Email: info@gubugbuah.com</p>
                 </td>
                 <td style="text-align: right" valign="top">
-                    <p><strong style="font-size: 16px">SURAT JALAN</strong></p>
-                    <p><strong>{{ $suratJalan->reference_no }}</strong></p>
-                    <p>Tanggal: {{ $suratJalan->created_at->format('d M Y') }}</p>
-                    <p>No. PO: {{ $suratJalan?->salesorder?->reference_no }}</p>
+                    <p><strong style="font-size: 16px">INVOICE</strong></p>
+                    <p><strong>{{ $invoice?->reference_number }}</strong></p>
+                    <p>Tanggal: {{ $invoice->created_at->format('d M Y') }}</p>
+                    <p>No. PO: {{ $invoice?->salesorder?->reference_no }}</p>
                 </td>
             </tr>
         </table>
         <table border="0" style="width: 100%">
             <td>
                 <br>
-                <p>Kepada Yth: {{ $suratJalan?->salesorder?->customer->name }}</p>
-                <p>Alamat: {{ $suratJalan?->salesorder?->customer->address }}</p>
+                <p>Kepada Yth: {{ $invoice?->salesorder?->customer->name }}</p>
+                <p>Alamat: {{ $invoice?->salesorder?->customer->address }}</p>
             </td>
         </table>
     </div>
@@ -98,14 +98,15 @@
     <table style="width: 100%" class="table-product">
         <thead>
             <tr>
-                <th style="width:1%">No</th>
-                <th>Nama Item</th>
-                <th style="width:15%">Unit</th>
-                <th class="text-right" style="width:10%">Qty</th>
+                <th class="text-center" style="width:1%">No</th>
+                <th class="text-center" style="width: 43%">Keterangan</th>
+                <th class="text-center" colspan="2">Qty</th>
+                <th class="text-center" style="width:20%">Harga Satuan</th>
+                <th class="text-center" style="width:20%">Jumlah</th>
             </tr>
         </thead>
         <tbody>
-            @foreach($suratJalan?->productSuratJalans as $product)
+            @foreach($invoice?->productInvoices as $product)
                 <tr>
                     <td class="text-center">{{ $loop->iteration }}</td>
                     <td>
@@ -117,14 +118,56 @@
                             <div style="font-size: 10px; color: #666;">Batch: {{ $product?->batch?->batch_no }}</div>
                         @endif
                     </td>
-                    <td>{{ $product?->product?->unit?->code }}</td>
-                    <td class="text-right">{{ $product?->qty }}</td>
+                    <td class="text-center" style="width:8%">{{ $product?->qty }}</td>
+                    <td class="text-center" style="width:8%">{{ $product?->product?->unit?->code }}</td>
+                    <td>
+                        <table class="table-text-currency" style="width: 100%">
+                            <tr>
+                                <td style="width: 50%" class="text-left">Rp.</td>
+                                <td style="width: 50%" class="text-right">{{ number_format($product?->price, 0, ',', '.') }}</td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td class="text-right">
+                        <table class="table-text-currency" style="width: 100%">
+                            <tr>
+                                <td style="width: 50%" class="text-left">Rp.</td>
+                                <td style="width: 50%" class="text-right">{{ number_format($product?->total, 0, ',', '.') }}</td>
+                            </tr>
+                        </table>
+                    </td>
                 </tr>
             @endforeach
         </tbody>
+        <tfoot>
+            @if ($invoice?->paid_amount > 0)
+                <tr>
+                    <td colspan="5" class="text-right" style="border-bottom: unset;border-left:unset"><strong>Paid Amount</strong></td>
+                    <td>
+                        <table class="table-text-currency" style="width: 100%">
+                            <tr>
+                                <td style="width: 50%" class="text-left"><strong>Rp.</strong></td>
+                                <td style="width: 50%" class="text-right"><strong>{{ number_format($invoice?->paid_amount, 0, ',', '.') }}</strong></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            @endif
+            <tr>
+                <td colspan="5" class="text-right" style="border-bottom: unset;border-top:unset; border-left:unset"><strong>Total</strong></td>
+                <td>
+                    <table class="table-text-currency" style="width: 100%">
+                        <tr>
+                            <td style="width: 50%" class="text-left"><strong>Rp.</strong></td>
+                            <td style="width: 50%" class="text-right"><strong>{{ number_format($invoice?->grandtotal, 0, ',', '.') }}</strong></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </tfoot>
     </table>
 
-    <table style="width: 100%; margin-top: 30px">
+    {{-- <table style="width: 100%; margin-top: 30px">
         <tr>
             <td style="width: 5%"></td>
             <td style="width: 35%" class="text-center">Penerima</td>
@@ -149,11 +192,9 @@
         <tr>
             <td></td>
             <td class="text-center" style="border-top:solid 1px #000;padding-top:5px">
-                {{-- <strong>PT SINAR RASA CEMERLANG</strong> --}}
             </td>
             <td></td>
             <td class="text-center" style="border-top:solid 1px #000;padding-top:5px">
-                {{-- <strong>PT GAUTAMA BERKAT USAHA</strong> --}}
             </td>
             <td></td>
         </tr>
@@ -175,6 +216,6 @@
             </td>
             <td></td>
         </tr>
-    </table>
+    </table> --}}
 </body>
 </html>

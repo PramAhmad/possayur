@@ -59,47 +59,43 @@
 
                                 <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
                                     @forelse ($invoicePurchases as $purchaseOrder)
-                                    <tr>
-                                        <td class="table-td"># {{ $purchaseOrder->id }}</td>
-                                        <td class="table-td">{{ $purchaseOrder->invoice_number }}</td>
-                                        <td class="table-td">{{ $purchaseOrder->supplier->name }}</td>
-                                        <td class="table-td">
-                                            <!-- using carbon created at 29 oktober 2023 -->
-                                             {{Carbon\Carbon::parse($purchaseOrder->created_at)->format('d M Y')}}
-                                        </td>
-                                        <td class="table-td">{{ currency($purchaseOrder->grand_total) }}</td>
-                                        <td class="table-td text-center">
-                                            <div class="flex justify-center items-center">
-                                                <a href="#" class="action-btn text-center" onclick="showProductModal({{ $purchaseOrder->id }})" data-products='@json($purchaseOrder->productInvoicePurchases)'>
-                                                    <iconify-icon icon="akar-icons:eye" class="text-lg"></iconify-icon>
-                                                </a>
-                                            </div>
-                                        </td>
+                                        <tr>
+                                            <td class="table-td"># {{ $purchaseOrder->id }}</td>
+                                            <td class="table-td">{{ $purchaseOrder->invoice_number }}</td>
+                                            <td class="table-td">{{ $purchaseOrder->supplier->name }}</td>
+                                            <td class="table-td">
+                                                <!-- using carbon created at 29 oktober 2023 -->
+                                                {{Carbon\Carbon::parse($purchaseOrder->created_at)->format('d M Y')}}
+                                            </td>
+                                            <td class="table-td">{{ currency($purchaseOrder->grand_total) }}</td>
+                                            <td class="table-td text-center">
+                                                <div class="flex justify-center items-center">
+                                                    <a href="#" class="action-btn text-center" onclick="showProductModal({{ $purchaseOrder->id }})" data-products='@json($purchaseOrder->productInvoicePurchases)'>
+                                                        <iconify-icon icon="akar-icons:eye" class="text-lg"></iconify-icon>
+                                                    </a>
+                                                </div>
+                                            </td>
 
-                                        <td class="table-td">
-                                           
-                                            <div class="inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-full bg-opacity-20 text-success-500
-                                bg-success-500">
-                                                Completed
-                                            </div>
-                                            
-                                        </td>
-                                        <td class="table-td">
-                                        @can('listorder view')
-                                                <a class="action-btn" href="{{route('invoicepurchase.show',['id' => $purchaseOrder->id])}} ">
-                                                    <iconify-icon icon="heroicons:eye"></iconify-icon>
-                                                </a>
+                                            <td class="table-td">
+                                                <div class="inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-full bg-opacity-20 text-success-500 bg-success-500">
+                                                    Completed
+                                                </div>
+                                            </td>
+                                            <td class="table-td">
+                                                @can('listorder view')
+                                                    <a class="action-btn" href="{{route('invoicepurchase.show',['id' => $purchaseOrder->id])}} ">
+                                                        <iconify-icon icon="heroicons:eye"></iconify-icon>
+                                                    </a>
                                                 @endcan
-                                         
-                                        </td>
-                                    </tr>
+                                            </td>
+                                        </tr>
                                     @empty
-                                    <tr class="border border-slate-100 dark:border-slate-900 relative">
-                                        <td class="table-cell text-center" colspan="7">
-                                            <img src="{{ asset('images/result-not-found.svg') }}" alt="No purchase orders found" class="w-64 m-auto" />
-                                            <h2 class="text-xl text-slate-700 mb-8 -mt-4">{{ __('No purchase orders found.') }}</h2>
-                                        </td>
-                                    </tr>
+                                        <tr class="border border-slate-100 dark:border-slate-900 relative">
+                                            <td class="table-cell text-center" colspan="7">
+                                                <img src="{{ asset('images/result-not-found.svg') }}" alt="No purchase orders found" class="w-64 m-auto" />
+                                                <h2 class="text-xl text-slate-700 mb-8 -mt-4">{{ __('No purchase orders found.') }}</h2>
+                                            </td>
+                                        </tr>
                                     @endforelse
                                 </tbody>
                             </table>
