@@ -216,6 +216,7 @@ class OutletController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Outlet::findOrFail($id)->delete();
+        return redirect()->route('outlets.index')->with('message', 'Outlet deleted successfully');
     }
 }
