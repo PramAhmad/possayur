@@ -76,10 +76,18 @@ class ProductController extends Controller
             ],
         ];
 
-        $outlets = Outlet::all();
-        $categories = Category::all();
-        $brands = Brand::all();
-        $unit = Unit::all();
+     if(auth()->user()->hasRole('super-admin')){
+            $outlets = Outlet::all();
+            $categories = Category::all();
+            $brands = Brand::all();
+            $unit = Unit::all();
+        }else{
+            $outlets = Outlet::where('id', auth()->user()->outlet_id)->get();
+            $categories = Category::where('outlet_id', auth()->user()->outlet_id)->get();
+            $brands = Brand::where('outlet_id', auth()->user()->outlet_id)->get();
+            $unit = Unit::where('outlet_id', auth()->user()->outlet_id)->get();
+        }
+        
         return view('product.create', [
             'outlets' => $outlets,
             'categories' => $categories,
@@ -115,7 +123,7 @@ class ProductController extends Controller
                 'category_id' => 'required|exists:category,id',
                 'brand_id' => 'nullable|exists:brand,id',
                 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:5048',
-                'unit_id' => 'required|exists:unit,id',
+                'unit_id' => 'required|exists:units,id',
             ],[
                 'name.required' => 'Product name is required',
                 'barcode.required' => 'Barcode is required',
