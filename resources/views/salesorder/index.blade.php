@@ -22,7 +22,7 @@
                             </div>
                             <div class="flex-1">
                                 <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
-                                    Totel sales order
+                                    Total sales order
                                 </div>
                                 <div class="text-slate-900 dark:text-white text-lg font-medium">
                                     {{$salesOrders->count()}}
@@ -44,7 +44,7 @@
                             </div>
                             <div class="flex-1">
                                 <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
-                                    Totel revenue
+                                    Total revenue
                                 </div>
                                 <div class="text-slate-900 dark:text-white text-lg font-medium">
                                     {{currency($salesOrders->sum('grandtotal'), 0)}}

@@ -5,13 +5,22 @@
           <x-breadcrumb :page-title="$pageTitle" :breadcrumb-items="$breadcrumbItems" />
         </div>
 
+        @if (session('message'))
+            <x-alert :message="session('message')" :type="'success'" />
+        @endif
         <div class=" space-y-5">
             <div class="card">
               <header class=" card-header noborder">
-                <h4 class="card-title">Data Supplier Group
-                </h4>
-                <!-- tambah buttton -->
-                <a href="{{ route('supplier.create') }}" class="btn btn-dark">Tambah</a>
+              <div class="justify-end flex gap-3 items-center flex-wrap">
+                        <a class="btn inline-flex justify-center btn-dark rounded-[25px] items-center !p-2 !px-3" href="{{ route('supplier.create') }}">
+                            <iconify-icon icon="ic:round-plus" class="text-lg mr-1"></iconify-icon>
+                            {{ __('New Supplier') }}
+                        </a>
+
+                    <a class="btn inline-flex justify-center btn-dark rounded-[25px] items-center !p-2.5" href="{{ route('unit.index') }}">
+                        <iconify-icon icon="mdi:refresh" class="text-xl"></iconify-icon>
+                    </a>
+</div>
               </header>
               <div class="card-body px-6 pb-6">
                 <div class="overflow-x-auto -mx-6 dashcode-data-table">

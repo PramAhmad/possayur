@@ -7,12 +7,20 @@
 
         <div class=" space-y-5">
             <div class="card">
-              <header class=" card-header noborder">
-                <h4 class="card-title">Data Brand
-                </h4>
-                <!-- tambah buttton -->
-                <a href="{{ route('category.create') }}" class="btn btn-dark">Tambah</a>
-              </header>
+            <header class="card-header noborder">
+                <div class="justify-end flex gap-3 items-center flex-wrap">
+                    {{-- Create Button start --}}
+                        <a class="btn inline-flex justify-center btn-dark rounded-[25px] items-center !p-2 !px-3" href="{{ route('brand.create') }}">
+                            <iconify-icon icon="ic:round-plus" class="text-lg mr-1"></iconify-icon>
+                            {{ __('New Brand') }}
+                        </a>
+
+                    {{-- Refresh Button start --}}
+                    <a class="btn inline-flex justify-center btn-dark rounded-[25px] items-center !p-2.5" href="{{ route('coupon.index') }}">
+                        <iconify-icon icon="mdi:refresh" class="text-xl"></iconify-icon>
+                    </a>
+                </div>
+            </header>
               <div class="card-body px-6 pb-6">
                 <div class="overflow-x-auto -mx-6 dashcode-data-table">
                   <span class=" col-span-8  hidden"></span>

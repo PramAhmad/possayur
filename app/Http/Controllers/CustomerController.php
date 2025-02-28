@@ -43,8 +43,11 @@ class CustomerController extends Controller
             ['name' => 'Create Customer', 'url' => route('customer.create'), 'active' => true]
         ];
         $data['customer_group'] = CustomerGroup::all();
-        $data['outlet'] = Outlet::all();
-
+        if (auth()->user()->getRoleNames()[0] == 'super-admin') {
+            $data['outlet'] = Outlet::all();
+        } else {
+            $data['outlet'] = Outlet::where('id', auth()->user()->outlet_id)->get();
+        }
 
         return view('customer.create' , $data);
     }
@@ -144,7 +147,7 @@ class CustomerController extends Controller
        }
        $user->assignRole('customer');
          DB::commit();
-        return redirect()->route('customer.index')->with('success', 'Customer berhasil ditambahkan');
+        return redirect()->route('customer.index')->with('message', 'Customer berhasil ditambahkan');
     }
 
     /**
@@ -175,7 +178,11 @@ class CustomerController extends Controller
         ];
         $data['customer_group'] = CustomerGroup::all();
         $data['customer'] = Customer::find($id);
-        $data['outlet'] = Outlet::all();    
+        if (auth()->user()->getRoleNames()[0] == 'super-admin') {
+            $data['outlet'] = Outlet::all();
+        } else {
+            $data['outlet'] = Outlet::where('id', auth()->user()->outlet_id)->get();
+        } 
         return view('customer.edit' , $data);
     }
 
@@ -197,11 +204,10 @@ class CustomerController extends Controller
             'tax' => 'nullable|string|max:255',
             'address' => 'required|string|max:255',
             'country' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:6',
+            'email' => 'required|email',
             'postal_code' => 'required|string|max:255',
-        'city' => 'required|string|max:255',
-        'state' => 'required|string|max:255',
+            'city' => 'required|string|max:255',
+            'state' => 'required|string|max:255',
         ],[
             'name.required' => 'Name wajib di isi',
             'name.max' => 'Name maksimal 255 karakter',
@@ -224,10 +230,6 @@ class CustomerController extends Controller
             'country.required' => 'Country wajib di isi',
             'country.max' => 'Country maksimal 255 karakter',
             'country.string' => 'Country harus berupa string',
-            'email.required' => 'Email wajib di isi',
-            'email.email' => 'Email harus berupa email',
-            'email.unique' => 'Email sudah ada',
-            'password.required' => 'Password wajib di isi',
             'password.min' => 'Password minimal 6 karakter',
             'postal_code.required' => 'Postal Code wajib di isi',
             'postal_code.max' => 'Postal Code maksimal 255 karakter',
@@ -239,18 +241,12 @@ class CustomerController extends Controller
             'state.max' => 'State maksimal 255 karakter'
 
         ]);
+        // dd($request->all());
          try {
         DB::beginTransaction();
-        $user =   User::find($id);
-        $user->update([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => bcrypt($request->password),
-            'email_verified_at' => now(),
-            'outlet_id' => $request->outlet_id,
-        ]);
+        
 
-        Customer::where('user_id', $id)->update([
+        Customer::where('id', $id)->update([
             'is_active' => $request->is_active,
             'customer_group_id' => $request->customer_group_id,
             'company_name' => $request->company_name,
@@ -262,13 +258,27 @@ class CustomerController extends Controller
             'city' => $request->city,
             'state' => $request->state,
         ]);
+        $user =   Customer::find($id)->user;
+
+        $user->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'email_verified_at' => now(),
+            'outlet_id' => $request->outlet_id,
+        ]);
+        if($request->password != null){
+            $user->update([
+                'password' => bcrypt($request->password),
+            ]);
+        }
          } catch (\Throwable $th) {
+            dd($th);
         DB::rollBack();
               return redirect()->back()->with('error', 'Gagal mengubah customer');
          }
             $user->assignRole('customer');
             DB::commit();
-            return redirect()->route('customer.index')->with('success', 'Customer berhasil diubah');
+            return redirect()->route('customer.index')->with('message', 'Customer berhasil diubah');
         
     }
 
@@ -280,6 +290,7 @@ class CustomerController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Customer::find($id)->delete();
+        return redirect()->back()->with('message', 'Customer berhasil dihapus');
     }
 }

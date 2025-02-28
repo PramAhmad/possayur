@@ -4,14 +4,25 @@
         <div>
           <x-breadcrumb :page-title="$pageTitle" :breadcrumb-items="$breadcrumbItems" />
         </div>
+        @if (session('message'))
+            <x-alert :message="session('message')" :type="'success'" />
+        @endif
 
         <div class=" space-y-5">
             <div class="card">
               <header class=" card-header noborder">
-                <h4 class="card-title">Data Customer Group
-                </h4>
-                <!-- tambah buttton -->
-                <a href="{{ route('customer.create') }}" class="btn btn-dark">Tambah</a>
+              <div class="justify-end flex gap-3 items-center flex-wrap">
+                    @can('unit create')
+                        <a class="btn inline-flex justify-center btn-dark rounded-[25px] items-center !p-2 !px-3" href="{{ route('customer.create') }}">
+                            <iconify-icon icon="ic:round-plus" class="text-lg mr-1"></iconify-icon>
+                            {{ __('New Customer') }}
+                        </a>
+                    @endcan
+
+                    <a class="btn inline-flex justify-center btn-dark rounded-[25px] items-center !p-2.5" href="{{ route('unit.index') }}">
+                        <iconify-icon icon="mdi:refresh" class="text-xl"></iconify-icon>
+                    </a>
+                </div>
               </header>
               <div class="card-body px-6 pb-6">
                 <div class="overflow-x-auto -mx-6 dashcode-data-table">
@@ -84,47 +95,22 @@
                                   </div>
                                 @endif
                                 </td>
-                                <td class="table-td ">
-                                <div>
-                                  <div class="relative">
-                                    <div class="dropdown relative">
-                                      <button
-                                        class="text-xl text-center block w-full "
-                                        type="button"
-                                        id="tableDropdownMenuButton{{$c['id']}}"
-                                        data-bs-toggle="dropdown"
-                                        aria-expanded="false">
-                                        <iconify-icon icon="heroicons-outline:dots-vertical"></iconify-icon>
-                                      </button>
-                                      <ul class=" dropdown-menu min-w-[120px] absolute text-sm text-slate-700 dark:text-white hidden bg-white dark:bg-slate-700
-                                          shadow z-[2] float-left overflow-hidden list-none text-left rounded-lg mt-1 m-0 bg-clip-padding border-none">
-                                        <li>
-                                          <a
-                                            href="#"
-                                            class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
-                                              dark:hover:text-white">
-                                            View</a>
-                                        </li>
-                                        <li>
-                                          <a
-                                            href="{{ route('customer.edit', $c->id) }}"
-                                            class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
-                                              dark:hover:text-white">
-                                            Edit</a>
-                                        </li>
-                                        <li>
+                                <td class="table-td">
+                                <div class="flex space-x-3 rtl:space-x-reverse">
+                                                        <a class="action-btn" href="{{ route('customer.edit', $c) }}">
+                                                            <iconify-icon icon="heroicons:pencil-square"></iconify-icon>
+                                                        </a>
                                       
-                                          <a
-                                          id="delete"
-                                            href="{{route('customer.destroy', $c->id)}}"
-                                            class="text-slate-600 dark:text-white block font-Inter font-normal px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600
-                                              dark:hover:text-white">
-                                            Delete</a>
-                                        </li>
-                                      </ul>
+                                        <form id="deleteForm{{ $c->id }}" method="POST" action="{{ route('customer.destroy', $c) }}">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <a class="action-btn cursor-pointer" onclick="sweetAlertDelete(event, 'deleteForm{{ $c->id }}')" type="submit">
+                                                                <iconify-icon icon="heroicons:trash"></iconify-icon>
+                                                            </a>
+                                                        </form>
+
                                     </div>
-                                  </div>
-                                </div>
+                                 
                               </td>
                               
                             @endforeach
@@ -167,38 +153,21 @@
         <!-- alert confirm using swal cdn  for id dlete-->
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
         <script>
-            $('a#delete').on('click', function (e) {
-                e.preventDefault();
-                var url = $(this).attr('href');
+            function sweetAlertDelete(event, formId) {
+                event.preventDefault();
+                let form = document.getElementById(formId);
                 Swal.fire({
-                    title: 'Are you sure?',
-                    text: "You won't be able to revert this!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, delete it!'
+                    title: '@lang('Are you sure?')',
+                    icon: 'question',
+                    showDenyButton: true,
+                    confirmButtonText: '@lang('Delete')',
+                    denyButtonText: '@lang('Cancel')',
                 }).then((result) => {
                     if (result.isConfirmed) {
-                      // ajax delete
-                      $.ajax({
-                        url: url,
-                        type: 'DELETE',
-                        data: {
-                          _token: "{{ csrf_token() }}"
-                        },
-                        success: function (response) {
-                          Swal.fire(
-                            'Deleted!',
-                            'Your file has been deleted.',
-                            'success'
-                          )
-                          location.reload();
-                        }
-                      });
+                        form.submit();
                     }
                 })
-            });
+            }
         </script>
     @endpush
 </x-app-layout>

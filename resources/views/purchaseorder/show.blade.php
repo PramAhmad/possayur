@@ -47,7 +47,7 @@
                                 <div class="text-slate-500 dark:text-slate-300 font-normal leading-5 text-sm">{{Carbon\Carbon::parse($purchase->created_at)->translatedFormat('d F Y')}}</div>
                               </div>
                             </div>
-                            <div class="max-w-[980px] mx-auto shadow-base dark:shadow-none my-8 rounded-md overflow-x-auto">
+                            <div class="max-w-6xl mx-auto shadow-base dark:shadow-none my-8 rounded-md overflow-x-auto">
                               <div>
                                 <table class="w-full border-collapse table-fixed dark:border-slate-700 dark:border">
                                   <tr>

@@ -79,9 +79,9 @@
                                 </div>
                             </div>
 
-                            <button type="submit" class="btn btn-dark mt-3">Update</button>
+                            <button type="submit" class="btn btn-dark mt-3">Submit</button>
                             <!-- kembali -->
-                            <a href="{{ route('brand.index') }}" class="btn py-3 btn-outline-dark mt-3">Kembali</a>
+                            <a href="{{ route('brand.index') }}" class="btn py-3 btn-outline-dark mt-3">Back</a>
                         </form>
                     </div>
                 </div>

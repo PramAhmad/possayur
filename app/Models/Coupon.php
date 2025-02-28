@@ -41,4 +41,9 @@ class Coupon extends Model
             ->useLogName('Coupon');
     }
 
+    public function outlet()
+    {
+        return $this->belongsTo(Outlet::class);
+    }
+
 }

@@ -3,7 +3,9 @@
         <div class="mb-6">
             <x-breadcrumb :breadcrumb-items="$breadcrumbItems" :page-title="$pageTitle" />
         </div>
-
+        @if (session('message'))
+            <x-alert :message="session('message')" :type="'success'" />
+        @endif
         <form method="POST" action="{{ route('unit.update', $unit->id) }}" class="max-w-4xl m-auto">
             @csrf
             @method('PUT')

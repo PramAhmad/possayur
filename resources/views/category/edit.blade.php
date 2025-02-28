@@ -4,19 +4,34 @@
             <x-breadcrumb :page-title="$pageTitle" :breadcrumb-items="$breadcrumbItems" />
         </div>
 
-        <div class="flex justify-center"> <!-- Center the form container -->
-            <div class="card w-full max-w-4xl"> <!-- Set max-width for form card -->
-                <div class="card-body flex flex-col p-6">
-                    <header class="flex mb-5 items-center border-b border-slate-100 dark:border-slate-700 pb-5 -mx-6 px-6">
-                        <div class="flex-1">
-                            <div class="card-title text-slate-900 dark:text-white">Edit Category</div>
-                        </div>
-                    </header>
+        @if (session('message'))
+            <x-alert :message="session('message')" :type="'success'" />
+        @endif
+        
                     <div class="card-text h-full">
-                        <form class="space-y-4" method="post" action="{{ route('category.update', $category->id) }}" enctype="multipart/form-data">
+                        <form class="" method="post" action="{{ route('category.update', $category->id) }}" enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
-                            <div class="grid md:grid-cols-2 gap-7">
+                <div class="bg-white dark:bg-slate-800 rounded-md p-5 pb-6">
+
+                            <!-- outlet id select-->
+                            <div class="grid  gap-7 mb-5">
+                                <div class="input-area ">
+                                    <label for="outlet_id" class="form-label">Outlet</label>
+                                    <select name="outlet_id" id="outlet_id" class="form-control">
+                                        <option value="">Pilih Outlet</option>
+                                        @foreach ($outlets as $outlet)
+                                        <option value="{{ $outlet->id }}" {{ old('outlet_id', $category->outlet_id) == $outlet->id ? 'selected' : '' }}>{{ $outlet->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('outlet_id')
+                                    <div class="text-red-500 mt-2 text-sm">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="grid md:grid-cols-2  gap-7">
                                 <div class="input-area">
                                     <label for="name" class="form-label">Nama Category</label>
                                     <input id="name" name="name" type="text" class="form-control" placeholder="Masukan Nama Category" value="{{ old('name', $category->name) }}">
@@ -59,15 +74,13 @@
                                     @enderror
                                 </div>
                             </div>
-                            <div class="flex justify-between">
-                                <button type="submit" class="btn btn-dark mt-3">Update</button>
-                                <a href="{{ route('category.index') }}" class="btn py-3 btn-outline-dark mt-3">Kembali</a>
+                            
+                <button type="submit" class="btn  btn-dark mt-3">Submit</button>
+                            <a href="{{ route('category.index') }}" class="btn py-3 btn-outline-dark mt-3">Back</a>
                             </div>
                         </form>
                     </div>
-                </div>
-            </div>
-        </div>
+           
     </div>
 
     <script>
@@ -84,6 +97,15 @@
                 }
                 reader.readAsDataURL(file);
             }
+        });
+    </script>
+        <script>
+        document.getElementById('name').addEventListener('input', function() {
+            let slug = this.value.toLowerCase()
+                .replace(/[^a-z0-9-]/g, '-')
+                .replace(/-+/g, '-')
+                .replace(/^-|-$/g, '');
+            document.getElementById('slug').value = slug;
         });
     </script>
 </x-app-layout>

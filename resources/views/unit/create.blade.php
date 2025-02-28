@@ -5,7 +5,9 @@
             <x-breadcrumb :breadcrumb-items="$breadcrumbItems" :page-title="$pageTitle" />
         </div>
         {{--Breadcrumb end--}}
-
+        @if (session('message'))
+            <x-alert :message="session('message')" :type="'success'" />
+        @endif
         {{--Create unit form start--}}
         <form method="POST" action="{{ route('unit.store') }}" class="max-w-4xl m-auto">
             @csrf

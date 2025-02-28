@@ -112,6 +112,12 @@ class CouponController extends Controller
     public function store(Request $request)
     {
         // dd($request->all());
+        // remove separator format
+        $request->merge([
+            'amount' => str_replace(',', '', $request->amount),
+            'min_amount' => str_replace(',', '', $request->min_amount),
+            'qty' => str_replace(',', '', $request->qty),
+        ]);
         $request->validate([
             'outlet_id' => 'required|exists:outlets,id',
             'code' => 'required|string|unique:coupon,code',
@@ -130,6 +136,7 @@ class CouponController extends Controller
             'qty' => 'required|integer|min:1',
             'exp_date' => 'required|date|after:today',
             'is_active' => 'required|in:0,1',
+            'outlet_id' => 'required|exists:outlets,id',
         ]);
     
         try {
@@ -144,6 +151,7 @@ class CouponController extends Controller
                 'exp_date' => $request->exp_date,
                 'user_id' => auth()->id(),
                 'is_active' => $request->is_active,
+                'outlet_id' => $request->outlet_id,
             ]);
     
             return redirect()

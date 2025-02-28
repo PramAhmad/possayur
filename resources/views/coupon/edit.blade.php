@@ -7,8 +7,10 @@
         </div>
         {{-- Breadcrumb end --}}
 
-        {{-- Edit coupon form start --}}
-        <form method="POST" action="{{ route('coupon.update', $coupon->id) }}" class="max-w-4xl m-auto">
+        {{-- Edit coupon form start --}} 
+         <div class="card-text h-full">
+
+            <form method="POST" action="{{ route('coupon.store') }}" class="">
             @csrf
             @method('PUT')
             <div class="bg-white dark:bg-slate-800 rounded-md p-5 pb-6">
@@ -50,7 +52,7 @@
                     {{-- Amount input --}}
                     <div class="input-area">
                         <label for="amount" class="form-label">{{ __('Amount') }}</label>
-                        <input name="amount" type="number" id="amount" class="form-control"
+                        <input name="amount" type="text" id="amount" class="form-control"
                                placeholder="{{ __('Enter amount') }}" value="{{ old('amount', $coupon->amount) }}" required>
                         <x-input-error :messages="$errors->get('amount')" class="mt-2"/>
                     </div>
@@ -58,7 +60,7 @@
                     {{-- Minimum amount input --}}
                     <div class="input-area">
                         <label for="min_amount" class="form-label">{{ __('Minimum Amount') }}</label>
-                        <input name="min_amount" type="number" id="min_amount" class="form-control"
+                        <input name="min_amount" type="text" id="min_amount" class="form-control"
                                placeholder="{{ __('Enter minimum amount') }}" value="{{ old('min_amount', $coupon->min_amount) }}" required>
                         <x-input-error :messages="$errors->get('min_amount')" class="mt-2"/>
                     </div>
@@ -66,7 +68,7 @@
                     {{-- Quantity input --}}
                     <div class="input-area">
                         <label for="qty" class="form-label">{{ __('Quantity') }}</label>
-                        <input name="qty" type="number" id="qty" class="form-control"
+                        <input name="qty" type="text" id="qty" class="form-control"
                                placeholder="{{ __('Enter quantity') }}" value="{{ old('qty', $coupon->qty) }}" required>
                         <x-input-error :messages="$errors->get('qty')" class="mt-2"/>
                     </div>
@@ -93,10 +95,31 @@
                     </div>
                 </div>
 
-                <button type="submit" class="btn inline-flex justify-center btn-dark mt-4 w-full">
-                    {{ __('Update') }}
-                </button>
+            
+                <button type="submit" class="btn  btn-dark mt-3">Submit</button>
+                            <a href="{{ route('coupon.index') }}" class="btn py-3 btn-outline-dark mt-3">Back</a>
             </div>
         </form>
+        </div>
     </div>
+    @push('scripts')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cleave.js/1.6.0/cleave.min.js"></script>
+    <script>
+        new Cleave('#amount', {
+            numeral: true,
+            numeralThousandsGroupStyle: 'thousand'
+        });
+
+        new Cleave('#min_amount', {
+            numeral: true,
+            numeralThousandsGroupStyle: 'thousand'
+        });
+
+        new Cleave('#qty', {
+            numeral: true,
+            numeralThousandsGroupStyle: 'thousand'
+        });
+    </script>
+        
+    @endpush
 </x-app-layout>

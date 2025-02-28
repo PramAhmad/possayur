@@ -17,7 +17,7 @@
             request()->routeIs('category.index') ||
             request()->routeIs('brand.index') ||
             request()->routeIs('unit.index') ||
-            request()->routeIs('customer_group.index') ||
+            request()->routeIs('group_customer') ||
             request()->routeIs('tax.index') ||
             request()->routeIs('coupon.index') ||
             request()->routeIs('customer.index') ? 'active' : ''
@@ -74,8 +74,8 @@
             </div>
           </a>
         </li>
-        <li class="{{ request()->is('customer_group*') ? 'active' : '' }}">
-          <a href="{{ route('customer_group.index') }}">
+        <li class="{{ request()->is('group_customer*') ? 'active' : '' }}">
+          <a href="{{ route('group_customer.index') }}">
             <div class="flex space-x-2 items-start rtl:space-x-reverse">
               <iconify-icon icon="heroicons:user-group" class="leading-[1] text-base"></iconify-icon>
               <span class="leading-[1]">Customer Group</span>

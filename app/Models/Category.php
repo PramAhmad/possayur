@@ -12,7 +12,7 @@ class Category extends Model
 {
     use HasFactory;
     use LogsActivity;
-    protected $fillable = ['name', 'slug', 'description', 'image'];
+    protected $fillable = ['name', 'slug', 'description', 'image','outlet_id'];
     protected $table = 'category';
     public function tapActivity(Activity $activity, string $eventName)
     {
@@ -26,6 +26,11 @@ class Category extends Model
             ->logUnguarded()
             ->logOnlyDirty()
             ->useLogName('Category');
+    }
+
+    public function outlet()
+    {
+        return $this->belongsTo(Outlet::class);
     }
 
 }

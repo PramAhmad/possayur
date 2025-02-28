@@ -29,9 +29,10 @@
                 request()->routeIs('category.index') ||
                 request()->routeIs('brand.index') ||
                 request()->routeIs('unit.index') ||
-                request()->routeIs('customer_group.index') ||
+                request()->routeIs('group_customer.index') ||
                 request()->routeIs('tax.index') ||
                 request()->routeIs('coupon.index') ||
+                request()->routeIs('supplier.index') ||
                 request()->routeIs('customer.index') ? 'active' : ''
             }}">
                 <a href="#" class="navItem">
@@ -57,8 +58,8 @@
                     <li class="navItem {{ request()->is('unit*') ? 'active' : '' }}">
                         <a href="{{route('unit.index')}}">Unit</a>
                     </li>
-                    <li class="navItem {{ request()->is('customer_group*') ? 'active' : '' }}">
-                        <a href="{{route('customer_group.index')}}">Customer Group</a>
+                    <li class="navItem {{ request()->is('group_customer*') ? 'active' : '' }}">
+                        <a href="{{route('group_customer.index')}}">Customer Group</a>
                     </li>
                     <li class="navItem {{ request()->is('customer*') ? 'active' : '' }}">
                         <a href="{{route('customer.index')}}">Customer</a>

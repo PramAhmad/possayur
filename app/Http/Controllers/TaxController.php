@@ -18,7 +18,7 @@ class TaxController extends Controller
     {
         $breadcrumbItems = [
             [
-                'name' => 'Setting',
+                'name' => 'Dashboard',
                 'url' => route('dashboard.index'),
                 'active' => false
             ],
