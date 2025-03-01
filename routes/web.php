@@ -189,6 +189,12 @@ Route::post('download/stockopname/import-excel', [StockOpnameController::class, 
 
     /** CERTIFICATE SIGN QZ.IO */
     Route::get('cert-sign', [CertSignController::class, 'index'])->name('cert-sign.index');
+
+    // php ini
+    Route::get('phpinfo', function () {
+        phpinfo();
+    });
+    
 });
 
 // test log
