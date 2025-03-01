@@ -281,6 +281,7 @@ class ProductController extends Controller
             $brands = Brand::where('outlet_id', auth()->user()->outlet_id)->get();
             $unit = Unit::where('outlet_id', auth()->user()->outlet_id)->get();
         }
+        $product = Product::findOrFail($id);
         
 
         return view('product.edit', [

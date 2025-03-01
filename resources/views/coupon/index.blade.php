@@ -30,7 +30,7 @@
                 <div class="justify-center flex flex-wrap sm:flex items-center lg:justify-end gap-3">
                     <div class="relative w-full sm:w-auto flex items-center">
                         <form id="searchForm" method="get" action="{{ route('coupon.index') }}">
-                            <input name="q" type="text" class="inputField pl-8 p-2 border border-slate-200 dark:border-slate-700 rounded-md dark:bg-slate-900" placeholder="Search product" value="{{ request()->q }}">
+                            <input name="q" type="text" class="inputField pl-8 p-2 border border-slate-200 dark:border-slate-700 rounded-md dark:bg-slate-900" placeholder="Search coupon" value="{{ request()->q }}">
                         </form>
                         <iconify-icon class="absolute text-textColor left-2 dark:text-white" icon="quill:search-alt"></iconify-icon>
                     </div>
