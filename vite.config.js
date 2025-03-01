@@ -6,7 +6,6 @@ export default defineConfig({
         laravel({
             input: [
                 "resources/css/app.scss",
-                "resources/css/main.css",
                 "resources/css/plugins/select2.min.css",
                 "resources/js/Select2.min.js",
                 "resources/js/custom/store.js",
