@@ -125,8 +125,8 @@ class PointOfSalesController extends Controller
             // get typecoupon and amount coupon in coupon table
             $coupon = Coupon::find($request->coupon);
             $salesOrder->update([
-                'type_coupon' => $coupon->type,
-                'amount_coupon' => $coupon->amount,
+                'coupon_type' => $coupon->type,
+                'coupon_amount' => $coupon->amount,
             ]);
             foreach ($request->items as $item) {
                 ProductSalesOrder::create([

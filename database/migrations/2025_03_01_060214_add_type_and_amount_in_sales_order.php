@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('sales_orders', function (Blueprint $table) {
-            $table->string('type_coupon')->default(null)->nullable();
-            $table->decimal('amount_coupon', 10, 2)->default(0)->nullable();
+            $table->string('coupon_type')->default(null)->nullable();
+            $table->decimal('coupon_amount', 10, 2)->default(0)->nullable();
         });
     }
 
@@ -23,8 +23,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('sales_orders', function (Blueprint $table) {
-            $table->dropColumn('type_coupon');
-            $table->dropColumn('amount_coupon');
+            $table->dropColumn('coupon_type');
+            $table->dropColumn('coupon_amount');
         });
     }
 };

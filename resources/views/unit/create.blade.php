@@ -9,7 +9,8 @@
             <x-alert :message="session('message')" :type="'success'" />
         @endif
         {{--Create unit form start--}}
-        <form method="POST" action="{{ route('unit.store') }}" class="max-w-4xl m-auto">
+        <div class="card-text  h-full">
+        <form method="POST" action="{{ route('unit.store') }}" class="">
             @csrf
             <div class="bg-white dark:bg-slate-800 rounded-md p-5 pb-6">
 
@@ -83,11 +84,12 @@
                     </div>
                 </div>
 
-                <button type="submit" class="btn inline-flex justify-center btn-dark mt-4 w-full">
-                    {{ __('Save') }}
-                </button>
+                <button type="submit" class="btn  btn-dark mt-3">Submit</button>
+                            <!-- kembali -->
+                            <a href="{{ route('unit.index') }}" class="btn py-3 btn-outline-dark mt-3">Back</a>
             </div>
         </form>
+        </div>
     </div>
 
     {{--Auto format code to uppercase--}}
