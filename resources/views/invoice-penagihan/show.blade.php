@@ -228,11 +228,19 @@
                             @endforeach
 
                             <!-- Total Row -->
+                            @if ($invoice->total_discount > 0)
+                                <tr class="font-bold">
+                                    <td colspan="3" class="px-4 py-3 text-right text-slate-900 dark:text-slate-300">Discount</td>
+                                    <td class="px-4 py-3 text-right text-slate-900 dark:text-slate-300">
+                                        {{ currency($invoice->total_discount) }}
+                                    </td>
+                                </tr>
+                            @endif
                             @if ($invoice->paid_amount > 0)
                                 <tr class="font-bold">
                                     <td colspan="3" class="px-4 py-3 text-right text-slate-900 dark:text-slate-300">Paid Amount</td>
                                     <td class="px-4 py-3 text-right text-slate-900 dark:text-slate-300">
-                                        -{{ currency($invoice->paid_amount) }}
+                                        {{ currency($invoice->paid_amount) }}
                                     </td>
                                 </tr>
                             @endif

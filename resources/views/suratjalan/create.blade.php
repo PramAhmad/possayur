@@ -74,17 +74,31 @@
                             <tbody id="products-table-body" class="bg-white divide-y divide-gray-200">
                             </tbody>
                             <tfoot>
-                        <tr>
-                            <td colspan="3" class="font-semibold">Totals:</td>
-                            <td id="total-original-qty" class="text-center">0</td>
-                            <td id="total-original-amount">0</td>
-                            <td id="total-adjusted-qty" class="text-center">0</td>
-                            <td id="total-adjusted-amount">0</td>
-                            {{-- <td id="total-return-qty">0</td> --}}
-                        </tr>
-                    </tfoot>
-
-
+                                <tr class="row-total-discount hidden">
+                                    <td colspan="2" class="px-6 py-4 font-semibold">Total Discount <span class="coupon-type-amount"></span>:</td>
+                                    <td class="px-6 py-4 text-center"></td>
+                                    <td class="px-6 py-4 text-center"></td>
+                                    <td class="px-6 py-4" id="total-original-discount">0</td>
+                                    <td class="px-6 py-4 text-center"></td>
+                                    <td class="px-6 py-4" id="total-adjusted-discount">0</td>
+                                </tr>
+                                <tr class="row-total-paid-amount hidden">
+                                    <td colspan="2" class="px-6 py-4 font-semibold">Paid Amount:</td>
+                                    <td class="px-6 py-4 text-center"></td>
+                                    <td class="px-6 py-4 text-center"></td>
+                                    <td class="px-6 py-4" id="total-original-paid-amount">0</td>
+                                    <td class="px-6 py-4 text-center"></td>
+                                    <td class="px-6 py-4" id="total-adjusted-paid-amount">0</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" class="px-6 py-4 font-semibold">Totals:</td>
+                                    <td class="px-6 py-4 text-center" id="total-original-qty" class="text-center">0</td>
+                                    <td class="px-6 py-4" id="total-original-amount">0</td>
+                                    <td class="px-6 py-4 text-center" id="total-adjusted-qty" class="text-center">0</td>
+                                    <td class="px-6 py-4" id="total-adjusted-amount">0</td>
+                                    {{-- <td id="total-return-qty">0</td> --}}
+                                </tr>
+                            </tfoot>
                         </table>
                     </div>
                 </div>
@@ -102,6 +116,11 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.min.js" defer integrity="sha512-4MvcHwcbqXKUHB6Lx3Zb5CEAVoE9u84qN+ZSMM6s7z8IeJriExrV3ND5zRze9mxNlABJ6k864P/Vl8m0Sd3DtQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         <script>
             $(document).ready(function() {
+                let couponId = null
+                let couponType = null
+                let couponAmount = 0
+                let totalPaidAmount = 0
+
                 function formatCurrency(amount) {
                     return new Intl.NumberFormat('id-ID', {
                         style: 'currency',
@@ -132,12 +151,51 @@
                         $(this).find('.return-qty').text(returnQty);
                     });
 
+                    let totalOriginalDiscount = 0;
+                    let totalAdjustmentDiscount = 0;
+
+                    if (couponId !== null) {
+                        if (couponType == 'percentage') {
+                            totalOriginalDiscount = (totalOriginalAmount * couponAmount) / 100
+                            totalOriginalAmount = totalOriginalAmount - totalOriginalDiscount
+
+                            totalAdjustmentDiscount = (totalAdjustedAmount * couponAmount) / 100
+                            totalAdjustedAmount = totalAdjustedAmount - totalAdjustmentDiscount
+                        } else {
+                            totalOriginalDiscount = couponAmount
+                            totalOriginalAmount = totalOriginalAmount > 0 ? totalOriginalAmount - totalOriginalDiscount : totalOriginalAmount
+
+                            totalAdjustmentDiscount = couponAmount
+                            totalAdjustedAmount = totalAdjustedAmount > 0 ? totalAdjustedAmount - totalAdjustmentDiscount : totalAdjustedAmount
+                        }
+                    }
+
+                    totalOriginalAmount = totalOriginalAmount - totalPaidAmount
+                    totalAdjustedAmount = totalAdjustedAmount - totalPaidAmount
+
                     // Update totals in the footer
                     $('#total-original-qty').text(totalOriginalQty);
                     $('#total-original-amount').text(formatCurrency(totalOriginalAmount));
+                    $('#total-original-discount').text(formatCurrency(totalOriginalDiscount));
+                    $('#total-original-paid-amount').text(formatCurrency(totalPaidAmount));
+
                     $('#total-adjusted-qty').text(totalAdjustedQty);
                     $('#total-adjusted-amount').text(formatCurrency(totalAdjustedAmount));
                     $('#total-return-qty').text(totalReturnQty);
+                    $('#total-adjusted-discount').text(formatCurrency(totalAdjustmentDiscount));
+                    $('#total-adjusted-paid-amount').text(formatCurrency(totalPaidAmount));
+
+                    if (couponId != null) {
+                        $('tr.row-total-discount').removeClass('hidden');
+                    } else {
+                        $('tr.row-total-discount').addClass('hidden');
+                    }
+
+                    if (totalPaidAmount > 0) {
+                        $('tr.row-total-paid-amount').removeClass('hidden');
+                    } else {
+                        $('tr.row-total-paid-amount').addClass('hidden');
+                    }
 
                     return {
                         totalOriginalQty,
@@ -147,6 +205,7 @@
                         totalReturnQty
                     };
                 }
+
                 $('#sales_order_id').change(function() {
                     const salesOrderId = $(this).val();
                     if (salesOrderId) {
@@ -159,6 +218,17 @@
                             console.log(response);
                                 const tableBody = $('#products-table-body');
                                 tableBody.empty();
+                                
+                                couponId = response?.sales_order?.coupon_id
+                                couponType = response?.sales_order?.coupon_type
+                                couponAmount = parseFloat(response?.sales_order?.coupon_amount)
+                                totalPaidAmount = parseFloat(response?.sales_order?.paid_amount)
+
+                                if (couponType === 'percentage') {
+                                    $('.coupon-type-amount').text(`(${couponAmount}%)`);
+                                } else {
+                                    $('.coupon-type-amount').text('')
+                                }
 
                                 response.products.forEach(function(item) {
                                     console.log();

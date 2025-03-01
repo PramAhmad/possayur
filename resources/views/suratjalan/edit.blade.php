@@ -8,7 +8,6 @@
             @method('PUT')
             <div class="bg-white dark:bg-slate-800 rounded-md p-5 pb-6">
                 <div class="grid sm:grid-cols-2 gap-x-8 gap-y-4">
-
                     <div class="input-area">
                         <label for="sales_order_id" class="form-label">{{ __('No PO') }}</label>
                         <select name="sales_order_id" id="sales_order_id" class="form-control" disabled>
@@ -75,6 +74,20 @@
                             <tbody id="products-table-body" class="bg-white divide-y divide-gray-200">
                             </tbody>
                             <tfoot class="bg-gray-50">
+                                <tr class="row-total-discount hidden">
+                                    <td colspan="2" class="px-6 py-4 font-semibold">Total Discount <span class="coupon-type-amount"></span>:</td>
+                                    <td class="px-6 py-4 text-center"></td>
+                                    <td class="px-6 py-4" id="total-original-discount">0</td>
+                                    <td class="px-6 py-4 text-center"></td>
+                                    <td class="px-6 py-4" id="total-adjusted-discount">0</td>
+                                </tr>
+                                <tr class="row-total-paid-amount hidden">
+                                    <td colspan="2" class="px-6 py-4 font-semibold">Paid Amount:</td>
+                                    <td class="px-6 py-4 text-center"></td>
+                                    <td class="px-6 py-4" id="total-original-paid-amount">0</td>
+                                    <td class="px-6 py-4 text-center"></td>
+                                    <td class="px-6 py-4" id="total-adjusted-paid-amount">0</td>
+                                </tr>
                                 <tr>
                                     <td colspan="2" class="px-6 py-4 font-semibold">Totals:</td>
                                     <td class="px-6 py-4 text-center" id="total-original-qty">0</td>
@@ -87,9 +100,10 @@
                     </div>
                 </div>
 
-                <button type="submit" class="btn inline-flex justify-center btn-dark mt-4 w-full">
-                    {{ __('Update') }}
+                <button type="submit" class="btn inline-flex justify-center btn-dark mt-4">
+                    {{ __('Submit') }}
                 </button>
+                <a href="{{ route('suratjalan.index') }}" class="btn py-3 inline-flex justify-center btn-outline-dark mt-3">Back</a>
             </div>
         </form>
     </div>
@@ -98,6 +112,11 @@
     @push('scripts')
         <script>
             $(document).ready(function() {
+                let couponId = null
+                let couponType = null
+                let couponAmount = 0
+                let totalPaidAmount = 0
+
                 function formatCurrency(amount) {
                     return new Intl.NumberFormat('id-ID', {
                         style: 'currency',
@@ -123,10 +142,48 @@
                         totalAdjustedAmount += price * adjustedQty;
                     });
 
+                    let totalOriginalDiscount = 0;
+                    let totalAdjustmentDiscount = 0;
+
+                    if (couponId !== null) {
+                        if (couponType == 'percentage') {
+                            totalOriginalDiscount = (totalOriginalAmount * couponAmount) / 100
+                            totalOriginalAmount = totalOriginalAmount - totalOriginalDiscount
+
+                            totalAdjustmentDiscount = (totalAdjustedAmount * couponAmount) / 100
+                            totalAdjustedAmount = totalAdjustedAmount - totalAdjustmentDiscount
+                        } else {
+                            totalOriginalDiscount = couponAmount
+                            totalOriginalAmount = totalOriginalAmount > 0 ? totalOriginalAmount - totalOriginalDiscount : totalOriginalAmount
+
+                            totalAdjustmentDiscount = couponAmount
+                            totalAdjustedAmount = totalAdjustedAmount > 0 ? totalAdjustedAmount - totalAdjustmentDiscount : totalAdjustedAmount
+                        }
+                    }
+
+                    totalOriginalAmount = totalOriginalAmount - totalPaidAmount
+                    totalAdjustedAmount = totalAdjustedAmount - totalPaidAmount
+
                     $('#total-original-qty').text(totalOriginalQty);
                     $('#total-original-amount').text(formatCurrency(totalOriginalAmount));
+                    $('#total-original-discount').text(formatCurrency(totalOriginalDiscount));
+                    $('#total-original-paid-amount').text(formatCurrency(totalPaidAmount));
                     $('#total-adjusted-qty').text(totalAdjustedQty);
                     $('#total-adjusted-amount').text(formatCurrency(totalAdjustedAmount));
+                    $('#total-adjusted-discount').text(formatCurrency(totalAdjustmentDiscount));
+                    $('#total-adjusted-paid-amount').text(formatCurrency(totalPaidAmount));
+
+                    if (couponId != null) {
+                        $('tr.row-total-discount').removeClass('hidden');
+                    } else {
+                        $('tr.row-total-discount').addClass('hidden');
+                    }
+
+                    if (totalPaidAmount > 0) {
+                        $('tr.row-total-paid-amount').removeClass('hidden');
+                    } else {
+                        $('tr.row-total-paid-amount').addClass('hidden');
+                    }
 
                     return {
                         totalOriginalQty,
@@ -147,6 +204,17 @@
                                 const tableBody = $('#products-table-body');
                                 tableBody.empty();
 
+                                couponId = response?.sales_order?.coupon_id
+                                couponType = response?.sales_order?.coupon_type
+                                couponAmount = parseFloat(response?.sales_order?.coupon_amount)
+                                totalPaidAmount = parseFloat(response?.sales_order?.paid_amount)
+
+                                if (couponType === 'percentage') {
+                                    $('.coupon-type-amount').text(`(${couponAmount}%)`);
+                                } else {
+                                    $('.coupon-type-amount').text('')
+                                }
+
                                 response.products.forEach(function(item) {
                                     const adjustedQty = item.adjusted_qty !== undefined ? item
                                         .adjusted_qty : item.qty;
@@ -164,7 +232,7 @@
                                         ${item.original_qty}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        ${formatCurrency(item.unit_price * item.qty)}
+                                        ${formatCurrency(item.unit_price * item.original_qty)}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <input type="number" 

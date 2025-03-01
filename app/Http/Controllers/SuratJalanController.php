@@ -112,6 +112,7 @@ class SuratJalanController extends Controller
         $outletId = null;
         $totalQty = 0;
         $grandTotal = 0;
+        $salesOrder = null;
 
         if ($request->is_edit == true) {
             $suratJalan = SuratJalan::with(['productSuratJalans','productSuratJalans.product','productSuratJalans.variant','productSuratJalans.batch','productSuratJalans.product.unit'])->findOrFail($id);
@@ -120,6 +121,7 @@ class SuratJalanController extends Controller
             $totalQty = $suratJalan->total_qty;
             $grandTotal = $suratJalan->grand_total;
             $products = $suratJalan->productSuratJalans;
+            $salesOrder = $suratJalan->salesorder;
 
             $i = 0;
             foreach ($products as $product) {
@@ -140,7 +142,8 @@ class SuratJalanController extends Controller
             'products' => $products,
             'outlet_id' => $outletId,
             'total_qty' => $totalQty,
-            'grand_total' => $grandTotal
+            'grand_total' => $grandTotal,
+            'sales_order' => $salesOrder
         ]);
     }
     /**

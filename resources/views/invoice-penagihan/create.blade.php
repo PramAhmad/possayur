@@ -47,9 +47,21 @@
                             </thead>
                             <tbody id="products-table-body" class="bg-white divide-y divide-gray-200"></tbody>
                             <tfoot class="bg-gray-50">
+                                <tr class="row-total-discount hidden">
+                                    <td colspan="4" class="px-6 py-4 font-semibold">Total Discount <span class="coupon-type-amount"></span>:</td>
+                                    <td class="px-6 py-4"></td>
+                                    <td class="px-6 py-4 text-center"></td>
+                                    <td class="px-6 py-4" id="total-discount">0</td>
+                                </tr>
+                                <tr class="row-total-paid-amount hidden">
+                                    <td colspan="4" class="px-6 py-4 font-semibold">Paid Amount:</td>
+                                    <td class="px-6 py-4"></td>
+                                    <td class="px-6 py-4 text-center"></td>
+                                    <td class="px-6 py-4" id="total-paid-amount">0</td>
+                                </tr>
                                 <tr>
                                     <td colspan="4" class="px-6 py-4 font-semibold">{{ __('Totals') }}:</td>
-                                    <td class="px-6 py-4"></td> <!-- Surat Jalan Qty total -->
+                                    <td class="px-6 py-4"></td>
                                     <td class="px-6 py-4 text-center" id="total-invoice-qty">0</td>
                                     <td class="px-6 py-4" id="total-amount">0</td>
                                 </tr>
@@ -57,7 +69,6 @@
                         </table>
                     </div>
                 </div>
-
 
                 <!-- <div class="grid sm:grid-cols-2 gap-x-8 gap-y-4 mt-4">
                     <div class="input-area">
@@ -70,9 +81,10 @@
                     </div>
                 </div> -->
 
-                <button type="submit" class="btn inline-flex justify-center btn-dark mt-4 w-full">
-                    {{ __('Save Invoice') }}
+                <button type="submit" class="btn inline-flex justify-center btn-dark mt-4">
+                    {{ __('Submit') }}
                 </button>
+                <a href="{{ route('suratjalan.index') }}" class="btn py-3 inline-flex justify-center btn-outline-dark mt-3">Back</a>
             </div>
         </form>
     </div>
@@ -82,6 +94,11 @@
 
         <script>
             $(document).ready(function() {
+                let couponId = null
+                let couponType = null
+                let couponAmount = 0
+                let totalPaidAmount = 0
+                
                 function formatCurrency(amount) {
                     return new Intl.NumberFormat('id-ID', {
                         style: 'currency',
@@ -101,8 +118,36 @@
                         totalAmount += price * invoiceQty;
                     });
 
+                    let totalDiscount = 0;
+
+                    if (couponId !== null) {
+                        if (couponType == 'percentage') {
+                            totalDiscount = (totalAmount * couponAmount) / 100
+                            totalAmount = totalAmount - totalDiscount
+                        } else {
+                            totalDiscount = couponAmount
+                            totalAmount = totalAmount > 0 ? totalAmount - totalDiscount : totalAmount
+                        }
+                    }
+
+                    totalAmount = totalAmount - totalPaidAmount
+
                     $('#total-invoice-qty').text(totalInvoiceQty);
                     $('#total-amount').text(formatCurrency(totalAmount));
+                    $('#total-discount').text(formatCurrency(totalDiscount));
+                    $('#total-paid-amount').text(formatCurrency(totalPaidAmount));
+                
+                    if (couponId != null) {
+                        $('tr.row-total-discount').removeClass('hidden');
+                    } else {
+                        $('tr.row-total-discount').addClass('hidden');
+                    }
+
+                    if (totalPaidAmount > 0) {
+                        $('tr.row-total-paid-amount').removeClass('hidden');
+                    } else {
+                        $('tr.row-total-paid-amount').addClass('hidden');
+                    }
                 }
 
                 function updateSubtotal(row) {
@@ -125,6 +170,18 @@
                                 $('#outlet_name').val(response.salesorder.outlet.name);
                                 const tableBody = $('#products-table-body');
                                 tableBody.empty();
+                                
+                                couponId = response?.salesorder?.coupon_id
+                                couponType = response?.salesorder?.coupon_type
+                                couponAmount = parseFloat(response?.salesorder?.coupon_amount)
+                                totalPaidAmount = parseFloat(response?.salesorder?.paid_amount)
+
+                                if (couponType === 'percentage') {
+                                    $('.coupon-type-amount').text(`(${couponAmount}%)`);
+                                } else {
+                                    $('.coupon-type-amount').text('')
+                                }
+
                                 $('#products-list').removeClass('hidden');
 
                                 response.products.forEach(function(item) {

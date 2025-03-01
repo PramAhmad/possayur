@@ -111,6 +111,8 @@ class InvoicePenagihanController extends Controller
         try {
             $salesOrder = SalesOrder::findOrFail($request->sales_order_id);
             $suratJalan = SuratJalan::where('sales_order_id', $salesOrder->id)->first();
+            $totalDiscount = $salesOrder->coupon_id ? ($salesOrder->coupon_type == 'percentage' ? (($request->grandtotal * $salesOrder->coupon_amount)/100) : $salesOrder->coupon_amount) : 0;
+            $grandTotal = $request->grandtotal - $totalDiscount - $salesOrder->paid_amount;
             
             // Create Invoice
             $invoice = Invoice::create([
@@ -120,7 +122,11 @@ class InvoicePenagihanController extends Controller
                 'surat_jalan_id' => $suratJalan->id,
                 'total_qty' => $request->total_qty,
                 'paid_amount' => $salesOrder->paid_amount,
-                'grandtotal' => ($request->grandtotal - $salesOrder->paid_amount),
+                'grandtotal' => $grandTotal,
+                'coupon_id' => $salesOrder->coupon_id,
+                'coupon_amount' => $salesOrder->coupon_amount,
+                'coupon_type' => $salesOrder->coupon_type,
+                'total_discount' => $totalDiscount,
                 'note' => $request->note,
             ]);
             

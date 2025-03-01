@@ -25,7 +25,11 @@ class Invoice extends Model
         'tax',
         'grandtotal',
         'note',
-        'paid_amount'
+        'paid_amount',
+        'coupon_id',
+        'coupon_type',
+        'coupon_amount',
+        'total_discount'
     ];
     public function tapActivity(Activity $activity, string $eventName)
     {

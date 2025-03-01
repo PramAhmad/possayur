@@ -140,9 +140,22 @@
             @endforeach
         </tbody>
         <tfoot>
+            @if ($invoice?->total_discount > 0)
+                <tr>
+                    <td colspan="5" class="text-right" style="border-bottom: unset;border-left:unset"><strong>Discount</strong></td>
+                    <td>
+                        <table class="table-text-currency" style="width: 100%">
+                            <tr>
+                                <td style="width: 50%" class="text-left"><strong>Rp.</strong></td>
+                                <td style="width: 50%" class="text-right"><strong>{{ number_format($invoice?->total_discount, 0, ',', '.') }}</strong></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            @endif
             @if ($invoice?->paid_amount > 0)
                 <tr>
-                    <td colspan="5" class="text-right" style="border-bottom: unset;border-left:unset"><strong>Paid Amount</strong></td>
+                    <td colspan="5" class="text-right" style="border-bottom: unset;{{ $invoice?->total_discount > 0 ? 'border-top:unset' : '' }};border-left:unset"><strong>Paid Amount</strong></td>
                     <td>
                         <table class="table-text-currency" style="width: 100%">
                             <tr>
