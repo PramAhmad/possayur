@@ -26,7 +26,8 @@ class SalesOrder extends Model
         'total_tax',
         'coupon_id',
         'order_tax_rate',
-        
+        'type_coupon',
+        'amount_coupon',
         'grand_total',
         'note',
     ];

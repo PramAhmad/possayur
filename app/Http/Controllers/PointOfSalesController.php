@@ -51,7 +51,7 @@ class PointOfSalesController extends Controller
                 ->latest()
                 ->paginate(10);
         } else {
-            $outlets = Outlet::where('id', auth()->user()->outlet_id)->paginate(10);
+            $outlets = Outlet::where('id', auth()->user()->outlet_id)->paginate(12);
         }
 
         return view('pos.index', [
@@ -121,6 +121,12 @@ class PointOfSalesController extends Controller
                 'coupon_id' => $request->coupon,
                 'total_tax' => $request->tax,
                 'total_discount' => $request->totalDiscount,
+            ]);
+            // get typecoupon and amount coupon in coupon table
+            $coupon = Coupon::find($request->coupon);
+            $salesOrder->update([
+                'type_coupon' => $coupon->type,
+                'amount_coupon' => $coupon->amount,
             ]);
             foreach ($request->items as $item) {
                 ProductSalesOrder::create([
