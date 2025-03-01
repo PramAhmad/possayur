@@ -194,6 +194,25 @@ class PurchaseOrderController extends Controller
      */
     public function show($id)
     {
+        $data['breadcrumbItems'] = [
+            [
+                'name' => 'Settings',
+                'url' => '/general-settings',
+                'active' => false
+            ],
+            [
+                'name' => 'Purchase Order',
+                'url' => route('purchaseorder.index'),
+                'active' => false
+            ],
+            [
+                'name' => 'Show',
+                'url' => route('purchaseorder.show', $id),
+                'active' => true
+            ],
+        ];
+        $data['pageTitle'] = 'Show Purchase Order';
+        
 
     $data['purchase'] = PurchaseOrder::with('supplier', 'user', 'outlet','productPurchase.product','productPurchase.variant','productPurchase.batch')->findOrFail($id);
     // return $data;

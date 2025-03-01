@@ -1,4 +1,8 @@
 <x-app-layout>
+<div class="mb-6">
+            <x-breadcrumb :breadcrumb-items="$breadcrumbItems" :page-title="$pageTitle" />
+        </div>
+
     <div class="card">
 
         <main class="card-body p-0">

@@ -10,7 +10,7 @@ use Spatie\Activitylog\Models\Activity;
 class Brand extends Model
 {
     use HasFactory;
-    protected $fillable = ['name', 'is_active', 'image'];
+    protected $fillable = ['name', 'is_active', 'image','outlet_id'];
     protected $table = 'brand';
     public function tapActivity(Activity $activity, string $eventName)
     {
@@ -24,5 +24,10 @@ class Brand extends Model
             ->logUnguarded()
             ->logOnlyDirty()
             ->useLogName('Brand');
+    }
+
+    public function outlet()
+    {
+        return $this->belongsTo(Outlet::class);
     }
 }

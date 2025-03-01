@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Brand;
+use App\Models\Outlet;
+use GuzzleHttp\Psr7\Query;
 use Illuminate\Http\Request;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class BrandController extends Controller
 {
@@ -19,7 +22,21 @@ class BrandController extends Controller
             ['name' => 'Dashboard', 'url' => route('dashboard.index'), 'active' => false],  
             ['name' => 'Brand', 'url' => route('brand.index'), 'active' => true]
         ];
-        $data['brand'] =Brand::all();
+        if(auth()->user()->hasRole('super-admin')){
+            $data['brand'] = QueryBuilder::for(Brand::class)
+            ->with('outlet')
+            ->allowedSorts(['name', 'is_active'])
+            ->latest()
+            ->paginate(10);
+        } else {
+            $data['brand'] = QueryBuilder::for(Brand::class)
+            ->where('outlet_id', auth()->user()->outlet_id)
+            ->with('outlet')
+            ->allowedSorts(['name', 'is_active'])
+            ->latest()
+            ->paginate(10);
+        }
+       
         return view('brand.index', $data);
     }
 
@@ -37,6 +54,12 @@ class BrandController extends Controller
             ['name' => 'Brand', 'url' => route('brand.index'), 'active' => false], 
             ['name' => 'CreateBrand', 'url' => route('brand.create'), 'active' => true]
         ];
+        // outlet
+        if(auth()->user()->hasRole('super-admin')){
+            $data['outlets'] = Outlet::all();
+        } else {
+            $data['outlets'] = Outlet::where('id', auth()->user()->outlet_id)->get();
+        }
     
         return view('brand.create' , $data);
     }
@@ -54,6 +77,7 @@ class BrandController extends Controller
             'name' => 'required|string|max:255',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:5048',
             'is_active' => 'required|in:0,1',
+            'outlet_id' => 'required',
         ],[
             'name.required' => 'Name wajib di isi',
             'name.max' => 'Name maksimal 255 karakter',
@@ -77,9 +101,10 @@ class BrandController extends Controller
             'name' => $request->name,
             'image' => $image_name,
             'is_active' => $request->is_active,
+            'outlet_id' => $request->outlet_id,
         ]);
 
-        return redirect()->back()->with('success', 'Brand berhasil di tambahkan');
+        return redirect()->route('brand.index')->with('message', 'Brand berhasil di tambahkan');
 
     }
 
@@ -117,6 +142,13 @@ class BrandController extends Controller
             ['name' => 'Brand', 'url' => route('brand.index'), 'active' => false], 
             ['name' => 'EditBrand', 'url' => route('brand.edit', $id), 'active' => true]
         ];
+
+        // outlet
+        if(auth()->user()->hasRole('super-admin')){
+            $data['outlets'] = Outlet::all();
+        } else {
+            $data['outlets'] = Outlet::where('id', auth()->user()->outlet_id)->get();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+        }
     
         return view('brand.edit' , compact('brand'), $data);
     }
@@ -136,6 +168,7 @@ class BrandController extends Controller
 
             'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:5048',
             'is_active' => 'required|in:0,1',
+            'outlet_id' => 'required',
 
         ],[
             'name.required' => 'Name wajib di isi',
@@ -162,6 +195,7 @@ class BrandController extends Controller
             'name' => $request->name,
             'image' => $image_name,
             'is_active' => $request->is_active,
+            'outlet_id' => $request->outlet_id,
         ]);
 
         return redirect()->back()->with('success', 'Brand berhasil di update');

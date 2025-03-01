@@ -39,10 +39,12 @@
     }' class="w-full px-10">
                     <option value="">Choose a product</option>
 
-                    @foreach ($products as $product)
+                    @foreach ($productsall as $product)
                     <option value="{{ $product->id }}" data-product-id="{{ $product->id }}"
                         data-price="{{ $product->selling_price }}"
-                        data-image="{{ asset('upload/product/' . $product->image) }}" data-hs-select-option='{
+                        data-unit="{{ $product->unit->id ?? '-' }}"
+                        data-image="{{ asset($product->image ? 'upload/product/' . $product->image : 'images/default.png') }}"
+                        data-hs-select-option='{
                                "icon": "<img class=\"inline-block size-4 rounded-full\" src=\"{{ asset($product->image ? 'upload/product/' . $product->image : 'images/default.png') }}\" alt=\"{{ addslashes($product->name) }}\" style=\"width: 30px; height: 30px;\" />"
             }' role="button">
                         {{ $product->name }} - Rp {{ number_format($product->selling_price) }}
@@ -136,8 +138,11 @@
                             <div role="button"
                                 class="select-none cursor-pointer transition-shadow overflow-hidden rounded-2xl p-2 bg-white shadow hover:shadow-lg add-to-cart"
                                 data-product-id="{{ $product->id }}" data-product-name="{{ $product->name }}"
+                        data-unit-id="{{ $product->unit->id ?? '-' }}"
+                        data-unit-code="{{ $product->unit->code ?? '-' }}"
+
                                 data-product-price="{{ $product->selling_price }}"
-                                data-product-image="{{ asset('upload/product/' . $product->image) }}" data-variant-id=""
+                                data-product-image="{{ asset($product->image ? 'upload/product/' . $product->image : 'images/default.png') }}"
                                 data-batch-id="">
                                 <img src="{{ asset($product->image ? 'upload/product/' . $product->image : 'images/default.png') }}"
                                     class="object-cover w-full h-24 sm:h-44 lg:h-52" alt="{{ $product->name }}">
@@ -145,7 +150,7 @@
                                 <div class="flex flex-col sm:flex-row pb-3 px-3 text-sm mt-3">
                                     <p class="flex-grow truncate mr-1">
                                         {{ $product->name }}
-                                        <span class="font-semibold">( {{ $product->unit->name ?? '-' }} )</span>
+                                        <span class="font-semibold"> {{ $product->unit->code ?? '-' }} </span>
                                     </p>
                                     <br>
                                 </div>
@@ -576,7 +581,7 @@
                             </td>
                             //action delete
                             <td class="px-4 py-2">
-                          <button class="delete-item rounded-lg text-center p-2 text-white bg-red-500 hover:bg-red-600 focus:outline-none" data-product-id="3">
+                          <button class="delete-item rounded-lg text-center p-2 text-white bg-red-500 hover:bg-red-600 focus:outline-none" data-product-id="${item.id}">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                                     </svg>

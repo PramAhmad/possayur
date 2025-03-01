@@ -5,6 +5,9 @@
           <x-breadcrumb :page-title="$pageTitle" :breadcrumb-items="$breadcrumbItems" />
         </div>
 
+        @if (session('message'))
+            <x-alert :message="session('message')" :type="'success'" />
+        @endif
         <div class=" space-y-5">
             <div class="card">
             <header class="card-header noborder">
@@ -37,6 +40,9 @@
                                 Name
                               </th>
                               <th scope="col" class=" table-th ">
+                                Outlet
+                              </th>
+                              <th scope="col" class=" table-th ">
                                 Image
                               </th>
                                 <!-- is asctive -->
@@ -57,6 +63,10 @@
                                 <td class=" table-td ">
                                   {{ $c->name }}
                                 </td>
+                                <!-- outlet -->
+                                 <td class="table-td">
+                                  {{ $c->outlet?->name }}
+                                 </td>
                                 <td class="table-td">
                                       <img src="{{ isset($c->image) ? asset('upload/brand/' . $c->image) : asset('upload/category/defaultcategory.webp') }}" alt="" class="w-10 h-10 rounded-full">
                                   </td>

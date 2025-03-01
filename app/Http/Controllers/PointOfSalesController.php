@@ -179,10 +179,16 @@ class PointOfSalesController extends Controller
             $query->where('outlet_id', $id);
         })->with('user')->get();
         $products = $productsQuery->paginate(10);
+        $productsall = Product::where('outlet_id', $id)
+        ->with('unit', 'variants', 'batches')  
+        ->where('is_active', '=', '1')
+        ->get();
+        // return $productsall;
         $coupon = Coupon::where('outlet_id', $id)->get();
         // return $customer;
         return view('pos.show', [
             'breadcrumbItems' => $breadcrumbItems,
+            'productsall' => $productsall,
             'pageTitle' => $pageTitle,
             'outlet' => $outlet,
             'products' => $products,

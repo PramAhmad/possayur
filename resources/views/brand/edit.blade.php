@@ -23,6 +23,24 @@
                         <form class="space-y-4" method="post" action="{{ route('brand.update', $brand->id) }}" enctype="multipart/form-data">
                             @csrf
                             @method('PATCH')
+                            <!-- outlet -->
+                            <div class="grid md:grid-cols-1 gap-7">
+                                <div class="input-area">
+                                    <label for="outlet_id" class="form-label">Outlet</label>
+                                    <select name="outlet_id" id="outlet_id" class="form-control">
+                                        <option value="">Pilih Outlet</option>
+                                        @foreach ($outlets as $outlet)
+                                        <option value="{{ $outlet->id }}" {{ old('outlet_id', $brand->outlet_id) == $outlet->id ? 'selected' : '' }}>{{ $outlet->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    <!-- err display -->
+                                    @error('outlet_id')
+                                    <div class="text-red-500 mt-2 text-sm">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
+                                </div>
+                                </div>  
                             <div class="grid md:grid-cols-2 gap-7">
                                 <div class="input-area">
                                     <label for="name" class="form-label">Nama Brand</label>

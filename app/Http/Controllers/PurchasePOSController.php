@@ -11,6 +11,7 @@ use App\Models\PurchaseOrder;
 use App\Models\Suplier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class PurchasePOSController extends Controller
 {
@@ -28,7 +29,16 @@ class PurchasePOSController extends Controller
         ];
 
         $pageTitle = 'Point of Sales';
-        $outlets = Outlet::paginate(5);
+        if(auth()->user()->hasRole('super-admin')){
+            $outlets = QueryBuilder::for(Outlet::class)
+                ->allowedFilters(['name'])
+                ->paginate(10);
+        }else{
+            $outlets = QueryBuilder::for(Outlet::class)
+                ->allowedFilters(['name'])
+                ->where('id', auth()->user()->outlet_id)
+                ->paginate(10);
+        }
 
         return view('purchasepos.index', [
             'breadcrumbItems' => $breadcrumbItems,
@@ -52,6 +62,13 @@ class PurchasePOSController extends Controller
     {
         
         // dd($request->all());
+        $request->validate([
+            'outlet' => 'required',
+            'supplier' => 'required',
+            'items' => 'required',
+            'cash' => 'required',
+            'total' => 'required',
+        ]);
 
         try {
             DB::beginTransaction();
@@ -109,7 +126,7 @@ class PurchasePOSController extends Controller
         ];
 
         $pageTitle = 'Point of Sales';
-        $products = Product::where('outlet_id', $id)->with('unit','variants','batches')->where('is_active','=','1')->paginate(10);
+        $products = Product::where( 'outlet_id', $id)->with('unit','variants','batches')->where('is_active','=','1')->paginate(10);
         $outlet = Outlet::find($id);
        if(auth()->user()->hasRole('super-admin')){
             $suppliers = Suplier::all();

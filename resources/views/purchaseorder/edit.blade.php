@@ -63,16 +63,7 @@
                             @foreach ($purchaseOrder as $product)
                                 <div class="product-row flex items-center gap-4">
                                     <div class="flex-1 ">
-                                        <select name="product_id[]" class="form-control product-select">
-                                            <option value="">{{ __('Select Product') }}</option>
-                                            @foreach ($products as $p)
-                                                <option value="{{ $p->id }}" data-outlet="{{ $p->outlet_id }}" {{ $product->id == $p->id ? 'selected' : '' }}>{{ $p->name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="flex-1 px-3">
-                                        <input type="number" name="quantity[]" class="form-control" placeholder="Enter quantity" value="{{ $product->pivot->quantity }}" />
-                                    </div>
+                                   
                                     <div>
                                         <button type="button" class="btn btn-danger btn-sm remove-product w-full">
                                             <iconify-icon icon="heroicons-outline:trash" class="text-lg"></iconify-icon>
