@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::table('invoices', function (Blueprint $table) {
             $table->decimal('paid_amount', 20,3)->after('total_qty');
+            $table->decimal('total_discount', 20,3)->after('paid_amount');
         });
     }
 
