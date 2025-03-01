@@ -60,7 +60,7 @@
                     {{--Outlet input start--}}
                     <div class="input-area">
                         <label for="outlet" class="form-label">{{ __('Outlet') }}</label>
-                        <select name="outlet" class="form-control">
+                        <select name="outlet_id" class="form-control">
                             <option value="" selected disabled>
                                 {{ __('Select Outlet') }}
                             </option>

@@ -108,15 +108,28 @@ class UserController extends Controller
      * @return RedirectResponse
      *
      */
-    public function store(StoreUserRequest $request)
+    public function store(Request $request)
     {
-        $user = User::create($request->safe(['name', 'email'])
-            + [
-                'password' => bcrypt($request->validated(['password'])),
-                'email_verified_at' => now(),
-                'outlet_id' => request('outlet_id')
-            ]);
-        $user->assignRole([$request->validated('role')]);
+        // dd($request->all());
+        $request->validate([
+            'name' => ['required', 'string', 'max:255',],
+            'email' => ['required', 'string', 'email:rfc,dns', 'max:255', 'unique:users',],
+            'password' => ['required', 'string', 'min:8',],
+            'role' => ['required', 'exists:roles,id'],
+            'outlet_id' => ['required', 'exists:outlets,id'],
+        ]);
+        $user =    User::create(
+         [
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => bcrypt($request->password),
+            'outlet_id' => $request->outlet_id,
+            'email_verified_at' => now(),
+         ]
+        );
+        $user->outlet_id = request('outlet_id');
+        $user->save();
+        $user->assignRole([$request->role]);
 
         return redirect()->route('users.index')->with('message', 'User created successfully');
     }
@@ -196,15 +209,25 @@ class UserController extends Controller
      * @return RedirectResponse
      *
      */
-    public function update(UpdateUserRequest $request, User $user)
+    public function update(Request $request, User $user)
     {
-        // dd($request->all());
-        $user->update($request->safe(['name', 'email'])
-            + ['password' => bcrypt($request->validated(['password']))]);
+      
+        $request->validate([
+            'name' => ['required', 'string', 'max:255',],
+            'email' => ['required', 'string', 'email:rfc,dns', 'max:255', 'unique:users,email,' . $user->id],
+            'role' => ['required', 'exists:roles,id'],
+            'outlet_id' => ['required', 'exists:outlets,id'],
+        ]);
+        
+        $user->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'outlet_id' => $request->outlet_id,
+            'email_verified_at' => now(),
+        ]);
 
-        $user->syncRoles([$request->validated(['role'])]);
-        // update outlet
-        $user->outlet_id = request('outlet_id');
+        $user->syncRoles([$request->role]);
+
 
         return redirect()->route('users.index')->with('message', 'User updated successfully');
     }

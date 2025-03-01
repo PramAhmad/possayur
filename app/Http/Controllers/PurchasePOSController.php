@@ -134,9 +134,14 @@ class PurchasePOSController extends Controller
             $suppliers = Suplier::where('outlet_id', auth()->user()->outlet_id)->get();
         }
         $coupon = Coupon::where('outlet_id', $id)->get();
+        $productsall = Product::where('outlet_id', $id)
+        ->with('unit', 'variants', 'batches')  
+        ->where('is_active', '=', '1')
+        ->get();
         // return $customer;
         return view('purchasepos.show', [
             'breadcrumbItems' => $breadcrumbItems,
+            'productsall' => $productsall,
             'pageTitle' => $pageTitle,
             'suppliers' => $suppliers,
             'products' => $products,

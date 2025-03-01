@@ -6,6 +6,19 @@
             <x-breadcrumb :breadcrumb-items="$breadcrumbItems" :page-title="$pageTitle" />
         </div>
         {{--Breadcrumb end--}}
+        {{--Catch all error start--}}
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+        {{--Catch all error end--}}
+
+        
 
         {{--Create user form start--}}
         <form method="POST" action="{{ route('users.store') }}"  class="max-w-4xl m-auto">
@@ -53,8 +66,8 @@
                             @endforeach
                         </select>
                         <div class="input-area mt-3">
-                        <label for="role" class="form-label">{{ __('Outlet') }}</label>
-                        <select name="role" class="form-control">
+                        <label for="outlet_id" class="form-label">{{ __('Outlet') }}</label>
+                        <select name="outlet_id" class="form-control">
                             <option value="" selected disabled>
                                 {{ __('Select Outlet') }}
                             </option>

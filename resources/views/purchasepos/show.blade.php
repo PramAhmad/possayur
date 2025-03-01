@@ -39,7 +39,7 @@
     }' class="w-full px-10">
                     <option value="">Choose a product</option>
 
-                    @foreach ($products as $product)
+                    @foreach ($productsall as $product)
                     <option value="{{ $product->id }}" data-product-id="{{ $product->id }}"
                         data-price="{{ $product->selling_price }}"
                         data-unit="{{ $product->unit->id ?? '-' }}"
