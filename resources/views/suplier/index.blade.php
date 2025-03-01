@@ -41,6 +41,10 @@
                               <th scope="col" class=" table-th ">
                                 Shop
                               </th>
+                              <!-- outlet -->
+                              <th scope="col" class=" table-th ">
+                                Outlet
+                              </th>
                               <th scope="col" class=" table-th ">
                                 Name
                               </th>
@@ -67,6 +71,9 @@
                                 </td>
                                 <td class="table-td">
                                   {{ $s->shop_name }}
+                                </td>
+                                <td class=" table-td ">
+                                  {{ $s->outlet?->name }}
                                 </td>
                                 <td class=" table-td ">
                                   {{ $s->name }}
