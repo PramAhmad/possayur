@@ -93,6 +93,7 @@ class SuplierController extends Controller
             'bank_branch' => 'nullable',
             'account_holder' => 'nullable',
             'account_number' => 'nullable',
+            'outlet_id' => 'required'
         ],[
             'name.required' => 'Nama wajib diisi',
             'email.required' => 'Email wajib diisi',
@@ -113,6 +114,7 @@ class SuplierController extends Controller
                 'bank_branch' => $request->bank_branch,
                 'account_holder' => $request->account_holder,
                 'account_number' => $request->account_number,
+                'outlet_id' => $request->outlet_id
             ]);
             return redirect()->route('supplier.index')->with('message', 'Data berhasil disimpan');
         } catch (\Exception $e) {
@@ -177,6 +179,7 @@ class SuplierController extends Controller
             'bank_branch' => 'nullable',
             'account_holder' => 'nullable',
             'account_number' => 'nullable',
+            'outlet_id' => 'required'
         ],[
             'name.required' => 'Nama wajib diisi',
             'email.required' => 'Email wajib diisi',
@@ -196,6 +199,7 @@ class SuplierController extends Controller
                 'bank_name' => $request->bank_name,
                 'bank_branch' => $request->bank_branch,
                 'account_holder' => $request->account_holder,
+                'outlet_id' => $request->outlet_id,
                 'account_number' => $request->account_number,
             ]);
             return redirect()->route('supplier.index')->with('message', 'Data berhasil diupdate');
