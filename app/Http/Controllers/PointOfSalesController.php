@@ -184,7 +184,7 @@ class PointOfSalesController extends Controller
         $customer = Customer::whereHas('user', function ($query) use ($id) {
             $query->where('outlet_id', $id);
         })->with('user')->get();
-        $products = $productsQuery->paginate(10);
+        $products = $productsQuery->paginate(12);
         $productsall = Product::where('outlet_id', $id)
         ->with('unit', 'variants', 'batches')  
         ->where('is_active', '=', '1')

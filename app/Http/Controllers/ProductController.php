@@ -40,13 +40,26 @@ class ProductController extends Controller
         $perPage = $request->get('per_page', 10);
         $sort = $request->get('sort');
     
-        $products = QueryBuilder::for(Product::class)
-            ->allowedSorts(['name', 'selling_price', 'qty'])
-            ->with(['category', 'brand', 'outlet','unit'])
-            ->where('name', 'like', value: "%$q%")
-            ->latest()
-            ->paginate($perPage)
-            ->appends(['per_page' => $perPage, 'q' => $q, 'sort' => $sort]);
+        if(auth()->user()->hasRole('super-admin')){
+            $products = QueryBuilder::for(Product::class)
+                ->allowedSorts(['name', 'selling_price', 'qty'])
+                ->with(['category', 'brand', 'outlet','unit'])
+                ->where('name', 'like', value: "%$q%")
+                ->latest()
+                ->paginate($perPage)
+                ->appends(['per_page' => $perPage, 'q' => $q, 'sort' => $sort]);
+        }
+        else{
+            $products = QueryBuilder::for(Product::class)
+                ->allowedSorts(['name', 'selling_price', 'qty'])
+                ->with(['category', 'brand', 'outlet','unit'])
+                ->where('name', 'like', value: "%$q%")
+                ->where('outlet_id', auth()->user()->outlet_id)
+                ->latest()
+                ->paginate($perPage)
+                ->appends(['per_page' => $perPage, 'q' => $q, 'sort' => $sort]);
+        }
+       
     
         return view('product.index', [
             'products' => $products,
