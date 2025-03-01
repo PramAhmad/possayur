@@ -23,9 +23,8 @@
             <h4>Invoice Penagihan
             </h4>
             <div class="flex lg:justify-end items-center flex-wrap space-xy-5">
-                <a href="{{route('invoice.pdf',['id'=>$invoice->id])}}" class="invocie-btn inline-flex btn btn-sm whitespace-nowrap space-x-1 cursor-pointer bg-white dark:bg-slate-800
+                {{-- <a href="{{ route('invoice.edit', $invoice->id) }}" class="invocie-btn inline-flex btn btn-sm whitespace-nowrap space-x-1 cursor-pointer bg-white dark:bg-slate-800
                     dark:text-slate-300 btn-md h-min text-sm font-normal text-slate-900 rtl:space-x-reverse">
-
                     <span class="text-lg">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -48,9 +47,9 @@
                         </svg>
                     </span>
                     <span>Edit</span>
-                </a>
-                <button onclick="window.print()" type="button" class="invocie-btn inline-flex btn btn-sm whitespace-nowrap space-x-1 cursor-pointer bg-white dark:bg-slate-800
-                    dark:text-slate-300 btn-md h-min text-sm font-normal text-slate-900 rtl:space-x-reverse">
+                </a> --}}
+                <button type="button" class="invocie-btn btn-print inline-flex btn btn-sm whitespace-nowrap space-x-1 cursor-not-allowed bg-white dark:bg-slate-800
+                    dark:text-slate-300 btn-md h-min text-sm font-normal text-slate-900 rtl:space-x-reverse" data-url="{{ route('invoice.print', $invoice->id) }}">
                     <span class="text-lg">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -75,10 +74,10 @@
                                 1.125v3.659M18 10.5h.008v.008H18V10.5Zm-3 0h.008v.008H15V10.5Z"></path>
                         </svg>
                     </span>
-                    <span>Print</span>
+                    <span class="print-text-button">Print</span>
                 </button>
-                <a href="{{route('invoice.pdf',['id'=>$invoice->id])}}" class="invocie-btn inline-flex btn btn-sm whitespace-nowrap space-x-1 cursor-pointer bg-white dark:bg-slate-800
-                    dark:text-slate-300 btn-md h-min text-sm font-normal text-slate-900 rtl:space-x-reverse">
+                <a href="{{route('invoice.pdf', ['id'=>$invoice->id])}}" class="invocie-btn inline-flex btn btn-sm whitespace-nowrap space-x-1 cursor-pointer bg-white dark:bg-slate-800
+                    dark:text-slate-300 btn-md h-min text-sm font-normal text-slate-900 rtl:space-x-reverse" target="_blank">
                     <span class="text-lg">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -100,7 +99,7 @@
                     </span>
                     <span>Download</span>
                 </a>
-                <button class="invocie-btn inline-flex btn btn-sm whitespace-nowrap space-x-1 cursor-pointer bg-white dark:bg-slate-800
+                {{-- <button class="invocie-btn inline-flex btn btn-sm whitespace-nowrap space-x-1 cursor-pointer bg-white dark:bg-slate-800
                     dark:text-slate-300 btn-md h-min text-sm font-normal text-slate-900 rtl:space-x-reverse">
                     <span class="text-lg transform -rotate-45">
                         <svg
@@ -122,7 +121,7 @@
                         </svg>
                     </span>
                     <span>Send invoice</span>
-                </button>
+                </button> --}}
             </div>
         </div>
         <!-- Invoice Header Card -->
@@ -229,10 +228,26 @@
                             @endforeach
 
                             <!-- Total Row -->
+                            @if ($invoice->total_discount > 0)
+                                <tr class="font-bold">
+                                    <td colspan="3" class="px-4 py-3 text-right text-slate-900 dark:text-slate-300">Discount</td>
+                                    <td class="px-4 py-3 text-right text-slate-900 dark:text-slate-300">
+                                        {{ currency($invoice->total_discount) }}
+                                    </td>
+                                </tr>
+                            @endif
+                            @if ($invoice->paid_amount > 0)
+                                <tr class="font-bold">
+                                    <td colspan="3" class="px-4 py-3 text-right text-slate-900 dark:text-slate-300">Paid Amount</td>
+                                    <td class="px-4 py-3 text-right text-slate-900 dark:text-slate-300">
+                                        {{ currency($invoice->paid_amount) }}
+                                    </td>
+                                </tr>
+                            @endif
                             <tr class="font-bold">
-                                <td colspan="2" class="px-4 py-3 text-right text-slate-900 dark:text-slate-300">Grand Total</td>
+                                <td colspan="3" class="px-4 py-3 text-right text-slate-900 dark:text-slate-300">Grand Total</td>
                                 <td class="px-4 py-3 text-right text-slate-900 dark:text-slate-300">
-                                    {{ currency($invoice->productInvoices->sum('total')) }}
+                                    {{ currency($invoice->grandtotal) }}
                                 </td>
                             </tr>
                         </tbody>
@@ -241,4 +256,111 @@
             </div>
         </div>
     </div>
+
+    @include('vendor.qz.script')
+    @push('scripts')
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+            $(function() {
+                let printer = '';
+
+                qz.security.setCertificatePromise(function(resolve, reject) {
+                    fetch("{{ asset('override.crt') }}", {cache: 'no-store', headers: {'Content-Type': 'text/plain'}})
+                        .then(function(data) { data.ok ? resolve(data.text()) : reject(data.text()); });
+                });
+
+                qz.security.setSignatureAlgorithm("SHA512");
+
+                qz.security.setSignaturePromise(function(toSign) {
+                    return function(resolve, reject) {
+                        fetch("{{ route('cert-sign.index') }}" + '?request=' + toSign, {cache: 'no-store', headers: {'Content-Type': 'text/plain'}})
+                            .then(function(data) { data.ok ? resolve(data.text()) : reject(data.text()); });
+                    };
+                });
+
+                qz.websocket.connect().then(function() {
+                    findDefaultPrinter();
+                    // $('.qz-loader').addClass('d-none');
+                    $('.btn-print').removeClass('cursor-not-allowed').prop('disabled', false);
+                }).catch(handleConnectionError);
+
+                $('.btn-print').on('click', function() {
+                    var url = $(this).data('url');
+
+                    $.ajax({
+                        url: `${url}?action=direct_print`,
+                        type: 'GET',
+                        beforeSend: function() {
+                            $('.btn-print').addClass('cursor-not-allowed')
+                            $('.print-text-button').text('Printing...')
+                        },
+                        success: function(result) {
+                            let config = qz.configs.create(printer);
+                            let printData = [{
+                                type: 'pixel',
+                                format: 'pdf',
+                                flavor: 'file',
+                                data: result
+                            }]
+
+                            qz.print(config, printData).catch(function(e) {
+                                console.error(e);
+                                Swal.fire({
+                                    title: "Failed to print",
+                                    text: e,
+                                    icon: "error"
+                                });
+                            });
+
+                            $('.btn-print').removeClass('cursor-not-allowed')
+                            $('.print-text-button').text('Print')
+                        },
+                        complete: function() {
+                        },
+                        error: function(xhr, status, error) {
+                            console.log(xhr.responseText);
+                            
+                            $('.btn-print').removeClass('cursor-not-allowed')
+                            $('.print-text-button').text('Print')
+                        }
+                    });
+
+                })
+
+                function findDefaultPrinter() {
+                    qz.printers.getDefault().then(function(data) {
+                        printer = data
+                    }).catch(displayError);
+                }
+
+                function displayError(err) {
+                    console.error(err);
+                    displayMessage(err, 'alert-danger');
+                }
+
+                function displayMessage(msg, css, time) {
+                    Swal.fire({
+                        title: "Error",
+                        text: msg,
+                        icon: "error"
+                    });
+                }
+
+                function handleConnectionError(err) {
+                    if (err.target != undefined) {
+                        if (err.target.readyState >= 2) { //if CLOSING or CLOSED
+                            displayError("Connection to QZ Tray was closed");
+                        } else {
+                            displayError("A connection error occurred, check log for details");
+                            console.error(err);
+                        }
+                    } else {
+                        displayError(err);
+                    }
+
+                    // $('.qz-loader').addClass('d-none');
+                }
+            })
+        </script>
+    @endpush
 </x-app-layout>

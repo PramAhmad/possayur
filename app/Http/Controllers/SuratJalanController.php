@@ -112,6 +112,7 @@ class SuratJalanController extends Controller
         $outletId = null;
         $totalQty = 0;
         $grandTotal = 0;
+        $salesOrder = null;
 
         if ($request->is_edit == true) {
             $suratJalan = SuratJalan::with(['productSuratJalans','productSuratJalans.product','productSuratJalans.variant','productSuratJalans.batch','productSuratJalans.product.unit'])->findOrFail($id);
@@ -120,6 +121,14 @@ class SuratJalanController extends Controller
             $totalQty = $suratJalan->total_qty;
             $grandTotal = $suratJalan->grand_total;
             $products = $suratJalan->productSuratJalans;
+            $salesOrder = $suratJalan->salesorder;
+
+            $i = 0;
+            foreach ($products as $product) {
+                $salesOrderProduct = ProductSalesOrder::where(['sales_order_id' => $suratJalan->salesorder?->id, 'product_id' => $product->product_id])->first();
+                $products[$i]->original_qty = $salesOrderProduct?->qty ?? 0;
+                $i++;
+            }
         } else {
             $salesOrder = SalesOrder::with(['products','products.product','products.variant','products.batch','products.product.unit'])->findOrFail($id);
             
@@ -133,7 +142,8 @@ class SuratJalanController extends Controller
             'products' => $products,
             'outlet_id' => $outletId,
             'total_qty' => $totalQty,
-            'grand_total' => $grandTotal
+            'grand_total' => $grandTotal,
+            'sales_order' => $salesOrder
         ]);
     }
     /**
@@ -186,7 +196,7 @@ class SuratJalanController extends Controller
             'products.*.adjusted_qty' => [
                 'required',
                 'integer',
-                'min:1',
+                'min:0',
             ],
             'products.*.unit_price' => [
                 'required',
@@ -241,7 +251,7 @@ class SuratJalanController extends Controller
 
         ]);
     
-        DB::beginTransaction(); 
+        DB::beginTransaction();
         try{
             $suratJalan = SuratJalan::create([
                 'sales_order_id' => $request->sales_order_id,
@@ -259,12 +269,12 @@ class SuratJalanController extends Controller
 
             foreach($request->products as $key => $product){
                 ProductSuratJalan::create(attributes: [
-                   'surat_jalan_id' => $suratJalan->id,
-                   'product_id' => $product['product_id'],
-                   'qty' => $product['adjusted_qty'],
-                   'unit_price' => $product['unit_price'],
-                   'total_price' => $product['adjusted_subtotal'],
-                   'variant_id' => $product['variant_id'],
+                    'surat_jalan_id' => $suratJalan->id,
+                    'product_id' => $product['product_id'],
+                    'qty' => $product['adjusted_qty'],
+                    'unit_price' => $product['unit_price'],
+                    'total_price' => $product['adjusted_subtotal'],
+                    'variant_id' => $product['variant_id'],
                     'batch_id' => $product['batch_id'],
                ]);
             }
@@ -381,7 +391,6 @@ class SuratJalanController extends Controller
             'due_date' => [
                 'required',
                 'date',
-                'after_or_equal:today',
             ],
             'summary.total_adjusted_qty' => [
                 'nullable',
@@ -405,7 +414,7 @@ class SuratJalanController extends Controller
             'products.*.adjusted_qty' => [
                 'required',
                 'integer',
-                'min:1',
+                'min:0',
             ],
             'products.*.unit_price' => [
                 'required',
@@ -460,10 +469,19 @@ class SuratJalanController extends Controller
 
         ]);
 
+        $suratJalan = SuratJalan::findOrFail($id);
+
+        if ($request->due_date != $suratJalan->due_date) {
+            $request->validate([
+                'due_date' => [
+                    'after_or_equal:today',
+                ],
+            ]);
+        }
+
         DB::beginTransaction();
 
         try {
-            $suratJalan = SuratJalan::findOrFail($id);
             $suratJalan->update([
                 'sales_order_id' => $request->sales_order_id,
                 'packer' => $request->packer,
@@ -522,7 +540,7 @@ class SuratJalanController extends Controller
         if ($suratJalan?->salesorder?->status == 'completed') {
             return redirect()
                 ->route('suratjalan.index')
-                ->with('error', __('Surat Jalan failed to delete. Sales Order already completed.'));
+                ->with('error', __('Surat Jalan failed to delete. The invoice has been created.'));
         }
 
         try{

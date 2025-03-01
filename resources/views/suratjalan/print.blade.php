@@ -71,7 +71,7 @@
                         <img src="{{ $isGenereratedPdf ? public_path('upload/outlets/' . $suratJalan?->salesOrder?->outlet?->logo) : asset('upload/outlets/' . $suratJalan?->salesOrder?->outlet?->logo) }}" alt="{{ $suratJalan->salesOrder->outlet->name }}">
                     </td>
                 @endif
-                <td class="outlet-header" width="50%">
+                <td class="outlet-header" width="{{ $isDirectPrint ? '70%' : '50%' }}">
                     <p><strong style="font-size: 16px">Koyasai</strong></p>
                     <p style="font-size: 15px">{{ $suratJalan?->salesorder?->outlet->name }}</p>
                     <p>{{ $suratJalan?->salesorder?->outlet->address }}</p>

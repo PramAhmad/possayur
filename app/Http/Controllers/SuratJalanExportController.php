@@ -13,17 +13,18 @@ class SuratJalanExportController extends Controller
 {
     public function export()
     {
-        return Excel::download(new SuratJalanExport, now().'surat_jalan.xlsx');
-    }   
-    
-    public function pdf($id){
-        $suratJalan = SuratJalan::with(['salesorder.products.product','salesorder.products.variant','salesorder.products.batch','salesorder.outlet','salesorder.customer','productSuratJalans.product','productSuratJalans.variant','productSuratJalans.batch','productSuratJalans.product.unit'])->findOrFail($id);
+        return Excel::download(new SuratJalanExport, now() . 'surat_jalan.xlsx');
+    }
+
+    public function pdf($id)
+    {
+        $suratJalan = SuratJalan::with(['salesorder.products.product', 'salesorder.products.variant', 'salesorder.products.batch', 'salesorder.outlet', 'salesorder.customer', 'productSuratJalans.product', 'productSuratJalans.variant', 'productSuratJalans.batch', 'productSuratJalans.product.unit'])->findOrFail($id);
         $isDirectPrint = false;
         $isGenereratedPdf = true;
 
         $pdf = Pdf::loadView('suratjalan.print', compact('suratJalan', 'isDirectPrint', 'isGenereratedPdf'));
 
-        return $pdf->download('Surat Jalan ' . ($suratJalan->reference_no ?? 'SO ' . $suratJalan?->salesorder?->reference_no) . ' '. now()->format('Ymd_His') .'.pdf');
+        return $pdf->download('Surat Jalan ' . ($suratJalan->reference_no ?? 'SO ' . $suratJalan?->salesorder?->reference_no) . ' ' . now()->format('Ymd_His') . '.pdf');
     }
 
     // public function print($id){
@@ -37,15 +38,16 @@ class SuratJalanExportController extends Controller
     {
         $isDirectPrint = false;
         $isGenereratedPdf = false;
-        $suratJalan = SuratJalan::with(['salesorder.products.product','salesorder.products.variant','salesorder.products.batch','salesorder.outlet','salesorder.customer','productSuratJalans.product','productSuratJalans.variant','productSuratJalans.batch','productSuratJalans.product.unit'])->findOrFail($id);
+
+        $suratJalan = SuratJalan::with(['salesorder.products.product', 'salesorder.products.variant', 'salesorder.products.batch', 'salesorder.outlet', 'salesorder.customer', 'productSuratJalans.product', 'productSuratJalans.variant', 'productSuratJalans.batch', 'productSuratJalans.product.unit'])->findOrFail($id);
 
         if ($request->action == 'direct_print') {
-            $pdf = Pdf::loadView('suratjalan.print', compact('suratJalan'));
+            $isDirectPrint = true;
+            $pdf = Pdf::loadView('suratjalan.print', compact('suratJalan', 'isDirectPrint', 'isGenereratedPdf'));
             $content = $pdf->download()->getOriginalContent();
             $filename = 'surat-jalan_' . $id . '.pdf';
-            $isDirectPrint = true;
 
-            if (Storage::put('public/direct-print/'. $filename, $content)) {
+            if (Storage::put('public/direct-print/' . $filename, $content)) {
                 return response()->json(asset('storage/direct-print/' . $filename), 200);
             }
 

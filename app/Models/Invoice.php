@@ -16,15 +16,20 @@ class Invoice extends Model
 
     protected $table = 'invoices';
     protected $fillable = [
-       'reference_number',
-       'outlet_id',
-         'sales_order_id',
-         'surat_jalan_id',
-         'total_qty',
-         'discount',
-         'tax',
-         'grandtotal',
-         'note',
+        'reference_number',
+        'outlet_id',
+        'sales_order_id',
+        'surat_jalan_id',
+        'total_qty',
+        'discount',
+        'tax',
+        'grandtotal',
+        'note',
+        'paid_amount',
+        'coupon_id',
+        'coupon_type',
+        'coupon_amount',
+        'total_discount'
     ];
     public function tapActivity(Activity $activity, string $eventName)
     {

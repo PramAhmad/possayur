@@ -137,30 +137,28 @@
         </thead>
         <tbody>
             @foreach($invoice->productInvoices as $product)
-            <tr>
-                <td>
-                    {{ $product->product->name }}
-                    @if ($product->variant)
-                    <div style="font-size: 10px; color: #666;">Variant: {{ $product->variant->name }}</div>
-                    @endif
-                    @if ($product->batch)
-                    <div style="font-size: 10px; color: #666;">Batch: {{ $product->batch->batch_no }}</div>
-                    @endif
-                </td>
-                <td>{{ $product->qty }}</td>
-                <td>{{ $product->product->unit->name }}</td>
-                <td>{{ currency($product->price) }}</td>
+                <tr>
+                    <td>
+                        {{ $product->product->name }}
+                        @if ($product->variant)
+                            <div style="font-size: 10px; color: #666;">Variant: {{ $product->variant->name }}</div>
+                        @endif
+                        @if ($product->batch)
+                            <div style="font-size: 10px; color: #666;">Batch: {{ $product->batch->batch_no }}</div>
+                        @endif
+                    </td>
+                    <td>{{ $product->qty }}</td>
+                    <td>{{ $product?->product?->unit?->name }}</td>
+                    <td>{{ currency($product->price) }}</td>
 
-                <td class="text-right">
-                    {{ currency($product->total) }}
-                </td>
-            </tr>
+                    <td class="text-right">
+                        {{ currency($product->total) }}
+                    </td>
+                </tr>
             @endforeach
             <tr class="font-bold">
                 <td colspan="4" class="text-right">Grand Total</td>
-                <td class="text-right">
-        {{ currency($invoice->productInvoices->sum('total')) }}
-    </td>
+                <td class="text-right">{{ currency($invoice->productInvoices->sum('total')) }}</td>
             </tr>
         </tbody>
     </table>

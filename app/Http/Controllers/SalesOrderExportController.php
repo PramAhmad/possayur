@@ -70,8 +70,8 @@ class SalesOrderExportController extends Controller
         $sheet->getStyle('A7')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
         $sheet->getStyle('A7')->getAlignment()->setWrapText(false);
 
-    // Jarak antara header dan tabel
-    $sheet->setCellValue('A9', ''); 
+        // Jarak antara header dan tabel
+        $sheet->setCellValue('A9', ''); 
 
         // Table headers
         $sheet->setCellValue('A10', 'NO')->getStyle('A10')->getFont()->setSize(12);
@@ -286,13 +286,19 @@ class SalesOrderExportController extends Controller
             'products.product.unit'
         )->find($id);
 
-        $pdf = Pdf::loadView('salesorder.print', compact('salesOrder'));
+        $isDirectPrint = false;
+        $isGenereratedPdf = true;
+
+        $pdf = Pdf::loadView('salesorder.print', compact('salesOrder', 'isDirectPrint', 'isGenereratedPdf'));
 
         return $pdf->download('Sales Order ' . $salesOrder->reference_no . ' '. now()->format('Ymd_His') .'.pdf');
     }
 
     public function print(Request $request, $id)
     {
+        $isDirectPrint = false;
+        $isGenereratedPdf = false;
+
         $salesOrder = SalesOrder::with(
             'outlet',
             'customer',
@@ -306,7 +312,8 @@ class SalesOrderExportController extends Controller
         )->find($id);
 
         if ($request->action == 'direct_print') {
-            $pdf = Pdf::loadView('salesorder.print', compact('salesOrder'));
+            $isDirectPrint = true;
+            $pdf = Pdf::loadView('salesorder.print', compact('salesOrder', 'isDirectPrint', 'isGenereratedPdf'));
             $content = $pdf->download()->getOriginalContent();
             $filename = 'sales-order_' . $id . '.pdf';
 
@@ -317,7 +324,7 @@ class SalesOrderExportController extends Controller
             return response()->json('Failed to save PDF', 500);
         }
 
-        return view('salesorder.print', compact('salesOrder'))->render();
+        return view('salesorder.print', compact('salesOrder', 'isDirectPrint', 'isGenereratedPdf'))->render();
     }
 
     // Helper functon to format currency

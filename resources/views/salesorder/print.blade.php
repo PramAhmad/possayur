@@ -56,6 +56,14 @@
         .text-right {
             text-align: right !important;
         }
+        .logo-container {
+            width: 80px;
+            text-align: left;
+        }
+        .logo-container img {
+            max-width: 100%;
+            height: auto;
+        }
     </style>
 </head>
 <body>
@@ -63,14 +71,16 @@
     <div class="kop-surat">
         <table border="0" style="width: 100%">
             <tr>
-                <td class="outlet-header" width="70%">
+                @if (!$isDirectPrint)
+                    <td class="logo-container" style="padding-right:5px">
+                        <img src="{{ $isGenereratedPdf ? public_path('upload/outlets/' . $salesOrder?->outlet?->logo) : asset('upload/outlets/' . $salesOrder?->outlet?->logo) }}" alt="{{ $salesOrder->outlet->name }}">
+                    </td>
+                @endif
+                <td class="outlet-header" width="{{ $isDirectPrint ? '70%' : '50%' }}">
                     <p><strong style="font-size: 16px">Koyasai</strong></p>
                     <p style="font-size: 15px">{{ $salesOrder->outlet->name }}</p>
                     <p>{{ $salesOrder->outlet->address }}</p>
                     <p>Telepon: +62 851-9898-9744 | Email: info@gubugbuah.com</p>
-                    <br>
-                    <p>Kepada Yth: {{ $salesOrder->customer->name }}</p>
-                    <p>Alamat: {{ $salesOrder->customer->address }}</p>
                 </td>
                 <td style="text-align: right" valign="top">
                     <p><strong style="font-size: 16px">SALES ORDER</strong></p>
@@ -80,6 +90,13 @@
                     <p><strong>Alamat:</strong> {{ $salesOrder->customer->address }}</p> --}}
                 </td>
             </tr>
+        </table>
+        <table border="0" style="width: 100%">
+            <td>
+                <br>
+                <p>Kepada Yth: {{ $salesOrder->customer->name }}</p>
+                <p>Alamat: {{ $salesOrder->customer->address }}</p>
+            </td>
         </table>
     </div>
 

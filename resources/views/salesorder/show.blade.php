@@ -43,7 +43,7 @@
                     <span>Edit</span>
                 </a>
                 <button type="button"
-                    class="invocie-btn invoice-btn-print inline-flex btn btn-sm whitespace-nowrap space-x-1 cursor-not-allowed bg-white dark:bg-slate-800
+                    class="invocie-btn btn-print inline-flex btn btn-sm whitespace-nowrap space-x-1 cursor-not-allowed bg-white dark:bg-slate-800
                     dark:text-slate-300 btn-md h-min text-sm font-normal text-slate-900 rtl:space-x-reverse"
                     data-url="{{ route('salesorder.print', $salesOrder->id) }}" disabled>
                     <span class="text-lg">
@@ -226,9 +226,9 @@
     <!-- script -->
     <!-- invocie-btn export pdf jquery post ajax-->
 
+    @include('vendor.qz.script')
     @push('scripts')
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        @vite(['resources/js/qz.io/qz-tray.js', 'resources/js/qz.io/promise-polyfill-8.1.3.min.js'])
         <script>
             $(function() {
                 let printer = '';
@@ -250,17 +250,17 @@
                 qz.websocket.connect().then(function() {
                     findDefaultPrinter();
                     // $('.qz-loader').addClass('d-none');
-                    $('.invoice-btn-print').removeClass('cursor-not-allowed').prop('disabled', false);
+                    $('.btn-print').removeClass('cursor-not-allowed').prop('disabled', false);
                 }).catch(handleConnectionError);
 
-                $('.invoice-btn-print').on('click', function() {
+                $('.btn-print').on('click', function() {
                     var url = $(this).data('url');
 
                     $.ajax({
                         url: `${url}?action=direct_print`,
                         type: 'GET',
                         beforeSend: function() {
-                            $('.invoice-btn-print').addClass('cursor-not-allowed')
+                            $('.btn-print').addClass('cursor-not-allowed')
                             $('.print-text-button').text('Printing...')
                         },
                         success: function(result) {
@@ -281,7 +281,7 @@
                                 });
                             });
 
-                            $('.invoice-btn-print').removeClass('cursor-not-allowed')
+                            $('.btn-print').removeClass('cursor-not-allowed')
                             $('.print-text-button').text('Print')
                         },
                         complete: function() {
@@ -289,7 +289,7 @@
                         error: function(xhr, status, error) {
                             console.log(xhr.responseText);
                             
-                            $('.invoice-btn-print').removeClass('cursor-not-allowed')
+                            $('.btn-print').removeClass('cursor-not-allowed')
                             $('.print-text-button').text('Print')
                         }
                     });
