@@ -3,6 +3,20 @@
         <div class="mb-6">
             <x-breadcrumb :breadcrumb-items="$breadcrumbItems" :page-title="$pageTitle" />
         </div>
+        @if (session('message'))
+            <x-alert :message="session('message')" :type="'success'" />
+        @endif
+
+        <!-- any error -->
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul class="list-group">
+                    @foreach ($errors->all() as $error)
+                        <li class="list-group-item">{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
         <form method="POST" action="{{ route('product.update', $product->id) }}" class="max-w-7xl m-auto" enctype="multipart/form-data">
             @csrf
             @method('PUT')
