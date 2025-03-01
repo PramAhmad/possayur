@@ -179,7 +179,7 @@ class ProductController extends Controller
                 $imageName = time().'.'.$image->getClientOriginalExtension();
                 $image->move(public_path('upload/product'), $imageName);
             }
-            dd($request->all());
+            // dd($request->all());
         
             DB::beginTransaction();
             try {
