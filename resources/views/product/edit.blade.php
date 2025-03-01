@@ -66,7 +66,6 @@
                         <x-input-error :messages="$errors->get('selling_price')" class="mt-2"/>
                     </div>
 
-                    @if (auth()->user()->hasRole('super-admin'))
                         
                     <div class="input-area">
                         <label for="qty" class="form-label">{{ __('Quantity') }}</label>
@@ -74,7 +73,6 @@
                                placeholder="{{ __('Enter quantity') }}" value="{{ old('qty', $product->qty) }}" required>
                         <x-input-error :messages="$errors->get('qty')" class="mt-2"/>
                     </div>
-                    @endif
 
                     <div class="input-area">
                         <label for="alert_qty" class="form-label">{{ __('Alert Quantity') }}</label>
