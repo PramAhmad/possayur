@@ -40,6 +40,7 @@ RUN npm install  && \
 
 # Install Certbot SSL
 RUN apt-get install -y certbot python3-certbot-nginx
+COPY docker/php.ini /usr/local/etc/php/conf.d/custom.ini
 
 # Permissions
 RUN chown -R www-data:www-data storage bootstrap/cache public
