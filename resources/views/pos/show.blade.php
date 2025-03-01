@@ -42,7 +42,9 @@
                     @foreach ($productsall as $product)
                     <option value="{{ $product->id }}" data-product-id="{{ $product->id }}"
                         data-price="{{ $product->selling_price }}"
+
                         data-unit="{{ $product->unit->id ?? '-' }}"
+                        data-unit-code="{{ $product->unit->code ?? '-' }}"
                         data-image="{{ asset($product->image ? 'upload/product/' . $product->image : 'images/default.png') }}"
                         data-hs-select-option='{
                                "icon": "<img class=\"inline-block size-4 rounded-full\" src=\"{{ asset($product->image ? 'upload/product/' . $product->image : 'images/default.png') }}\" alt=\"{{ addslashes($product->name) }}\" style=\"width: 30px; height: 30px;\" />"
@@ -429,6 +431,8 @@
             $('html').addClass('horizontalMenu');
             // $('#horizontal_menu').prop('checked', true);
             let currentDiscount = 0;
+            $('#gridMode').removeClass('bg-white text-blue-gray-500').addClass('bg-sky-500 text-white');
+
             $('#search-table').hide();
             $('#tableMode, #gridMode').on('click', function() {
                 let mode = $(this).attr('id').replace('Mode', '').toLowerCase();
@@ -512,7 +516,7 @@
                                             value="${item.qty}" 
                                             data-product-id="${item.id}"
                                         >
-                                        <span class="text-sm ml-1">pcs</span>
+                                        <span class="text-sm ml-1">${item.unit}</span>
                                     </div>
                                     <div class="flex items-center">
                                         <span class="text-sm mr-1">Rp</span>
@@ -578,6 +582,7 @@
                                     value="${item.qty}" 
                                     data-product-id="${item.id}"
                                 >
+                                <span class="text-sm ml-1">${item.unit}</span>
                             </td>
                             //action delete
                             <td class="px-4 py-2">
@@ -614,6 +619,8 @@
                 const image = $(this).data("product-image");
                 const variantId = $(this).data("variant-id") || null;
                 const batchId = $(this).data("batch-id") || null;
+                const unit = $(this).data("unit-code") || "pcs";
+
 
 
                 let cart = JSON.parse(localStorage.getItem("cart")) || [];
@@ -635,6 +642,7 @@
                         name,
                         price,
                         image,
+                        unit,
                         qty: 1,
                     });
                 }
