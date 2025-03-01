@@ -22,7 +22,7 @@
                             </div>
                             <div class="flex-1">
                                 <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
-                                    Totel Product
+                                    Total Product
                                 </div>
                                 @php
                                     $countProduct = App\Models\Product::count();
@@ -47,7 +47,7 @@
                             </div>
                             <div class="flex-1">
                                 <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
-                                    Totel Product Sales (QTY)
+                                    Total Product Sales (QTY)
                                 </div>
                                 <div class="text-slate-900 dark:text-white text-lg font-medium">
                                     @php
