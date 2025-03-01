@@ -190,7 +190,7 @@
                     {{ __('Save') }}
                 </button>
                 @push('scripts')
-                @vite(['resources/js/plugins/Select2.min.js','resources/css/plugins/select2.min.css'])
+             
                 <script src="https://cdnjs.cloudflare.com/ajax/libs/cleave.js/1.6.0/cleave.min.js"></script>
 
                 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
@@ -205,12 +205,7 @@
             document.getElementById('slug').value = slug;
         });
     </script>
-  <script type="module">
-        // Form Select Area
-        $(".select2").select2({
-            placeholder: "Select an Option",
-        });
-        </script>
+
 <script>
  
     $(document).ready(function() {
