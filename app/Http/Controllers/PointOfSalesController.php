@@ -123,11 +123,13 @@ class PointOfSalesController extends Controller
                 'total_discount' => $request->totalDiscount,
             ]);
             // get typecoupon and amount coupon in coupon table
+          if($request->coupon){
             $coupon = Coupon::find($request->coupon);
             $salesOrder->update([
                 'coupon_type' => $coupon->type,
                 'coupon_amount' => $coupon->amount,
             ]);
+          }
             foreach ($request->items as $item) {
                 ProductSalesOrder::create([
                     'sales_order_id' => $salesOrder->id,
