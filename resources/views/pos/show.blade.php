@@ -1108,6 +1108,7 @@
                         $('.product-grid').empty();
                         if (response.length > 0) {
                             response.forEach(function(product) {
+                                    let productImage = product.image ? `/upload/product/${product.image}` : '/images/default.png';
                                 let productHtml = `
                                 <div>
                                     <div role="button"
@@ -1115,14 +1116,15 @@
                                         data-product-id="${product.id}"
                                         data-product-name="${product.name}"
                                         data-product-price="${product.selling_price}"
-                                        data-product-image="/upload/product/${product.image}">
-                                        <img src="/upload/product/${product.image}"
-                                            class="object-cover w-full h-52"
+                                        data-product-image="${productImage}">
+                                        <img src="${productImage}"
+                                            class="object-cover w-full h-24 sm:h-44 lg:h-52"
                                             alt="${product.name}">
-                                        <div class="flex pb-3 px-3 text-sm mt-3">
+                                        <div class="flex flex-col sm:flex-row  text-sm mt-3">
                                             <p class="flex-grow truncate mr-1">${product.name}</p>
+                                            </div>
+                                            <br>
                                             <p class="nowrap font-semibold">Rp ${new Intl.NumberFormat().format(product.selling_price)}</p>
-                                        </div>
                                     </div>
                                 </div>
                             `;
