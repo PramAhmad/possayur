@@ -29,7 +29,10 @@ class SalesOrder extends Model
         'type_coupon',
         'amount_coupon',
         'grand_total',
+        'coupon_type',
+        'coupon_amount',
         'note',
+        'payment_type'
     ];
 
     public function tapActivity(Activity $activity, string $eventName)

@@ -287,6 +287,14 @@
                         <option value="{{ $coupon->id }}">{{ $coupon->code }}</option>
                         @endforeach
                     </select>
+                    <!-- payment type -->
+                    <select id="payment-type" name="payment-type"
+                        class="w-full mt-3 text-base lg:text-lg font-semibold text-blue-gray-700 bg-white border-2 border-gray-200 rounded-lg focus:bg-white focus:shadow-lg py-3 px-2 focus:outline-none">
+                        <option value="">- Select Payment Type -</option>
+                        <option value="Cash">Cash</option>
+                        <option value="Rekening">Rekening</option>
+                                        
+                    </select>
                 </div>
 
                 <!-- Payment Section -->
@@ -314,7 +322,7 @@
 
                     <div class="mb-3 text-blue-gray-700 px-3 pt-2 pb-3 rounded-lg bg-blue-gray-50">
                         <div class="flex text-base lg:text-lg font-semibold">
-                            <div class="flex-grow text-left">CASH</div>
+                            <div class="flex-grow text-left">Nominal</div>
                             <div class="flex text-right">
                                 <div class="mr-2">Rp</div>
                                 <input id="cash" type="text"
@@ -932,6 +940,7 @@
                 const tax = parseInt($("#tax").text().replace("Rp ", "").replace(",", "")) || 0;
                 const totalDiscount = parseInt($("#discount").text().replace("Rp ", "").replace(",", "")) || 0;
                 const orderTaxRate = totalDiscount / totalPrice;
+                const paymentType = $("select[name='payment-type']").val();
 
                 // **Validasi Cash**
                 console.log('cash'+cash)
@@ -955,7 +964,8 @@
                         coupon: couponId,
                         tax,
                         totalDiscount,
-                        orderTaxRate
+                        orderTaxRate,
+                        paymentType
                     },
                     success: function(response) {
                         console.log(response);

@@ -83,6 +83,7 @@ class PurchasePOSController extends Controller
                 'total_cost' =>   $request->cash,
                 'total_qty' => 0,
                 'grand_total' => $request->total,
+                'payment_type' => $request->payment_type,
             ]);
             foreach ($request->items as $item) {
                 ProductPurchase::create([

@@ -268,6 +268,13 @@
                         <option value="{{ $supplier->id }}">{{ $supplier->name }}</option>
                         @endforeach
                     </select>
+                    <select id="payment-type" name="payment-type"
+                        class="w-full mt-3 text-base lg:text-lg font-semibold text-blue-gray-700 bg-white border-2 border-gray-200 rounded-lg focus:bg-white focus:shadow-lg py-3 px-2 focus:outline-none">
+                        <option value="">- Select Payment Type -</option>
+                        <option value="Cash">Cash</option>
+                        <option value="Rekening">Rekening</option>
+                                        
+                    </select>
 
                 </div>
                 <!-- Payment Section -->
@@ -289,7 +296,7 @@
 
                     <div class="mb-3 text-blue-gray-700 px-3 pt-2 pb-3 rounded-lg bg-blue-gray-50">
                         <div class="flex text-base lg:text-lg font-semibold">
-                            <div class="flex-grow text-left">CASH</div>
+                            <div class="flex-grow text-left">Nominal</div>
                             <div class="flex text-right">
                                 <div class="mr-2">Rp</div>
                                 <input id="cash" type="text" class="w-24 lg:w-28 text-right bg-white shadow rounded-lg focus:bg-white focus:shadow-lg px-2 focus:outline-none">
@@ -862,7 +869,7 @@
                 const change = cash - totalPrice;
                 const supplier = $("select[name='supplier']").val();
                 const outlet = "{{ $outlet->id }}";
-
+                const paymentType = $("select[name='payment-type']").val();
                 $.ajax({
                     url: "{{ route('purchasepos.store') }}",
                     type: "POST",
@@ -873,7 +880,8 @@
                         total: totalPrice,
                         change,
                         supplier,
-                        outlet
+                        outlet,
+                        paymentType
                     },
                     success: function(response) {
                         console.log(response);
@@ -967,24 +975,26 @@
                         $('.product-grid').empty();
                         if (response.length > 0) {
                             response.forEach(function(product) {
+                                    let productImage = product.image ? `/upload/product/${product.image}` : '/images/default.png';
                                 let productHtml = `
-                            <div>
-                                <div role="button"
-                                    class="select-none cursor-pointer transition-shadow overflow-hidden rounded-2xl p-2 bg-white shadow hover:shadow-lg add-to-cart"
-                                    data-product-id="${product.id}"
-                                    data-product-name="${product.name}"
-                                    data-product-price="${product.selling_price}"
-                                    data-product-image="/upload/product/${product.image}">
-                                    <img src="/upload/product/${product.image}"
-                                        class="object-cover w-full h-52"
-                                        alt="${product.name}">
-                                    <div class="flex pb-3 px-3 text-sm mt-3">
-                                        <p class="flex-grow truncate mr-1">${product.name}</p>
-                                        <p class="nowrap font-semibold">Rp ${new Intl.NumberFormat().format(product.selling_price)}</p>
+                                <div>
+                                    <div role="button"
+                                        class="select-none cursor-pointer transition-shadow overflow-hidden rounded-2xl p-2 bg-white shadow hover:shadow-lg add-to-cart"
+                                        data-product-id="${product.id}"
+                                        data-product-name="${product.name}"
+                                        data-product-price="${product.selling_price}"
+                                        data-product-image="${productImage}">
+                                        <img src="${productImage}"
+                                            class="object-cover w-full h-24 sm:h-44 lg:h-52"
+                                            alt="${product.name}">
+                                        <div class="flex flex-col sm:flex-row  text-sm mt-3">
+                                            <p class="flex-grow truncate mr-1">${product.name}</p>
+                                            </div>
+                                            <br>
+                                            <p class="nowrap font-semibold">Rp ${new Intl.NumberFormat().format(product.selling_price)}</p>
                                     </div>
                                 </div>
-                            </div>
-                        `;
+                            `;
                                 $('.product-grid').append(productHtml);
                             });
                         } else {

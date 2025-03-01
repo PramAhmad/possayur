@@ -31,6 +31,7 @@ class PurchaseOrder extends Model
         'payment_status',
         'document',
         'note',
+        'payment_type',
     ];
 
     public function tapActivity(Activity $activity, string $eventName)

@@ -121,6 +121,7 @@ class PointOfSalesController extends Controller
                 'coupon_id' => $request->coupon,
                 'total_tax' => $request->tax,
                 'total_discount' => $request->totalDiscount,
+                'payment_type' => $request->paymentType,
             ]);
             // get typecoupon and amount coupon in coupon table
           if($request->coupon){
