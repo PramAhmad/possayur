@@ -2,6 +2,7 @@
 
 use App\Models\Curency;
 use App\Settings\GeneralSettings;
+use Riskihajar\Terbilang\Facades\Terbilang;
 
 function getSettings($key)
 {
@@ -36,4 +37,9 @@ function getSelected(): string
     } else {
         return 'tab_one';
     }
+}
+
+function idrAmountInWords($amount)
+{
+    return ucwords(Terbilang::make($amount, ' Rupiah'));
 }
