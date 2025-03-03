@@ -272,15 +272,18 @@
                       
                     <div class="bg-slate-50 dark:bg-slate-900 p-4 rounded text-center">
                       <div class="h-12 w-12 rounded-full mb-4 mx-auto">
-                        <img src="{{ asset($b->product->image ? 'upload/product/' . $b->product->image : 'images/default.png') }}" alt="" class="w-full h-full rounded-full">
+                      <img src="{{ asset($b->product->image ? 'upload/product/' . $b->product->image : 'images/default.png') }}" alt="" class="w-full h-full rounded-full">
+
                       </div>
                       <span class="text-slate-500 dark:text-slate-300 text-sm mb-1 block font-normal">
                         {{ $b->total_qty }}
                       </span>
-                      <span class="text-slate-600 dark:text-slate-300 text-sm mb-4 block">
+                      <span class="text-slate-600 dark:text-slate-300 text-xs mb-4 block">
                         {{ $b->product->name }}
                       </span>
-                      
+                      <a href="{{ route('product.edit',['product'=>$b->product->id]) }}" class="btn btn-secondary dark:bg-slate-800 dark:hover:bg-slate-600 block w-full text-center btn-sm">
+                        View Product
+                      </a>
                     </div>
                     @endforeach
 
