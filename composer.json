@@ -18,6 +18,7 @@
         "orangehill/iseed": "^3.0",
         "protonemedia/laravel-verify-new-email": "^1.6",
         "rawilk/laravel-printing": "^3.0",
+        "riskihajar/terbilang": "^2.0",
         "spatie/laravel-activitylog": "^4.9",
         "spatie/laravel-backup": "^8.1",
         "spatie/laravel-medialibrary": "^10.7",

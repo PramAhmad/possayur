@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Customer;
 use App\Models\Invoice;
 use App\Models\Outlet;
 use App\Models\ProductInvoice;
@@ -35,20 +36,36 @@ class InvoicePenagihanController extends Controller
         $sort = $request->get('sort');
 
         $query = QueryBuilder::for(Invoice::class)
-            ->allowedSorts(['reference_number', 'created-at'])
-            ->with(['salesorder', 'outlet'])
-            ->when($q, function ($query, $q) {
-                return $query->where('no_invoice', 'like', "%$q%");
-            })
-            ->latest();
+                ->allowedSorts(['reference_number', 'created-at'])
+                ->with(['salesorder', 'outlet', 'salesorder.customer'])
+                ->when($q, function ($query, $q) {
+                    return $query->where('no_invoice', 'like', "%$q%");
+                })
+                ->when($request->customer, function ($query) use ($request) {
+                    return $query->whereHas('salesorder.customer', function ($query) use ($request) {
+                        $query->where('id', $request->customer);
+                    });
+                })
+                ->when($request->start_date && $request->end_date, function ($query) use ($request) {
+                    return $query->whereDate('created_at', '>=', $request->start_date)
+                                ->whereDate('created_at', '<=', $request->end_date);
+                })
+                ->latest();
 
         $invoices = $query->paginate($perPage)
             ->appends(['per_page' => $perPage, 'q' => $q, 'sort' => $sort]);
+
+        $customers = Customer::when(!auth()->user()->hasRole('super-admin'), function ($query) {
+                                    return $query->leftJoin('users', 'users.email', 'customer.email')
+                                                 ->where('users.outlet_id', auth()->user()->outlet_id);
+                                })
+                                ->get();
 
         return view('invoice-penagihan.index', [
             'invoices' => $invoices,
             'breadcrumbItems' => $breadcrumbItems,
             'pageTitle' => 'Invoice Penagihan',
+            'customers' => $customers
         ]);
     }
 
@@ -69,13 +86,24 @@ class InvoicePenagihanController extends Controller
                 'active' => true
             ],
         ];
+
         if (auth()->user()->hasRole('super-admin')) {
             $outlets = Outlet::all();
             $salesOrders = SalesOrder::orderBy('created_at', 'desc')->get();
         } else {
-            $outlets = Outlet::where('id', auth()->user()->outlet_id)->first();
-            $salesOrders = SalesOrder::where('outlet_id', auth()->user()->outlet_id)->orderBy('created_at', 'desc')->get();
         }
+
+        $outlets = Outlet::when(!auth()->user()->hasRole('super-admin'), function ($query) {
+                                return $query->where('id', auth()->user()->outlet_id);
+                            })
+                            ->get();
+
+        $salesOrders = SalesOrder::when(!auth()->user()->hasRole('super-admin'), function ($query) {
+                                    return $query->where('outlet_id', auth()->user()->outlet_id);
+                                })
+                                ->where('status', 'process')
+                                ->orderBy('created_at', 'desc')
+                                ->get();
 
         return view('invoice-penagihan.create', [
             'salesOrders' => $salesOrders,

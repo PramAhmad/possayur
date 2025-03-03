@@ -180,6 +180,57 @@
         </tfoot>
     </table>
 
+    <table style="width: 100%; font-size: 12px;">
+        <tr>
+            <td valign="top" colspan="2">
+                <p><strong><i>Terbilang:</i></strong></p>
+                <p><i>{{ idrAmountInWords($invoice->grandtotal) }}</i></p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="top">
+                <br>
+                <p><strong>Note:</strong></p>
+                <p>Untuk pembayaran via transfer bisa melalui Bank BCA dengan nomor rekening 8832 901 902 a.n {{ $invoice->salesOrder->outlet->name }}</p>
+                <p>Atau bisa menghubungi kami di {{ $invoice->salesOrder->outlet->phone }}</p>
+            </td>
+            <td valign="top" style="width:40%">
+                <table style="width: 100%">
+                    <tr>
+                        <td style="width: 45%" class="text-center"><strong>Tanda Terima</strong></td>
+                        <td></td>
+                        <td style="width: 45%" class="text-center"><strong>Hormat Kami</strong></td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td class="text-center">(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)</td>
+                        <td></td>
+                        <td class="text-center">(&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
     {{-- <table style="width: 100%; margin-top: 30px">
         <tr>
             <td style="width: 5%"></td>
