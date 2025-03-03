@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Invoice;
+use App\Models\Product;
+use App\Models\ProductSalesOrder;
 use App\Models\PurchaseOrder;
 use App\Models\SalesOrder;
 use App\Models\User;
@@ -14,101 +17,112 @@ class HomeController extends Controller
     /**
      * Analytic Dashboard
      */
-   
 
 
-     public function index()
-     {
-         $breadcrumbsItems = [
-             ['name' => 'Home', 'url' => '/', 'active' => true],
-         ];
-     
-         $data['revenue'] = SalesOrder::sum('grandtotal');
-         $data['productSold'] = SalesOrder::sum('total_qty');
-         $data['completeTransaction'] = SalesOrder::where('status', 'completed')->count();
-     
-         $data['solastWeekRevenue'] = SalesOrder::whereBetween('created_at', [now()->subDays(7), now()])->sum('grandtotal');
-         $data['sogrowth'] = $data['solastWeekRevenue'] != 0
-             ? ($data['revenue'] - $data['solastWeekRevenue']) / $data['solastWeekRevenue'] * 100
-             : 0;
-         $data['sogrowth'] = number_format($data['sogrowth'], 0);
-     
-         $data['polastWeekRevenue'] = PurchaseOrder::whereBetween('created_at', [now()->subDays(7), now()])->sum('grand_total');
-         $data['pogrowth'] = $data['polastWeekRevenue'] != 0
-             ? ($data['revenue'] - $data['polastWeekRevenue']) / $data['polastWeekRevenue'] * 100
-             : 0;
-         $data['pogrowth'] = number_format($data['pogrowth'], 0);
-     
-         $data['earning'] = $data['revenue'] - PurchaseOrder::sum('grand_total');
-     
-         // Ambil data SO & PO dalam 7 hari terakhir
-         $salesData = SalesOrder::select(
-                 DB::raw("DATE(created_at) as date"),
-                 DB::raw("DAYOFWEEK(created_at) as day_index"),
-                 DB::raw("SUM(grandtotal) as total_sales")
-             )
-             ->whereBetween('created_at', [now()->subDays(6)->startOfDay(), now()->endOfDay()])
-             ->groupBy('date', 'day_index')
-             ->orderBy('date', 'ASC')
-             ->get();
-     
-         $purchaseData = PurchaseOrder::select(
-                 DB::raw("DATE(created_at) as date"),
-                 DB::raw("DAYOFWEEK(created_at) as day_index"),
-                 DB::raw("SUM(grand_total) as total_purchases")
-             )
-             ->whereBetween('created_at', [now()->subDays(6)->startOfDay(), now()->endOfDay()])
-             ->groupBy('date', 'day_index')
-             ->orderBy('date', 'ASC')
-             ->get();
-     
-         // Format hari dalam bahasa Indonesia
-         $daysIndo = [
-             1 => 'Minggu',
-             2 => 'Senin',
-             3 => 'Selasa',
-             4 => 'Rabu',
-             5 => 'Kamis',
-             6 => 'Jumat',
-             7 => 'Sabtu'
-         ];
-     
-         // Buat template default untuk semua hari
-         $weeklyReport = collect();
-         for ($i = 1; $i <= 7; $i++) { // Senin - Minggu (1-7)
-             $weeklyReport->push([
-                 'day' => $daysIndo[$i],
-                 'sales' => 0,
-                 'purchases' => 0
-             ]);
-         }
-         
-       // Masukkan data yang ada
-$weeklyReport = $weeklyReport->map(function ($item, $index) use ($salesData, $purchaseData) {
-    // Find matching sales data for the current day
-    $sales = $salesData->firstWhere('day_index', $index + 1);
-    if ($sales) {
-        $item['sales'] = $sales->total_sales;
+
+    public function index()
+    {
+        $breadcrumbsItems = [
+            ['name' => 'Home', 'url' => '/', 'active' => true],
+        ];
+
+        $data['revenue'] = SalesOrder::sum('grandtotal');
+        $data['productSold'] = SalesOrder::sum('total_qty');
+        $data['completeTransaction'] = SalesOrder::where('status', 'completed')->count();
+
+        $data['solastWeekRevenue'] = SalesOrder::whereBetween('created_at', [now()->subDays(7), now()])->sum('grandtotal');
+        $data['sogrowth'] = $data['solastWeekRevenue'] != 0
+            ? ($data['revenue'] - $data['solastWeekRevenue']) / $data['solastWeekRevenue'] * 100
+            : 0;
+        $data['sogrowth'] = number_format($data['sogrowth'], 0);
+
+        $data['polastWeekRevenue'] = PurchaseOrder::whereBetween('created_at', [now()->subDays(7), now()])->sum('grand_total');
+        $data['pogrowth'] = $data['polastWeekRevenue'] != 0
+            ? ($data['revenue'] - $data['polastWeekRevenue']) / $data['polastWeekRevenue'] * 100
+            : 0;
+        $data['pogrowth'] = number_format($data['pogrowth'], 0);
+
+        $data['earning'] = $data['revenue'] - PurchaseOrder::sum('grand_total');
+
+        // Ambil data SO & PO dalam 7 hari terakhir
+        $salesData = SalesOrder::select(
+            DB::raw("DATE(created_at) as date"),
+            DB::raw("DAYOFWEEK(created_at) as day_index"),
+            DB::raw("SUM(grandtotal) as total_sales")
+        )
+            ->whereBetween('created_at', [now()->subDays(6)->startOfDay(), now()->endOfDay()])
+            ->groupBy('date', 'day_index')
+            ->orderBy('date', 'ASC')
+            ->get();
+
+        $purchaseData = PurchaseOrder::select(
+            DB::raw("DATE(created_at) as date"),
+            DB::raw("DAYOFWEEK(created_at) as day_index"),
+            DB::raw("SUM(grand_total) as total_purchases")
+        )
+            ->whereBetween('created_at', [now()->subDays(6)->startOfDay(), now()->endOfDay()])
+            ->groupBy('date', 'day_index')
+            ->orderBy('date', 'ASC')
+            ->get();
+
+        // Format hari 
+        $daysIndo = [
+            1 => 'Minggu',
+            2 => 'Senin',
+            3 => 'Selasa',
+            4 => 'Rabu',
+            5 => 'Kamis',
+            6 => 'Jumat',
+            7 => 'Sabtu'
+        ];
+
+        // Buat template default untuk semua hari
+        $weeklyReport = collect();
+        for ($i = 1; $i <= 7; $i++) { 
+            $weeklyReport->push([
+                'day' => $daysIndo[$i],
+                'sales' => 0,
+                'purchases' => 0
+            ]);
+        }
+
+        $weeklyReport = $weeklyReport->map(function ($item, $index) use ($salesData, $purchaseData) {
+            $sales = $salesData->firstWhere('day_index', $index + 1);
+            if ($sales) {
+                $item['sales'] = $sales->total_sales;
+            }
+
+            $purchase = $purchaseData->firstWhere('day_index', $index + 1);
+            if ($purchase) {
+                $item['purchases'] = $purchase->total_purchases;
+            }
+
+            return $item;
+        });
+        $data['dailyReport'] = $weeklyReport;
+
+        $data['recentSalesOrder'] = Invoice::with('suratJalan.salesorder.user', 'outlet')
+            ->orderBy('created_at', 'DESC')
+            ->limit(8)
+            ->get();
+
+        $data['bestSellingProducts'] = ProductSalesOrder::select(
+            'product_id',
+            DB::raw('SUM(qty) as total_qty')
+        )
+            ->groupBy('product_id')
+            ->orderBy('total_qty', 'DESC')
+            ->with('product')
+            ->limit(6)
+            ->get();
+            // return $data['bestSellingProducts'];
+        return view('Index', [
+            'pageTitle' => 'Dashboard',
+            'breadcrumbItems' => $breadcrumbsItems
+        ], $data);
     }
 
-    // Find matching purchase data for the current day
-    $purchase = $purchaseData->firstWhere('day_index', $index + 1);
-    if ($purchase) {
-        $item['purchases'] = $purchase->total_purchases;
-    }
 
-    return $item;
-});
-         // Simpan ke variabel untuk dikirim ke view
-         $data['dailyReport'] = $weeklyReport;
-     
-         return view('Index', [
-             'pageTitle' => 'Dashboard',
-             'breadcrumbItems' => $breadcrumbsItems
-         ], $data);
-     }
-     
-     
 
     /**
      * Ecommerce Dashboard
