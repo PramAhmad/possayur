@@ -46,7 +46,7 @@ class InvoicePurchaseController extends Controller
                 ->appends(['per_page' => $perPage, 'q' => $q, 'sort' => $sort]);
         }else{
             $outlets = Outlet::where('id', auth()->user()->outlet_id)->get();
-            $invoicePurchases = QueryBuilder::for(PurchaseOrder::class)
+            $invoicePurchases = QueryBuilder::for(InvoicePurchase::class)
                 ->where('outlet_id', auth()->user()->outlet_id)
                 ->with(['purchaseOrder', 'purchaseOrder.outlet', 'purchaseOrder.supplier'])
                 ->allowedSorts(['invoice_number', 'invoice_date', 'due_date', 'total', 'status'])
