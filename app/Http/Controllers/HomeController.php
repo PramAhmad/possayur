@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\SalesOrder;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -20,11 +21,14 @@ class HomeController extends Controller
                 'active' => true
             ],
         ];
+        $data['revenue'] = SalesOrder::sum('grandtotal');
+        $data['productSold'] = SalesOrder::sum('total_qty');
+        $data['completeTransaction'] = SalesOrder::where('status', 'completed')->count();
 
         return view('Index', [
         'pageTitle' => 'Blank Page',
             'breadcrumbItems' => $breadcrumbsItems
-        ]);
+        ],$data);
     }
 
     /**

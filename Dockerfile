@@ -44,6 +44,7 @@ COPY docker/php.ini /usr/local/etc/php/conf.d/custom.ini
 
 # Permissions
 RUN chown -R www-data:www-data storage bootstrap/cache public
+RUN chmod -R 775 /var/www/html/public/storage
 
 # Expose port 9000 for PHP-FPM and 80 for Nginx
 EXPOSE 9000 80

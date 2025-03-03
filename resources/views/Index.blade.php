@@ -1,15 +1,12 @@
 <x-app-layout>
     <div>
-        <div class=" mb-6">
-            <x-breadcrumb :breadcrumb-items="$breadcrumbItems" :page-title="$pageTitle" />
-        </div>
-
+  
             <div class="transition-all duration-150 container-fluid" id="page_layout">
               <div id="content_layout">
 
                 <div>
                   <div class="flex justify-between flex-wrap items-center mb-6">
-                    <h4 class="font-medium lg:text-2xl text-xl capitalize text-slate-900 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">Ecommerce</h4>
+                    <h4 class="font-medium lg:text-2xl text-xl capitalize text-slate-900 inline-block ltr:pr-4 rtl:pl-4 mb-1 sm:mb-0">{{ auth()->user()->outlet?->name ?? "Ecommerce" }}</h4>
                     <div class="flex sm:space-x-4 space-x-2 sm:justify-end items-center rtl:space-x-reverse">
                       <button class="btn inline-flex justify-center bg-white text-slate-700 dark:bg-slate-700 !font-normal dark:text-white ">
                         <span class="flex items-center">
@@ -27,14 +24,14 @@
                   </div>
                   <div class="grid grid-cols-12 gap-5 mb-5">
                     <div class="2xl:col-span-3 lg:col-span-4 col-span-12">
-                      <div class="bg-no-repeat bg-cover bg-center p-5 rounded-[6px] relative" >
+                      <div class="bg-no-repeat bg-cover bg-center p-5 rounded-[6px] relative" style="background-image:url('{{ asset('/images/ecommerce-wid-bg.png') }}')">
                         <div class="max-w-[180px]">
                           <h4 class="text-xl font-medium text-white mb-2">
                             <span class="block font-normal">Good evening,</span>
                             <span class="block">Mr. Dianne Russell</span>
                           </h4>
                           <p class="text-sm text-white font-normal">
-                            Welcome to Dashcode
+                            Welcome to Dashcode 
                           </p>
                         </div>
                       </div>
@@ -55,10 +52,10 @@
                               </div>
                               <div class="flex-1">
                                 <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
-                                  Totel revenue
+                                  Total revenue
                                 </div>
                                 <div class="text-slate-900 dark:text-white text-lg font-medium">
-                                  3,564
+                                  {{ currency($revenue) }}
                                 </div>
                               </div>
                             </div>
@@ -81,7 +78,7 @@
                                   Products sold
                                 </div>
                                 <div class="text-slate-900 dark:text-white text-lg font-medium">
-                                  564
+                                  {{ $productSold }}
                                 </div>
                               </div>
                             </div>
@@ -101,10 +98,10 @@
                               </div>
                               <div class="flex-1">
                                 <div class="text-slate-600 dark:text-slate-300 text-sm mb-1 font-medium">
-                                  Growth
+                                  Complete transaction
                                 </div>
                                 <div class="text-slate-900 dark:text-white text-lg font-medium">
-                                  +5.0%
+                                 {{ $completeTransaction }}
                                 </div>
                               </div>
                             </div>
