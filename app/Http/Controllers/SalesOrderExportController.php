@@ -313,6 +313,7 @@ class SalesOrderExportController extends Controller
 
         if ($request->action == 'direct_print') {
             $isDirectPrint = true;
+            
             $pdf = Pdf::loadView('salesorder.print', compact('salesOrder', 'isDirectPrint', 'isGenereratedPdf'));
             $content = $pdf->download()->getOriginalContent();
             $filename = 'sales-order_' . $id . '.pdf';

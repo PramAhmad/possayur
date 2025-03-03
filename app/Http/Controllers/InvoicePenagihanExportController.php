@@ -37,6 +37,8 @@ class InvoicePenagihanExportController extends Controller
 
         if ($request->action == 'direct_print') {
             $isDirectPrint = true;
+            // return view('invoice-penagihan.print', compact('invoice', 'isDirectPrint', 'isGenereratedPdf'))->render();
+            
             $pdf = Pdf::loadView('invoice-penagihan.print', compact('invoice', 'isDirectPrint', 'isGenereratedPdf'));
             $content = $pdf->download()->getOriginalContent();
             $filename = 'invoice_' . $id . '.pdf';
