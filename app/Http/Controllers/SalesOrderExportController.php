@@ -286,10 +286,12 @@ class SalesOrderExportController extends Controller
             'products.product.unit'
         )->find($id);
 
+        $outlet = $salesOrder?->outlet;
+        $customer = $salesOrder?->customer;
         $isDirectPrint = false;
         $isGenereratedPdf = true;
 
-        $pdf = Pdf::loadView('salesorder.print', compact('salesOrder', 'isDirectPrint', 'isGenereratedPdf'));
+        $pdf = Pdf::loadView('salesorder.print', compact('salesOrder', 'outlet', 'customer', 'isDirectPrint', 'isGenereratedPdf'));
 
         return $pdf->download('Sales Order ' . $salesOrder->reference_no . ' '. now()->format('Ymd_His') .'.pdf');
     }
@@ -311,10 +313,13 @@ class SalesOrderExportController extends Controller
             'products.product.unit'
         )->find($id);
 
+        $outlet = $salesOrder?->outlet;
+        $customer = $salesOrder?->customer;
+
         if ($request->action == 'direct_print') {
             $isDirectPrint = true;
             
-            $pdf = Pdf::loadView('salesorder.print', compact('salesOrder', 'isDirectPrint', 'isGenereratedPdf'));
+            $pdf = Pdf::loadView('salesorder.print', compact('salesOrder', 'outlet', 'customer', 'isDirectPrint', 'isGenereratedPdf'))->setPaper([0, 0, 567.00, 500.80], 'potrait');
             $content = $pdf->download()->getOriginalContent();
             $filename = 'sales-order_' . $id . '.pdf';
 
@@ -325,22 +330,11 @@ class SalesOrderExportController extends Controller
             return response()->json('Failed to save PDF', 500);
         }
 
-        return view('salesorder.print', compact('salesOrder', 'isDirectPrint', 'isGenereratedPdf'))->render();
+        return view('salesorder.print', compact('salesOrder', 'outlet', 'customer', 'isDirectPrint', 'isGenereratedPdf'))->render();
     }
-
-    // Helper functon to format currency
+    
     private function formatCurrency($amount)
     {
         return  number_format($amount, 0, ',', '.');
     }
-
-
-    // public function print($id)
-    // {
-    //     // stream pdf
-    //     $salesOrder = SalesOrder::with('outlet', 'customer', 'products', 'products.product', 'returnSalesOrder', 'invoice', 'products.variant', 'products.batch', 'products.product.unit')->find($id);
-
-    //     $pdf = Pdf::loadView('salesorder.pdf', compact('salesOrder'));
-    //     return $pdf->stream();
-    // }
 }

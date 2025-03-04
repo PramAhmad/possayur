@@ -22,8 +22,10 @@ class InvoicePenagihanExportController extends Controller
 
         $isDirectPrint = false;
         $isGenereratedPdf = true;
+        $outlet = $invoice?->salesorder?->outlet;
+        $customer = $invoice?->salesorder?->customer;
 
-        $pdf = Pdf::loadView('invoice-penagihan.print', compact('invoice', 'isDirectPrint', 'isGenereratedPdf'));
+        $pdf = Pdf::loadView('invoice-penagihan.print', compact('invoice', 'outlet', 'customer', 'isDirectPrint', 'isGenereratedPdf'));
 
         return $pdf->download('Invoice ' . str_replace('/', '_', $invoice->reference_number) . ' ' . now()->format('Ymd_His') . '.pdf');
     }
@@ -34,12 +36,13 @@ class InvoicePenagihanExportController extends Controller
         $isGenereratedPdf = false;
 
         $invoice = Invoice::with(['salesorder', 'suratJalan', 'salesorder.customer', 'salesorder.products', 'suratJalan.productSuratJalans', 'salesorder.returnSalesOrder', 'salesorder.returnSalesOrder.productReturnSalesOrder', 'outlet', 'productInvoices', 'productInvoices.product', 'productInvoices.product.unit', 'productInvoices.variant', 'productInvoices.batch'])->findOrFail($id);
+        $outlet = $invoice?->salesorder?->outlet;
+        $customer = $invoice?->salesorder?->customer;
 
         if ($request->action == 'direct_print') {
             $isDirectPrint = true;
-            // return view('invoice-penagihan.print', compact('invoice', 'isDirectPrint', 'isGenereratedPdf'))->render();
             
-            $pdf = Pdf::loadView('invoice-penagihan.print', compact('invoice', 'isDirectPrint', 'isGenereratedPdf'));
+            $pdf = Pdf::loadView('invoice-penagihan.print', compact('invoice', 'outlet', 'customer', 'isDirectPrint', 'isGenereratedPdf'));
             $content = $pdf->download()->getOriginalContent();
             $filename = 'invoice_' . $id . '.pdf';
 
@@ -50,6 +53,6 @@ class InvoicePenagihanExportController extends Controller
             return response()->json('Failed to save PDF', 500);
         }
 
-        return view('invoice-penagihan.print', compact('invoice', 'isDirectPrint', 'isGenereratedPdf'))->render();
+        return view('invoice-penagihan.print', compact('invoice', 'outlet', 'customer', 'isDirectPrint', 'isGenereratedPdf'))->render();
     }
 }
