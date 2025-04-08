@@ -59,9 +59,9 @@
                                 </thead>
 
                                 <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
-                                    @forelse ($coupons as $coupon)
+                                    @forelse ($coupons as $index => $coupon)
                                         <tr>
-                                            <td class="table-td"># {{ $coupon->id }}</td>
+                                            <td class="table-td"># {{ $index + 1 }}</td>
                                             <td class="table-td">{{ $coupon->code }}</td>
                                             <td class="table-td">{{ $coupon->outlet?->name }}</td>
                                             <td class="table-td">{{ ucfirst($coupon->type) }}</td>

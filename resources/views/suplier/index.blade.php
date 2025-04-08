@@ -38,9 +38,7 @@
                               <th scope="col" class=" table-th ">
                                 #
                               </th>
-                              <th scope="col" class=" table-th ">
-                                Shop
-                              </th>
+                             
                               <!-- outlet -->
                               <th scope="col" class=" table-th ">
                                 Outlet
@@ -64,14 +62,12 @@
                           </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
-                            @foreach ($supplier as $s )
+                            @foreach ($supplier as $index => $s )
                             <tr>
                                 <td class=" table-td ">
-                                  {{ $s->id }}
+                                  {{ $index + 1 }}
                                 </td>
-                                <td class="table-td">
-                                  {{ $s->shop_name }}
-                                </td>
+                             
                                 <td class=" table-td ">
                                   {{ $s->outlet?->name }}
                                 </td>

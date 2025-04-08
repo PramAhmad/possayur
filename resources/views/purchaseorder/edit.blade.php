@@ -60,10 +60,19 @@
                     <div class="input-area">
                         <label for="product_id" class="form-label">{{ __('Products and Quantity') }}</label>
                         <div id="products_grid" class="flex flex-col gap-4">
-                            @foreach ($purchaseOrder as $product)
+                            @foreach ($purchaseOrder->productPurchase as $item)
                                 <div class="product-row flex items-center gap-4">
-                                    <div class="flex-1 ">
-                                   
+                                    <div class="flex-1">
+                                        <select name="product_id[]" class="form-control product-select">
+                                            <option value="">{{ __('Select Product') }}</option>
+                                            @foreach ($products as $p)
+                                                <option value="{{ $p->id }}" data-outlet="{{ $p->outlet_id }}" {{ $item->product_id == $p->id ? 'selected' : '' }}>{{ $p->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="flex-1 px-3">
+                                        <input type="number" name="quantity[]" class="form-control" placeholder="Enter quantity" value="{{ $item->quantity }}" />
+                                    </div>
                                     <div>
                                         <button type="button" class="btn btn-danger btn-sm remove-product w-full">
                                             <iconify-icon icon="heroicons-outline:trash" class="text-lg"></iconify-icon>

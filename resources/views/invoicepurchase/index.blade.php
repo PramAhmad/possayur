@@ -58,11 +58,12 @@
                                 </thead>
 
                                 <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
-                                    @forelse ($invoicePurchases as $purchaseOrder)
+                                    @forelse ($invoicePurchases as $index => $purchaseOrder)
                                         <tr>
                                             <td class="table-td"># {{ $purchaseOrder->id }}</td>
                                             <td class="table-td">{{ $purchaseOrder->invoice_number }}</td>
-                                            <td class="table-td">{{ $purchaseOrder->supplier->name }}</td>
+                                            <td class="table-td">{{ $purchaseOrder->purchaseOrder->supplier?->name ?? '-' }}</td>
+
                                             <td class="table-td">
                                                 <!-- using carbon created at 29 oktober 2023 -->
                                                 {{Carbon\Carbon::parse($purchaseOrder->created_at)->format('d M Y')}}

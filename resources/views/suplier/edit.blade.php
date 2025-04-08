@@ -108,9 +108,9 @@
                                     @enderror
                                 </div>
                                 <div class="input-area">
-                                    <label for="shop_name" class="form-label">Nama Toko</label>
-                                    <input id="shop_name" name="shop_name" type="text" class="form-control" value="{{ old('shop_name', $supplier->shop_name) }}" placeholder="Masukkan Nama Toko">
-                                    @error('shop_name')
+                                    <label for="supplier_type" class="form-label">Jenis Barang Supplier</label>
+                                    <input id="supplier_type" name="supplier_type" type="text" class="form-control" value="{{ old('supplier_type', $supplier->supplier_type) }}" placeholder="Masukkan Nama Toko">
+                                    @error('supplier_type')
                                     <div class="text-red-500 mt-2 text-sm">
                                         {{ $message }}
                                     </div>

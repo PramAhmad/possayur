@@ -39,7 +39,7 @@ class InvoicePurchaseController extends Controller
         if(auth()->user()->hasRole('super-admin')){
             $outlets = Outlet::all();
             $invoicePurchases = QueryBuilder::for(InvoicePurchase::class)
-                ->with(['purchaseOrder', 'purchaseOrder.outlet', 'purchaseOrder.supplier'])
+                ->with(['purchaseOrder', 'purchaseOrder.outlet', 'purchaseOrder.supplier','productInvoicePurchases'])
                 ->allowedSorts(['invoice_number', 'invoice_date', 'due_date', 'total', 'status'])
                 ->latest()
                 ->paginate($perPage)
@@ -48,7 +48,7 @@ class InvoicePurchaseController extends Controller
             $outlets = Outlet::where('id', auth()->user()->outlet_id)->get();
             $invoicePurchases = QueryBuilder::for(InvoicePurchase::class)
                 ->where('outlet_id', auth()->user()->outlet_id)
-                ->with(['purchaseOrder', 'purchaseOrder.outlet', 'purchaseOrder.supplier'])
+                ->with(['purchaseOrder', 'purchaseOrder.outlet', 'purchaseOrder.supplier','productInvoicePurchases'])
                 ->allowedSorts(['invoice_number', 'invoice_date', 'due_date', 'total', 'status'])
                 ->latest()
                 ->paginate($perPage)

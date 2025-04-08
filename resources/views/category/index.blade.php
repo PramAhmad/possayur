@@ -50,9 +50,9 @@
                                 </thead>
 
                                 <tbody class="bg-white divide-y divide-slate-100 dark:bg-slate-800 dark:divide-slate-700">
-                                    @forelse ($categories as $category)
+                                    @forelse ($categories as $index => $category)
                                         <tr>
-                                            <td class="table-td"># {{ $category->id }}</td>
+                                            <td class="table-td"># {{ $index + 1 }}</td>
                                             <td class="table-td">
                                                 @if($category->image)
                                                     <img src="{{ asset('upload/category/'.$category->image) }}" alt="{{ $category->name }}" class="w-10 h-10 rounded-full object-cover">

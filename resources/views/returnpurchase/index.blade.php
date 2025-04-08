@@ -46,7 +46,7 @@
                                     <tr>
                                         <td class="table-td"># {{ $r->return_number }}</td>
                                         <td class="table-td">{{ $r->purchaseOrder->reference_no ?? '-' }}</td>
-                                        <td class="table-td">{{ $r->outlet->name ?? '-' }}</td>
+                                        <td class="table-td">{{ $r->purchaseOrder->outlet?->name ?? '-' }}</td>
                                         <td class="table-td">{{ 
                                             Carbon\Carbon::parse($r->return_date)->translatedFormat('d F Y')
                                         }}</td>

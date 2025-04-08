@@ -25,7 +25,7 @@ class SuplierController extends Controller
         if(auth()->user()->hasRole('super-admin')){
             $data['supplier'] = QueryBuilder::for(Suplier::class)
              ->with('outlet')
-                ->allowedSorts(['name', 'email', 'phone', 'address', 'company', 'shop_name', 'bank_name', 'bank_branch', 'account_holder', 'account_number'])
+                ->allowedSorts(['name', 'email', 'phone', 'address', 'company', 'supplier_type', 'bank_name', 'bank_branch', 'account_holder', 'account_number'])
                 ->latest()
                 ->paginate(10);
             $data['outlets'] = Outlet::all();   
@@ -33,7 +33,7 @@ class SuplierController extends Controller
             $data['supplier'] =  QueryBuilder::for(Suplier::class)
             ->where('outlet_id', auth()->user()->outlet_id)
             ->with('outlet')
-            ->allowedSorts(['name', 'email', 'phone', 'address', 'company', 'shop_name', 'bank_name', 'bank_branch', 'account_holder', 'account_number'])
+            ->allowedSorts(['name', 'email', 'phone', 'address', 'company', 'supplier_type', 'bank_name', 'bank_branch', 'account_holder', 'account_number'])
             ->latest()
             ->paginate(10);
             $data['outlets'] = Outlet::where('id', auth()->user()->outlet_id)->get();
@@ -76,19 +76,19 @@ class SuplierController extends Controller
         'phone',
         'address',
         'company',
-        'shop_name',
+        'supplier_type',
         'bank_name',
         'bank_branch',
         'account_holder',
         'account_number', */
 
         $request->validate([
-            'name' => 'required|string',
-            'email' => 'required',
-            'phone' => 'required',
-            'address' => 'required',
-            'company' => 'required',
-            'shop_name' => 'required',
+            'name' => 'nullable|string',
+            'email' => 'nullable',
+            'phone' => 'nullable',
+            'address' => 'nullable',
+            'company' => 'nullable',
+            'supplier_type' => 'nullable',
             'bank_name' => 'nullable',
             'bank_branch' => 'nullable',
             'account_holder' => 'nullable',
@@ -100,7 +100,7 @@ class SuplierController extends Controller
             'phone.required' => 'Nomor telepon wajib diisi',
             'address.required' => 'Alamat wajib diisi',
             'company.required' => 'Perusahaan wajib diisi',
-            'shop_name.required' => 'Nama toko wajib diisi',
+            'supplier_type.required' => 'Nama toko wajib diisi',
         ]);
         try {
             Suplier::create([
@@ -109,7 +109,7 @@ class SuplierController extends Controller
                 'phone' => $request->phone,
                 'address' => $request->address,
                 'company' => $request->company,
-                'shop_name' => $request->shop_name,
+                'supplier_type' => $request->supplier_type,
                 'bank_name' => $request->bank_name,
                 'bank_branch' => $request->bank_branch,
                 'account_holder' => $request->account_holder,
@@ -169,12 +169,12 @@ class SuplierController extends Controller
        
 
         $request->validate([
-            'name' => 'required|string',
-            'email' => 'required',
-            'phone' => 'required',
-            'address' => 'required',
-            'company' => 'required',
-            'shop_name' => 'required',
+            'name' => 'nullable|string',
+            'email' => 'nullable',
+            'phone' => 'nullable',
+            'address' => 'nullable',
+            'company' => 'nullable',
+            'supplier_type' => 'nullable',
             'bank_name' => 'nullable',
             'bank_branch' => 'nullable',
             'account_holder' => 'nullable',
@@ -186,7 +186,7 @@ class SuplierController extends Controller
             'phone.required' => 'Nomor telepon wajib diisi',
             'address.required' => 'Alamat wajib diisi',
             'company.required' => 'Perusahaan wajib diisi',
-            'shop_name.required' => 'Nama toko wajib diisi',
+            'supplier_type.required' => 'Nama toko wajib diisi',
         ]);
         try {
             Suplier::find($id)->update([
@@ -195,7 +195,7 @@ class SuplierController extends Controller
                 'phone' => $request->phone,
                 'address' => $request->address,
                 'company' => $request->company,
-                'shop_name' => $request->shop_name,
+                'supplier_type' => $request->supplier_type,
                 'bank_name' => $request->bank_name,
                 'bank_branch' => $request->bank_branch,
                 'account_holder' => $request->account_holder,
