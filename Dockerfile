@@ -24,6 +24,9 @@ RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
+# Set PHP-FPM to listen on port 9001
+RUN sed -i 's/listen = 9000/listen = 9001/g' /usr/local/etc/php-fpm.d/www.conf
+
 # Set working directory
 WORKDIR /var/www/html
 
