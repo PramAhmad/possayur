@@ -46,4 +46,4 @@ COPY docker/php.ini /usr/local/etc/php/conf.d/custom.ini
 RUN chown -R www-data:www-data storage bootstrap/cache public
 RUN chmod -R 775 /var/www/html/public/storage
 
-EXPOSE 9000 82
+EXPOSE 9000
