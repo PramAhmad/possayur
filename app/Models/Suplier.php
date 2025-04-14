@@ -18,7 +18,6 @@ class Suplier extends Model
         'phone',
         'address',
         'company',
-        'shop_name',
         'bank_name',
         'bank_branch',
         'account_holder',
