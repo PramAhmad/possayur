@@ -163,26 +163,29 @@
                             </div>
 
                             <!-- email and password -->
-                            <div class="grid md:grid-cols-2 gap-7">
-                                <div class="input-area">
-                                    <label for="email" class="form-label">Email</label>
-                                    <input id="email" name="email" type="email" class="form-control" value="{{ old('email', $customer->user->email) }}" placeholder="Masukan Email">
-                                    @error('email')
-                                    <div class="text-red-500 mt-2 text-sm">
-                                        {{ $message }}
-                                    </div>
-                                    @enderror
-                                </div>
-                                <div class="input-area">
-                                    <label for="password" class="form-label">Password</label>
-                                    <input id="password" name="password" type="password" class="form-control" placeholder="Masukan Password">
-                                    @error('password')
-                                    <div class="text-red-500 mt-2 text-sm">
-                                        {{ $message }}
-                                    </div>
-                                    @enderror
-                                </div>
-                            </div>
+                         <!-- email and password -->
+<div class="grid md:grid-cols-2 gap-7">
+    <div class="input-area">
+        <label for="email" class="form-label">Email (Opsional untuk akun)</label>
+        <input id="email" name="email" type="email" class="form-control" value="{{ old('email', $customer->email) }}" placeholder="Masukan Email">
+        <small class="text-gray-500">{{ $customer->user_id ? 'Customer sudah memiliki akun' : 'Isi untuk membuat akun' }}</small>
+        @error('email')
+        <div class="text-red-500 mt-2 text-sm">
+            {{ $message }}
+        </div>
+        @enderror
+    </div>
+    <div class="input-area">
+        <label for="password" class="form-label">Password {{ $customer->user_id ? '(Opsional untuk ubah password)' : '(Opsional untuk membuat akun)' }}</label>
+        <input id="password" name="password" type="password" class="form-control" placeholder="Masukan Password">
+        <small class="text-gray-500">{{ $customer->user_id ? 'Kosongkan jika tidak ingin mengubah password' : 'Isi untuk membuat akun' }}</small>
+        @error('password')
+        <div class="text-red-500 mt-2 text-sm">
+            {{ $message }}
+        </div>
+        @enderror
+    </div>
+</div>
 
                             <!-- tax and status -->
                             <div class="grid md:grid-cols-2 gap-7">

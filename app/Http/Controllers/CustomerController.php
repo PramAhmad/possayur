@@ -60,7 +60,6 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->all());
         $request->validate([
             'name' => 'required|string|max:255',
             'is_active' => 'required|in:0,1',
@@ -70,12 +69,12 @@ class CustomerController extends Controller
             'tax' => 'nullable|string|max:255',
             'address' => 'required|string|max:255',
             'country' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:6',
+            'email' => 'nullable|email|unique:users,email', // Changed to nullable
+            'password' => 'nullable|string|min:6', // Changed to nullable
             'postal_code' => 'required|string|max:255',
-        'city' => 'required|string|max:255',
-        'state' => 'required|string|max:255',
-        'outlet_id' => 'required|exists:outlets,id'
+            'city' => 'required|string|max:255',
+            'state' => 'required|string|max:255',
+            'outlet_id' => 'required|exists:outlets,id'
         ],[
             'name.required' => 'Name wajib di isi',
             'name.max' => 'Name maksimal 255 karakter',
@@ -98,10 +97,8 @@ class CustomerController extends Controller
             'country.required' => 'Country wajib di isi',
             'country.max' => 'Country maksimal 255 karakter',
             'country.string' => 'Country harus berupa string',
-            'email.required' => 'Email wajib di isi',
             'email.email' => 'Email harus berupa email',
             'email.unique' => 'Email sudah ada',
-            'password.required' => 'Password wajib di isi',
             'password.min' => 'Password minimal 6 karakter',
             'postal_code.required' => 'Postal Code wajib di isi',
             'postal_code.max' => 'Postal Code maksimal 255 karakter',
@@ -111,42 +108,51 @@ class CustomerController extends Controller
             'city.string' => 'City harus berupa string',
             'state.required' => 'State wajib di isi',
             'state.max' => 'State maksimal 255 karakter'
-
         ]);
-       try {
-        DB::beginTransaction();
-        $user =   User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => bcrypt($request->password),
-            'email_verified_at' => now(),
-            'outlet_id' => $request->outlet_id,
-
-        ]);
-   
-        Customer::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'is_active' => $request->is_active,
-            'customer_group_id' => $request->customer_group_id,
-            'user_id' => $user->id,
-            'company_name' => $request->company_name,
-            'phone' => $request->phone,
-            'tax' => $request->tax,
-            'address' => $request->address,
-            'country' => $request->country,
-            'postal_code' => $request->postal_code,
-            'city' => $request->city,
-            'state' => $request->state,
-        ]);
-    
-       } catch (\Throwable $th) {
-        // return $th;
-        DB::rollBack();
-              return redirect()->back()->with('error', 'Gagal menambahkan customer');
-       }
-       $user->assignRole('customer');
-         DB::commit();
+        
+        try {
+            DB::beginTransaction();
+            
+            // Check if both email and password are provided
+            $user_id = null;
+            if ($request->filled('email') && $request->filled('password')) {
+                // Create user account
+                $user = User::create([
+                    'name' => $request->name,
+                    'email' => $request->email,
+                    'password' => bcrypt($request->password),
+                    'email_verified_at' => now(),
+                    'outlet_id' => $request->outlet_id,
+                ]);
+                
+                // Assign role
+                $user->assignRole('customer');
+                $user_id = $user->id;
+            }
+       
+            // Create customer record
+            Customer::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'is_active' => $request->is_active,
+                'customer_group_id' => $request->customer_group_id,
+                'user_id' => $user_id, // This will be null if no user is created
+                'company_name' => $request->company_name,
+                'phone' => $request->phone,
+                'tax' => $request->tax,
+                'address' => $request->address,
+                'country' => $request->country,
+                'postal_code' => $request->postal_code,
+                'city' => $request->city,
+                'state' => $request->state,
+            ]);
+        
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Gagal menambahkan customer: ' . $th->getMessage());
+        }
+        
+        DB::commit();
         return redirect()->route('customer.index')->with('message', 'Customer berhasil ditambahkan');
     }
 
@@ -204,7 +210,7 @@ class CustomerController extends Controller
             'tax' => 'nullable|string|max:255',
             'address' => 'required|string|max:255',
             'country' => 'required|string|max:255',
-            'email' => 'required|email',
+            'email' => 'nullable|email', // Changed to nullable
             'postal_code' => 'required|string|max:255',
             'city' => 'required|string|max:255',
             'state' => 'required|string|max:255',
@@ -241,45 +247,87 @@ class CustomerController extends Controller
             'state.max' => 'State maksimal 255 karakter'
 
         ]);
-        // dd($request->all());
-         try {
-        DB::beginTransaction();
         
-
-        Customer::where('id', $id)->update([
-            'is_active' => $request->is_active,
-            'customer_group_id' => $request->customer_group_id,
-            'company_name' => $request->company_name,
-            'phone' => $request->phone,
-            'tax' => $request->tax,
-            'address' => $request->address,
-            'country' => $request->country,
-            'postal_code' => $request->postal_code,
-            'city' => $request->city,
-            'state' => $request->state,
-        ]);
-        $user =   Customer::find($id)->user;
-
-        $user->update([
-            'name' => $request->name,
-            'email' => $request->email,
-            'email_verified_at' => now(),
-            'outlet_id' => $request->outlet_id,
-        ]);
-        if($request->password != null){
-            $user->update([
-                'password' => bcrypt($request->password),
+        try {
+            DB::beginTransaction();
+            
+            $customer = Customer::find($id);
+            
+            // Update customer information
+            $customer->update([
+                'is_active' => $request->is_active,
+                'customer_group_id' => $request->customer_group_id,
+                'company_name' => $request->company_name,
+                'phone' => $request->phone,
+                'tax' => $request->tax,
+                'address' => $request->address,
+                'country' => $request->country,
+                'postal_code' => $request->postal_code,
+                'city' => $request->city,
+                'state' => $request->state,
+                'email' => $request->email,
             ]);
+
+            // Handle user account
+            if ($customer->user_id && (!$request->filled('email') || !$request->filled('password'))) {
+                // If customer has a user but email/password is now empty, keep the existing user
+                // but update other fields
+                $user = User::find($customer->user_id);
+                if ($user) {
+                    $user->update([
+                        'name' => $request->name,
+                        'outlet_id' => $request->outlet_id,
+                    ]);
+                    
+                    // Update email if provided
+                    if ($request->filled('email')) {
+                        $user->update(['email' => $request->email]);
+                    }
+                    
+                    // Update password if provided
+                    if ($request->filled('password')) {
+                        $user->update(['password' => bcrypt($request->password)]);
+                    }
+                }
+            } 
+            else if (!$customer->user_id && $request->filled('email') && $request->filled('password')) {
+                // If customer doesn't have a user but now email/password is provided, create new user
+                $user = User::create([
+                    'name' => $request->name,
+                    'email' => $request->email,
+                    'password' => bcrypt($request->password),
+                    'email_verified_at' => now(),
+                    'outlet_id' => $request->outlet_id,
+                ]);
+                
+                $user->assignRole('customer');
+                
+                // Update the customer with the new user_id
+                $customer->update(['user_id' => $user->id]);
+            }
+            else if ($customer->user_id) {
+                // Update existing user
+                $user = User::find($customer->user_id);
+                if ($user) {
+                    $user->update([
+                        'name' => $request->name,
+                        'email' => $request->email,
+                        'outlet_id' => $request->outlet_id,
+                    ]);
+                    
+                    if ($request->filled('password')) {
+                        $user->update(['password' => bcrypt($request->password)]);
+                    }
+                }
+            }
+            
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Gagal mengubah customer: ' . $th->getMessage());
         }
-         } catch (\Throwable $th) {
-            dd($th);
-        DB::rollBack();
-              return redirect()->back()->with('error', 'Gagal mengubah customer');
-         }
-            $user->assignRole('customer');
-            DB::commit();
-            return redirect()->route('customer.index')->with('message', 'Customer berhasil diubah');
         
+        DB::commit();
+        return redirect()->route('customer.index')->with('message', 'Customer berhasil diubah');
     }
 
     /**

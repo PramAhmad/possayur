@@ -149,26 +149,29 @@
         </div>
     </div>
     <!-- email password -->
-    <div class="grid md:grid-cols-2 gap-7">
-        <div class="input-area">
-            <label for="email" class="form-label">Email</label>
-            <input id="email" name="email" type="email" class="form-control" placeholder="Masukan Email" value="{{ old('email') }}">
-            @error('email')
-                <div class="text-red-500 mt-2 text-sm">
-                    {{ $message }}
-                </div>
-            @enderror
-        </div>
-        <div class="input-area">
-            <label for="password" class="form-label">Password</label>
-            <input id="password" name="password" type="password" class="form-control" placeholder="Masukan Password">
-            @error('password')
-                <div class="text-red-500 mt-2 text-sm">
-                    {{ $message }}
-                </div>
-            @enderror
-        </div>
+<!-- email password -->
+<div class="grid md:grid-cols-2 gap-7">
+    <div class="input-area">
+        <label for="email" class="form-label">Email (Opsional untuk membuat akun)</label>
+        <input id="email" name="email" type="email" class="form-control" placeholder="Masukan Email" value="{{ old('email') }}">
+        <small class="text-gray-500">Biarkan kosong jika tidak ingin membuat akun</small>
+        @error('email')
+            <div class="text-red-500 mt-2 text-sm">
+                {{ $message }}
+            </div>
+        @enderror
     </div>
+    <div class="input-area">
+        <label for="password" class="form-label">Password (Opsional untuk membuat akun)</label>
+        <input id="password" name="password" type="password" class="form-control" placeholder="Masukan Password">
+        <small class="text-gray-500">Biarkan kosong jika tidak ingin membuat akun</small>
+        @error('password')
+            <div class="text-red-500 mt-2 text-sm">
+                {{ $message }}
+            </div>
+        @enderror
+    </div>
+</div>
     <!-- tax -->
     <div class="grid md:grid-cols-2 gap-7">
         <div class="input-area">
