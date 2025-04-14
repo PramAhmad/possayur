@@ -223,7 +223,7 @@ class SuplierController extends Controller
             Suplier::find($id)->delete();
             return redirect()->back()->with('message', 'Data berhasil dihapus');
         } catch (\Exception $e) {
-            // dd($e);
+            dd($e);
             return redirect()->back()->with('error', 'Data gagal dihapus');
         }
     }
