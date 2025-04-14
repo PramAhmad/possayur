@@ -118,6 +118,7 @@ class SuplierController extends Controller
             ]);
             return redirect()->route('supplier.index')->with('message', 'Data berhasil disimpan');
         } catch (\Exception $e) {
+            dd($e);
             return redirect()->back()->with('error', 'Data gagal disimpan');
         }
     }
@@ -204,6 +205,7 @@ class SuplierController extends Controller
             ]);
             return redirect()->route('supplier.index')->with('message', 'Data berhasil diupdate');
         } catch (\Exception $e) {
+            dd($e);
             return redirect()->back()->with('error', 'Data gagal diupdate');
         }
     }
