@@ -143,7 +143,7 @@
                         previous: `<iconify-icon icon="ic:round-keyboard-arrow-left"></iconify-icon>`,
                         next: `<iconify-icon icon="ic:round-keyboard-arrow-right"></iconify-icon>`,
                     },
-                    search: "Search:",
+                    search: "Cari Nama Customer",
                 },
             });
 
