@@ -69,14 +69,12 @@
                                 <td class="table-td">
                                   {{ $c->customerGroup->name }}
                                 </td>
-                                <td class=" table-td ">
-                                  {{ $c->user->name }}
-                                </td>
+                                <td>{{ $c->name }}</td>
                                 <td class=" table-td ">
                                   {{ $c->company_name }}
                                 </td>
                                 <td class=" table-td ">
-                                  {{ $c->user->email }}
+                                  {{ $c->user?->email ?? 'tidak ada email'}}
                                 </td>
                                 <td class=" table-td ">
                                   {{ $c->phone }}
