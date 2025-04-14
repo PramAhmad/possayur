@@ -22,6 +22,7 @@ class Suplier extends Model
         'bank_name',
         'bank_branch',
         'account_holder',
+        'supplier_type',
         'account_number',
     ];
     public function tapActivity(Activity $activity, string $eventName)
