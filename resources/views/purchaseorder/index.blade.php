@@ -26,16 +26,17 @@
     <div class="relative w-full sm:w-auto flex items-center">
         <form id="searchForm" method="get" action="{{ route('purchaseorder.index') }}">
             <input name="q" type="text" class="inputField pl-8 p-2 border border-slate-200 dark:border-slate-700 rounded-md dark:bg-slate-900" placeholder="Search purchase order" value="{{ request()->q }}">
+            
+            <div class="mt-2 sm:mt-0 sm:ml-2 inline-block">
+                <select name="supplier_id" class="inputField pl-3 p-2 border border-slate-200 dark:border-slate-700 rounded-md dark:bg-slate-900" onchange="document.getElementById('searchForm').submit()">
+                    <option value="">All Suppliers</option>
+                    @foreach($suppliers as $supplier)
+                        <option value="{{ $supplier->id }}" {{ request()->supplier_id == $supplier->id ? 'selected' : '' }}>{{ $supplier->name }}</option>
+                    @endforeach
+                </select>
+            </div>
         </form>
         <iconify-icon class="absolute text-textColor left-2 dark:text-white" icon="quill:search-alt"></iconify-icon>
-    </div>
-    <div class="relative w-full sm:w-auto flex items-center">
-        <select name="supplier_id" class="inputField pl-8 p-2 border border-slate-200 dark:border-slate-700 rounded-md dark:bg-slate-900" onchange="this.form.submit()">
-            <option value="">All Suppliers</option>
-            @foreach($suppliers as $supplier)
-                <option value="{{ $supplier->id }}" {{ request()->supplier_id == $supplier->id ? 'selected' : '' }}>{{ $supplier->name }}</option>
-            @endforeach
-        </select>
     </div>
 </div>
             </header>
@@ -119,9 +120,11 @@
                                                                 </a>
                                                             </li>
                                                             <li>
-                                                                <a href="#" class=" bg-danger-500 text-danger-500 bg-opacity-30 hover:bg-opacity-100 hover:text-white w-full border-b
-                                      border-b-gray-500 border-opacity-10 px-4 py-2 text-sm last:mb-0 cursor-pointer last:rounded-b flex space-x-2 items-center
-                                      rtl:space-x-reverse ">
+                                                                <form id="delete-form-{{ $purchaseOrder->id }}" action="{{ route('purchaseorder.destroy', $purchaseOrder->id) }}" method="POST" style="display: none;">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                </form>
+                                                                <a href="#" onclick="event.preventDefault(); sweetAlertDelete(event, 'delete-form-{{ $purchaseOrder->id }}')" class="bg-danger-500 text-danger-500 bg-opacity-30 hover:bg-opacity-100 hover:text-white w-full border-b border-b-gray-500 border-opacity-10 px-4 py-2 text-sm last:mb-0 cursor-pointer last:rounded-b flex space-x-2 items-center rtl:space-x-reverse">
                                                                     <span class="text-base">
                                                                         <iconify-icon icon="heroicons:trash"></iconify-icon>
                                                                     </span>

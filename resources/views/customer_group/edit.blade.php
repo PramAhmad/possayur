@@ -32,13 +32,13 @@
                                 </div>
                             </div>
                             <div class="grid md:grid-cols-2 gap-7">
-                                <div class="input-area">
+                                {{-- <div class="input-area">
                                     <label for="percentage" class="form-label">Persentase</label>
                                     <input id="percentage" name="percentage" type="text" class="form-control" placeholder="Masukan Persentase" value="{{ old('percentage', $customer_group->percentage) }}">
                                     @error('percentage')
                                         <div class="text-red-500 mt-2 text-sm">{{ $message }}</div>
                                     @enderror
-                                </div>
+                                </div> --}}
                                 <div class="input-area">
                                     <label for="is_active" class="form-label">Status</label>
                                     <div class="primary-radio">

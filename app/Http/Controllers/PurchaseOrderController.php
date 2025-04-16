@@ -24,7 +24,8 @@ class PurchaseOrderController extends Controller
         $q = $request->input('q', ''); 
         $perPage = $request->input('per_page', 10); 
         $sort = $request->input('sort', 'latest'); 
-    
+        $supplierId = $request->input('supplier_id', '');
+
         $breadcrumbItems = [
             [
                 'name' => 'Settings',
@@ -39,27 +40,38 @@ class PurchaseOrderController extends Controller
         ];
         $pageTitle = 'Purchase Order';
         
-        $purchaseOrders = QueryBuilder::for(PurchaseOrder::class)
-            ->allowedSorts(['reference_no', 'total_cost', 'grand_total', 'status', 'created_at'])
-            ->allowedFilters([
-                AllowedFilter::partial('reference_no'),
-                AllowedFilter::partial('status'),
-                AllowedFilter::exact('supplier_id'), // Tambahkan filter untuk supplier
-            ])
-            ->with(['supplier', 'user', 'outlet', 'productPurchase']) 
-            ->where('reference_no', 'like', "%$q%") 
-            ->latest() 
-            ->paginate($perPage) 
-            ->appends(['per_page' => $perPage, 'q' => $q, 'sort' => $sort]); 
-            $suppliers = Suplier::all();
+        $query = PurchaseOrder::query()->with(['supplier', 'user', 'outlet', 'productPurchase']);
+        
+        // Search
+        if (!empty($q)) {
+            $query->where('reference_no', 'like', "%$q%");
+        }
+        
+        // Filter by supplier
+        if (!empty($supplierId)) {
+            $query->where('supplier_id', $supplierId);
+        }
+        
+        // Sort
+        if ($sort == 'latest') {
+            $query->latest();
+        } else {
+            // Handle other sort options if needed
+            $query->orderBy($sort);
+        }
+        
+        $purchaseOrders = $query->paginate($perPage)
+            ->appends(['per_page' => $perPage, 'q' => $q, 'sort' => $sort, 'supplier_id' => $supplierId]);
+            
+        $suppliers = Suplier::all();
+        
         return view('purchaseorder.index', [
             'suppliers' => $suppliers,
             'purchaseOrders' => $purchaseOrders,
             'breadcrumbItems' => $breadcrumbItems,
             'pageTitle' => $pageTitle,
         ]);
-}
-
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -286,6 +298,22 @@ class PurchaseOrderController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try {
+            DB::beginTransaction();
+            
+            $purchaseOrder = PurchaseOrder::findOrFail($id);
+            
+            // First delete related records in product_purchase table
+            ProductPurchase::where('purchase_id', $id)->delete();
+            
+            // Then delete the purchase order
+            $purchaseOrder->delete();
+            
+            DB::commit();
+            return redirect()->route('purchaseorder.index')->with('message', 'Purchase order deleted successfully');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->route('purchaseorder.index')->with('error', 'Failed to delete purchase order: ' . $e->getMessage());
+        }
     }
 }

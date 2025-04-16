@@ -52,14 +52,12 @@ class CustomerGroupController extends Controller
         // dd($request->all());
         $request->validate([
             'name' => 'required|string|max:255',
-            'percentage' => 'required|numeric',
             'is_active' => 'required|in:0,1',
         ],[
             'name.required' => 'Name wajib di isi',
             'name.max' => 'Name maksimal 255 karakter',
             'name.string' => 'Name harus berupa string',
-            'percentage.required' => 'Percentage wajib di isi',
-            'percentage.numeric' => 'Percentage harus berupa angka',
+         
             'is_active.required' => 'Is Active wajib di isi',
             'is_active.in' => 'Is Active harus berupa 0 atau 1',
 
@@ -69,7 +67,7 @@ class CustomerGroupController extends Controller
        
         CustomerGroup::create([
             'name' => $request->name,
-            'percentage' => $request->percentage,
+            'percentage' => $request->percentage ?? 0,
             'is_active' => $request->is_active,
         ]);
 
@@ -129,14 +127,12 @@ class CustomerGroupController extends Controller
         // dd($request->all());
         $request->validate([
             'name' => 'required|string|max:255',
-            'percentage' => 'required|numeric',
             'is_active' => 'required|in:0,1',
         ],[
             'name.required' => 'Name wajib di isi',
             'name.max' => 'Name maksimal 255 karakter',
             'name.string' => 'Name harus berupa string',
-            'percentage.required' => 'Percentage wajib di isi',
-            'percentage.numeric' => 'Percentage harus berupa angka',
+        
             'is_active.required' => 'Is Active wajib di isi',
             'is_active.in' => 'Is Active harus berupa 0 atau 1',
 
@@ -147,7 +143,7 @@ class CustomerGroupController extends Controller
        
         $CustomerGroup->update([
             'name' => $request->name,
-            'percentage' => $request->percentage,
+            'percentage' => $request->percentage ?? 0,
             'is_active' => $request->is_active,
         ]);
 

@@ -36,7 +36,7 @@
                              
                             <div class="grid md:grid-cols-2 gap-7">
                                 <!-- percentage -->
-                                <div class="input-area">
+                                {{-- <div class="input-area">
                                     <label for="percentage" class="form-label">Persentase</label>
                                     <input id="percentage" name="percentage" type="text" class="form-control" placeholder="Masukan Persentase">
                                     @error('percentage')
@@ -44,7 +44,7 @@
                                         {{ $message }}
                                     </div>
                                     @enderror
-                                </div>
+                                </div> --}}
                                 <div class="input-area">
                                     <label for="is_active" class="form-label">Status</label>
                                     <div class="primary-radio">

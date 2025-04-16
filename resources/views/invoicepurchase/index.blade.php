@@ -31,7 +31,7 @@
 
                 <div class="justify-center flex flex-wrap sm:flex items-center lg:justify-end gap-3">
                     <div class="relative w-full sm:w-auto flex items-center">
-                        <form id="searchForm" method="get" action="{{ route('purchaseorder.index') }}">
+                        <form id="searchForm" method="get" action="{{ route('invoicepurchase.index') }}">
                             <input name="q" type="text" class="inputField pl-8 p-2 border border-slate-200 dark:border-slate-700 rounded-md dark:bg-slate-900" placeholder="Search purchase order" value="{{ request()->q }}">
                         </form>
                         <iconify-icon class="absolute text-textColor left-2 dark:text-white" icon="quill:search-alt"></iconify-icon>
@@ -51,7 +51,6 @@
                                         <th scope="col" class="table-th">{{ __('Supplier') }}</th>
                                         <th scope="col" class="table-th">{{ __('Order Date') }}</th>
                                         <th scope="col" class="table-th">{{ __('Total Amount') }}</th>
-                                        <th scope="col" class="table-th text-center">{{ __('Products') }}</th>
                                         <th scope="col" class="table-th">{{ __('Status') }}</th>
                                         <th scope="col" class="table-th w-20">{{ __('Action') }}</th>
                                     </tr>
@@ -69,13 +68,7 @@
                                                 {{Carbon\Carbon::parse($purchaseOrder->created_at)->format('d M Y')}}
                                             </td>
                                             <td class="table-td">{{ currency($purchaseOrder->grand_total) }}</td>
-                                            <td class="table-td text-center">
-                                                <div class="flex justify-center items-center">
-                                                    <a href="#" class="action-btn text-center" onclick="showProductModal({{ $purchaseOrder->id }})" data-products='@json($purchaseOrder->productInvoicePurchases)'>
-                                                        <iconify-icon icon="akar-icons:eye" class="text-lg"></iconify-icon>
-                                                    </a>
-                                                </div>
-                                            </td>
+                                       
 
                                             <td class="table-td">
                                                 <div class="inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-full bg-opacity-20 text-success-500 bg-success-500">

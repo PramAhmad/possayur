@@ -88,8 +88,8 @@
         <table border="0" style="width: 100%">
             <td>
                 <br>
-                <p>Kepada Yth: {{ $invoice?->salesorder?->customer->name }}</p>
-                <p>Alamat: {{ $invoice?->salesorder?->customer->address }}</p>
+                <p>Kepada Yth: {{ $invoice?->salesorder?->customer?->name }}</p>
+                <p>Alamat: {{ $invoice?->salesorder?->customer?->address }}</p>
             </td>
         </table>
     </div>

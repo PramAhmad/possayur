@@ -21,11 +21,7 @@
                     <a class="btn inline-flex justify-center btn-dark rounded-[25px] items-center !p-2.5" href="{{ route('listorder.index') }}">
                         <iconify-icon icon="mdi:refresh" class="text-xl"></iconify-icon>
                     </a>
-                    @can('listorder export')
-                    <button data-bs-toggle="modal" data-bs-target="#export" class="btn btn-success inline-flex justify-center btn-dark rounded-[25px] items-center !p-2.5">
-                        Excel <iconify-icon icon="heroicons-outline:folder-arrow-down" class="ml-3 text-xl"></iconify-icon>
-                    </button>
-                    @endcan
+                
                 </div>
             </header>
 

@@ -42,31 +42,6 @@
                                 stroke-linecap="round"
                                 stroke-linejoin="round"
                                 stroke-width="1.5"
-                                d="m16.862 4.487l1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0
-                                0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25
-                                2.25 0 0 1 5.25 6H10"></path>
-                        </svg>
-                    </span>
-                    <span>Edit</span>
-                </a>
-                <button onclick="window.print()" type="button" class="invocie-btn inline-flex btn btn-sm whitespace-nowrap space-x-1 cursor-pointer bg-white dark:bg-slate-800
-                    dark:text-slate-300 btn-md h-min text-sm font-normal text-slate-900 rtl:space-x-reverse">
-                    <span class="text-lg">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            xmlns:xlink="http://www.w3.org/1999/xlink"
-                            aria-hidden="true"
-                            role="img"
-                            class="iconify iconify--heroicons"
-                            width="1em"
-                            height="1em"
-                            viewbox="0 0 24 24">
-                            <path
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="1.5"
                                 d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0 1 10.56 0m-10.56 0L6.34
                                 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0l.229 2.523a1.125 1.125 0 0 1-1.12 1.227H7.231c-.662
                                 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0 0 21 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055
@@ -76,7 +51,8 @@
                         </svg>
                     </span>
                     <span>Print</span>
-                </button>
+                </a>
+          
                 <a href="{{route('returnpurchase.pdf',['id'=>$returnPurchase->id])}}" class="invocie-btn inline-flex btn btn-sm whitespace-nowrap space-x-1 cursor-pointer bg-white dark:bg-slate-800
                     dark:text-slate-300 btn-md h-min text-sm font-normal text-slate-900 rtl:space-x-reverse">
                     <span class="text-lg">
@@ -100,29 +76,7 @@
                     </span>
                     <span>Download</span>
                 </a>
-                <button class="invocie-btn inline-flex btn btn-sm whitespace-nowrap space-x-1 cursor-pointer bg-white dark:bg-slate-800
-                    dark:text-slate-300 btn-md h-min text-sm font-normal text-slate-900 rtl:space-x-reverse">
-                    <span class="text-lg transform -rotate-45">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            xmlns:xlink="http://www.w3.org/1999/xlink"
-                            aria-hidden="true"
-                            role="img"
-                            class="iconify iconify--heroicons"
-                            width="1em"
-                            height="1em"
-                            viewbox="0 0 24 24">
-                            <path
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="1.5"
-                                d="M6 12L3.269 3.126A59.768 59.768 0 0 1 21.485 12A59.77 59.77 0 0 1 3.27 20.876L5.999 12Zm0 0h7.5"></path>
-                        </svg>
-                    </span>
-                    <span>Send returnPurchase</span>
-                </button>
+   
             </div>
         </div>
         <!-- returnPurchase Header Card -->

@@ -98,11 +98,7 @@
                                                         </a>
                                                     @endcan
 
-                                                    @can('invoice edit')
-                                                        <a class="action-btn" href="{{ route('invoice.edit', ['invoice' => $invoice->id]) }}">
-                                                            <iconify-icon icon="heroicons:pencil-square"></iconify-icon>
-                                                        </a>
-                                                    @endcan
+                                                
 
                                                     @can('invoice delete')
                                                         {{-- <form id="deleteForm{{ $invoice->id }}" method="POST" action="{{ route('invoice.destroy', $invoice) }}">

@@ -60,9 +60,9 @@
                                 <td class=" table-td ">
                                   {{ $c->name }}
                                 </td>
-                                <td class="table-td">
+                                {{-- <td class="table-td">
                                   {{ $c->percentage }}
-                                </td>
+                                </td> --}}
                                 <td class=" table-td ">
                                 @if($c->is_active == '0')
                                   <div class="inline-block px-3 min-w-[90px] text-center mx-auto py-1 rounded-full bg-opacity-20 text-success-500
