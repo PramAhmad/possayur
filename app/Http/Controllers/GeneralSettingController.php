@@ -11,44 +11,26 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Log;
 
 class GeneralSettingController extends Controller
 {
     /**
-     * @param  EnvFileService  $envFileService
+     * Initialize controller dependencies
+     *
+     * @param EnvFileService $envFileService
      */
     public function __construct(protected EnvFileService $envFileService)
     {
-
-    }
-    /**
-     * Show the form for creating the resource.
-     *
-     * @return void
-     */
-    public function create()
-    {
-        abort(404);
     }
 
     /**
-     * Store the newly created resource in storage.
+     * Display the settings index page
      *
-     * @param  Request  $request
-     * @return void
+     * @return View
      */
-    public function store(Request $request)
-    {
-        abort(404);
-    }
-
-    /**
-     * Display the resource.
-     *
-     * @return void
-     */
-    public function show()
+    public function show(): View
     {
         $breadcrumbsItems = [
             [
@@ -56,7 +38,6 @@ class GeneralSettingController extends Controller
                 'url' => '/settings',
                 'active' => true
             ],
-
         ];
 
         return view('general-settings.index', [
@@ -66,11 +47,12 @@ class GeneralSettingController extends Controller
     }
 
     /**
-     * Show the form for editing the resource.
+     * Show the form for editing general settings
      *
-     * @return Application|Factory|View
+     * @param GeneralSettings $generalSettings
+     * @return View
      */
-    public function edit(GeneralSettings $generalSettings)
+    public function edit(GeneralSettings $generalSettings): View
     {
         $breadcrumbsItems = [
             [
@@ -83,7 +65,6 @@ class GeneralSettingController extends Controller
                 'url' => '#',
                 'active' => true
             ],
-
         ];
 
         $envDetails = $this->envFileService->getAllEnv();
@@ -104,77 +85,158 @@ class GeneralSettingController extends Controller
     }
 
     /**
-     * Update the resource in storage.
+     * Update general environment settings
      *
-     * @param  Request  $request
+     * @param Request $request
      * @return RedirectResponse
      */
-    public function update(Request $request)
+    public function update(Request $request): RedirectResponse
     {
-        $this->envFileService->updateEnv($request);
-
-        return back()->with(['message' => 'General settings updated successfully.', 'type' => 'success']);
+        try {
+            // Update environment variables using the EnvFileService
+            $this->envFileService->updateEnv($request);
+            
+            return back()->with([
+                'message' => 'General settings updated successfully.',
+                'type' => 'success'
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error updating general settings: ' . $e->getMessage());
+            
+            return back()->with([
+                'message' => 'Failed to update settings: ' . $e->getMessage(),
+                'type' => 'error'
+            ]);
+        }
     }
 
     /**
-     * Remove the resource from storage.
+     * Update feature toggle settings
+     * 
+     * @param Request $request
+     * @return RedirectResponse
+     */
+    public function updateFeatures(Request $request): RedirectResponse
+    {
+        try {
+            // Handle ENABLE_SURAT_JALAN toggle
+            $enableSuratJalan = $request->has('ENABLE_SURAT_JALAN') ? 'true' : 'false';
+            
+            // Update the .env file
+            $this->updateEnvVariable('ENABLE_SURAT_JALAN', $enableSuratJalan);
+            
+            // Clear configuration cache
+            Artisan::call('config:clear');
+            
+            return back()->with([
+                'message' => 'Feature settings updated successfully.', 
+                'type' => 'success'
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Failed to update feature settings: ' . $e->getMessage());
+            
+            return back()->with([
+                'message' => 'Failed to update feature settings: ' . $e->getMessage(), 
+                'type' => 'error'
+            ]);
+        }
+    }
+
+    /**
+     * Update logos and image assets
      *
+     * @param UpdateGeneralSettingRequest $request
+     * @param GeneralSettings $logoSettings
+     * @return RedirectResponse
+     */
+    public function logoUpdate(UpdateGeneralSettingRequest $request, GeneralSettings $logoSettings): RedirectResponse
+    {
+        try {
+            $imageTypes = ['logo', 'favicon', 'dark_logo', 'guest_logo', 'guest_background'];
+            
+            foreach ($imageTypes as $imageType) {
+                if ($request->hasFile($imageType)) {
+                    $this->updateImage($imageType, $request, $logoSettings);
+                }
+            }
+            
+            return back()->with([
+                'message' => 'Logo updated successfully.',
+                'type' => 'success'
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error updating logos: ' . $e->getMessage());
+            
+            return back()->with([
+                'message' => 'Failed to update logos: ' . $e->getMessage(),
+                'type' => 'error'
+            ]);
+        }
+    }
+
+    /**
+     * Update a specific environment variable in the .env file
+     * 
+     * @param string $key
+     * @param string $value
      * @return void
      */
-    public function destroy()
+    private function updateEnvVariable(string $key, string $value): void
     {
-        abort(404);
+        $path = base_path('.env');
+        
+        if (!file_exists($path)) {
+            throw new \Exception('.env file not found');
+        }
+        
+        $content = file_get_contents($path);
+        
+        if ($content === false) {
+            throw new \Exception('Unable to read .env file');
+        }
+        
+        // Check if the key already exists in the file
+        if (preg_match("/^{$key}=.*/m", $content)) {
+            // Update existing value
+            $content = preg_replace("/^{$key}=.*/m", "{$key}={$value}", $content);
+        } else {
+            // Add new key-value pair
+            $content .= PHP_EOL . "{$key}={$value}";
+        }
+        
+        // Write changes back to the file
+        $result = file_put_contents($path, $content);
+        
+        if ($result === false) {
+            throw new \Exception('Unable to write to .env file');
+        }
     }
-
-    public function logoUpdate(UpdateGeneralSettingRequest $request, GeneralSettings $logoSettings)
+    
+    /**
+     * Update an image asset
+     *
+     * @param string $imageType
+     * @param Request $request
+     * @param GeneralSettings $logoSettings
+     * @return void
+     */
+    private function updateImage(string $imageType, Request $request, GeneralSettings $logoSettings): void
     {
-        if ($request->hasFile('logo')) {
-            $generalSetting = GeneralSetting::where('group', 'general-settings')
-                ->where('name', 'logo')
-                ->first();
-            $generalSetting->clearMediaCollection('logo');
-            $generalSetting->addMediaFromRequest('logo')->toMediaCollection('logo');
-            $logoSettings->logo = $generalSetting->getFirstMediaUrl('logo');
-            $logoSettings->save();
-        }
-        if ($request->hasFile('favicon')) {
-            $generalSetting = GeneralSetting::where('group', 'general-settings')
-                ->where('name', 'favicon')
-                ->first();
-            $generalSetting->clearMediaCollection('favicon');
-            $generalSetting->addMediaFromRequest('favicon')->toMediaCollection('favicon');
-            $logoSettings->favicon = $generalSetting->getFirstMediaUrl('favicon');
-            $logoSettings->save();
-        }
-        if ($request->hasFile('dark_logo')) {
-            $generalSetting = GeneralSetting::where('group', 'general-settings')
-                ->where('name', 'dark_logo')
-                ->first();
-            $generalSetting->clearMediaCollection('dark_logo');
-            $generalSetting->addMediaFromRequest('dark_logo')->toMediaCollection('dark_logo');
-            $logoSettings->dark_logo = $generalSetting->getFirstMediaUrl('dark_logo');
-            $logoSettings->save();
-        }
-        if ($request->hasFile('guest_logo')) {
-            $generalSetting = GeneralSetting::where('group', 'general-settings')
-                ->where('name', 'guest_logo')
-                ->first();
-            $generalSetting->clearMediaCollection('guest_logo');
-            $generalSetting->addMediaFromRequest('guest_logo')->toMediaCollection('guest_logo');
-            $logoSettings->guest_logo = $generalSetting->getFirstMediaUrl('guest_logo');
-            $logoSettings->save();
-        }
-        if ($request->hasFile('guest_background')) {
-            $generalSetting = GeneralSetting::where('group', 'general-settings')
-                ->where('name', 'guest_background')
-                ->first();
-            $generalSetting->clearMediaCollection('guest_background');
-            $generalSetting->addMediaFromRequest('guest_background')->toMediaCollection('guest_background');
-            $logoSettings->guest_background = $generalSetting->getFirstMediaUrl('guest_background');
-            $logoSettings->save();
-        }
-
-        return back()->with(['message' => 'Logo updated successfully.', 'type' => 'success']);
+        $generalSetting = GeneralSetting::where('group', 'general-settings')
+            ->where('name', $imageType)
+            ->first();
+            
+        $generalSetting->clearMediaCollection($imageType);
+        $generalSetting->addMediaFromRequest($imageType)->toMediaCollection($imageType);
+        $logoSettings->{$imageType} = $generalSetting->getFirstMediaUrl($imageType);
+        $logoSettings->save();
     }
-
+    
+    /**
+     * These methods are not used but required by resourceful routing.
+     * They are explicitly set to return a 404 to prevent misuse.
+     */
+    public function create()  { abort(404); }
+    public function store()   { abort(404); }
+    public function destroy() { abort(404); }
 }

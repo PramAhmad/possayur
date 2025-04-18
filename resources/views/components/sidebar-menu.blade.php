@@ -120,47 +120,42 @@
             request()->routeIs('invoice.index') || 
             request()->routeIs('returnsalesorder.index') || 
             request()->routeIs('listorder.index') ? 'active' : '' }}">
-                <a href="#" class="navItem">
-                    <span class="flex items-center">
-                        <iconify-icon class="nav-icon" icon="heroicons-outline:shopping-cart"></iconify-icon>
-                        <span>{{ __('Sales Order') }}</span>
-                    </span>
-                    <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
-                </a>
-                <ul class="sidebar-submenu first-letter:">
-                    <li class="navItem {{ request()->routeIs('pos.index') ? 'active' : '' }}">
-                        <a href="{{ route('pos.index') }}">Point Of Sales</a>
-                    </li>
-                    <li class="navItem {{ request()->routeIs('salesorder.index') ? 'active' : '' }}">
-                        <a href="{{ route('salesorder.index') }}">Sales Order</a>
-                    </li>
-                    <!-- Surat Jalan -->
-                    <li class="navItem {{ request()->routeIs('suratjalan.index') ? 'active' : '' }}">
-                        <a href="{{ route('suratjalan.index') }}">Surat Jalan</a>
-                    </li>
-                    <!-- Invoice -->
-                    <li class="navItem {{ request()->routeIs('invoice.index') ? 'active' : '' }}">
-                        <a href="{{ route('invoice.index') }}">Invoice</a>
-                    </li>
-                    <!-- Return Product -->
-                    <li class="navItem {{ request()->routeIs('returnsalesorder.index') ? 'active' : '' }}">
-                        <a href="{{ route('returnsalesorder.index') }}">Return Product</a>
-                    </li>
-                    <!-- List Order -->
-                    <li class="navItem {{ request()->routeIs('listorder.index') ? 'active' : '' }}">
-                        <a href="{{ route('listorder.index') }}">List Order</a>
-                    </li>
-                </ul>
+    <a href="#" class="navItem">
+        <span class="flex items-center">
+            <iconify-icon class="nav-icon" icon="heroicons-outline:shopping-cart"></iconify-icon>
+            <span>{{ __('Sales Order') }}</span>
+        </span>
+        <iconify-icon class="icon-arrow" icon="heroicons-outline:chevron-right"></iconify-icon>
+    </a>
+    <ul class="sidebar-submenu first-letter:">
+        <li class="navItem {{ request()->routeIs('pos.index') ? 'active' : '' }}">
+            <a href="{{ route('pos.index') }}">Point Of Sales</a>
+        </li>
+        <li class="navItem {{ request()->routeIs('salesorder.index') ? 'active' : '' }}">
+            <a href="{{ route('salesorder.index') }}">Sales Order</a>
+        </li>
+        
+        @if(env('ENABLE_SURAT_JALAN') === true)
+            <!-- Surat Jalan -->
+            <li class="navItem {{ request()->routeIs('suratjalan.index') ? 'active' : '' }}">
+                <a href="{{ route('suratjalan.index') }}">Surat Jalan</a>
             </li>
+            <!-- Invoice -->
+            <li class="navItem {{ request()->routeIs('invoice.index') ? 'active' : '' }}">
+                <a href="{{ route('invoice.index') }}">Invoice</a>
+            </li>
+            <!-- Return Product -->
+            <li class="navItem {{ request()->routeIs('returnsalesorder.index') ? 'active' : '' }}">
+                <a href="{{ route('returnsalesorder.index') }}">Return Product</a>
+            </li>
+            <!-- List Order -->
+            <li class="navItem {{ request()->routeIs('listorder.index') ? 'active' : '' }}">
+                <a href="{{ route('listorder.index') }}">List Order</a>
+            </li>
+        @endif
+    </ul>
+</li>
 
-            {{-- <li>
-                <a href="{{ route('suratjalan.index') }}" class="navItem {{ (request()->is('suratjalan*')) ? 'active' : '' }}">
-                    <span class="flex items-center">
-                        <iconify-icon class=" nav-icon" icon="heroicons-outline:forward"></iconify-icon>
-                        <span>{{ __('Surat Jalan') }}</span>
-                    </span>
-                </a>
-            </li> --}}
             <li class="
                 {{
                     request()->is('stock*') ||

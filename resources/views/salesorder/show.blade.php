@@ -97,7 +97,7 @@
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
             <!-- Header Section -->
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 p-6 bg-slate-50 dark:bg-slate-800">
+            <div class="flex justify-between gap-6 p-6 bg-slate-50 dark:bg-slate-800">
                 <!-- Company Section -->
                 <div class="space-y-3">
                     <h2 class="text-xl font-medium text-slate-900 dark:text-slate-300">From:</h2>
@@ -133,6 +133,7 @@
                 </div>
 
                 <!-- salesOrder Details -->
+                @if(config('feature.surat_jalan'))
                 <div class="space-y-3">
                     <h2 class="text-xl font-medium text-slate-900 dark:text-slate-300">Return Sales SalesOrder Details:
                     </h2>
@@ -151,6 +152,7 @@
 
                     </div>
                 </div>
+                @endif
             </div>
         </div>
 

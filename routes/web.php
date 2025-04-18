@@ -78,6 +78,8 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
     // Env
     Route::singleton('general-settings', GeneralSettingController::class);
     Route::post('general-settings-logo', [GeneralSettingController::class, 'logoUpdate'])->name('general-settings.logo');
+    Route::put('/general-settings/features', [GeneralSettingController::class, 'updateFeatures'])
+        ->name('general-settings.features');
 
     // Database Backup
     Route::resource('database-backups', DatabaseBackupController::class);
@@ -159,8 +161,6 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
 Route::post('download/stockopname/import-excel', [StockOpnameController::class, 'importExcel'])
     ->name('stockopname.import-excel');
     Route::post('json/stockopname/{id}/adjust', [StockOpNameController::class, 'adjust'])->name('stockopname.adjust');
-
-
 
     // export
     Route::get('export/salesorder', [SalesOrderExportController::class, 'export'])->name('salesorder.export');

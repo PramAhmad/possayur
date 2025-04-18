@@ -94,8 +94,8 @@
         <table border="0" style="width: 100%">
             <td>
                 <br>
-                <p>Kepada Yth: {{ $salesOrder->customer->name }}</p>
-                <p>Alamat: {{ $salesOrder->customer->address }}</p>
+                <p>Kepada Yth: {{ $salesOrder->customer?->name }}</p>
+                <p>Alamat: {{ $salesOrder->customer?->address }}</p>
             </td>
         </table>
     </div>

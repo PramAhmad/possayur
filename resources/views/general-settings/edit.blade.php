@@ -11,6 +11,53 @@
             <x-alert :message="session('message')" :type="session('type')"/>
         @endif
 
+        <div class="rounded-md overflow-hidden mt-6">
+            <div class="bg-white dark:bg-slate-800 px-5 py-7">
+                <h3 class="text-lg font-medium mb-5">Feature Settings</h3>
+                
+                <div class="grid md:grid-cols-2 xl:grid-cols-2 gap-7">
+                    <div class="generalSettings" x-data="{open : false}" x-ref="Features">
+                        <div class="generalSettingsCardHead">
+                            <h4 class="generalSettingsCardTitle">
+                                {{ __('Features Surat Jalan') }}
+                            </h4>
+                            <button type="button" onclick="collapsedCard('Features')">
+                                <iconify-icon icon="ic:round-keyboard-arrow-up"
+                                            class="generalSettingsCardIconFeatures transition-all duration-300 text-3xl dark:text-white">
+                                </iconify-icon>
+                            </button>
+                        </div>
+                        
+                        <div class="settingBox" id="settingBoxFeatures">
+                            <form class="space-y-5" method="POST" action="{{ route('general-settings.features') }}">
+                                @csrf
+                                @method('PUT')
+
+                                <div class="flex items-center justify-between p-4 border border-slate-200 dark:border-slate-700 rounded-md">
+                                    <div>
+                                        <p class="text-sm text-gray-500 dark:text-gray-400">Enable or disable the delivery note feature</p>
+                                    </div>
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" name="ENABLE_SURAT_JALAN" value="true" class="sr-only peer" 
+                                            {{ env('ENABLE_SURAT_JALAN') == true ? 'checked' : '' }}>
+                                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 
+                                            dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 
+                                            peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] 
+                                            after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 
+                                            after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 
+                                            peer-checked:bg-blue-600"></div>
+                                    </label>
+                                </div>
+
+                                <button class="defaultButton submitButton btn btn-dark" type="submit">
+                                    {{ __('Save Feature Settings') }}
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <div class="space-y-8">
             <div class="overflow-hidden rounded-md">
@@ -185,6 +232,17 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Feature Toggles Section -->
+          
+            {{-- kasih note true for enabled surat jalan "false" untuk disabled surat jalan --}}
+            <h2 
+                class="text-lg font-semibold text-textColor dark:text-white">
+                {{ __('Note') }}
+            </h2>
+            <p class="text-sm text-textColor dark:text-white">
+                {{ __('If you want to enable the delivery note, please set the value to "true" and if disabled set to "false"') }}
+            </p>
         </div>
     </div>
     @push('scripts')
