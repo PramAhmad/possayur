@@ -28,12 +28,14 @@ class PointOfSalesController extends Controller
 
         return response()->json($products);
     }
+    
     public function getPriceByCustomer(Request $request)
     {
         $data = ProductPriceByCustomer::where('customer_id', $request->customer)->with('product')->get();
 
         return response()->json($data);
     }
+    
     public function index()
     {
         $breadcrumbItems = [
@@ -109,13 +111,21 @@ class PointOfSalesController extends Controller
 
         try {
             DB::beginTransaction();
-            $salesOrder =  SalesOrder::create([
+            
+            // Check if Surat Jalan feature is enabled
+            $isSuratJalanEnabled = config('features.surat_jalan', env('ENABLE_SURAT_JALAN') === 'true');
+            
+            // Generate reference number based on Surat Jalan configuration
+            $referencePrefix = $isSuratJalanEnabled ? 'SO-' : 'INV-';
+            $referenceNo = $referencePrefix . time();
+            
+            $salesOrder = SalesOrder::create([
                 'customer_id' => $request->customer,
                 'outlet_id' => $request->outlet,
-                'reference_no' =>  'SO-' . time(),
+                'reference_no' => $referenceNo,
                 'note' => $request->note ?? '-',
                 'status' => 'pending',
-                'paid_amount' =>   $request->cash,
+                'paid_amount' => $request->cash,
                 'grandtotal' => $request->total,
                 'user_id' => auth()->user()->id,
                 'coupon_id' => $request->coupon,
@@ -123,14 +133,16 @@ class PointOfSalesController extends Controller
                 'total_discount' => $request->totalDiscount,
                 'payment_type' => $request->paymentType,
             ]);
-            // get typecoupon and amount coupon in coupon table
-          if($request->coupon){
-            $coupon = Coupon::find($request->coupon);
-            $salesOrder->update([
-                'coupon_type' => $coupon->type,
-                'coupon_amount' => $coupon->amount,
-            ]);
-          }
+            
+            // Get coupon type and amount in coupon table
+            if ($request->coupon) {
+                $coupon = Coupon::find($request->coupon);
+                $salesOrder->update([
+                    'coupon_type' => $coupon->type,
+                    'coupon_amount' => $coupon->amount,
+                ]);
+            }
+            
             foreach ($request->items as $item) {
                 ProductSalesOrder::create([
                     'sales_order_id' => $salesOrder->id,
@@ -143,24 +155,30 @@ class PointOfSalesController extends Controller
                     'variant_id' => $item['variantId'] ?? null,
                     'batch_id' => $item['batchId'] ?? null,
                 ]);
+                
                 $product = Product::find($item['id']);
                 $product->update(['qty' => $product->qty - $item['qty']]);
             }
-            // total qty 
+            
+            // Update total quantity
             $total_qty = ProductSalesOrder::where('sales_order_id', $salesOrder->id)->sum('qty');
             $salesOrder->update(['total_qty' => $total_qty]);
-            // qty used coupon
-            if($request->coupon){
+            
+            // Update coupon usage
+            if ($request->coupon) {
                 $coupon = Coupon::find($request->coupon);
                 $coupon->update(['used' => $coupon->used + 1]);
             }
+            
+            DB::commit();
+            
+            return redirect()->route('salesorder.index')->with('success', 'Sales Order created successfully');
         } catch (\Exception $e) {
             DB::rollBack();
-            dd($e->getMessage());
+            // Remove dd() call in production code
+            // dd($e->getMessage());
             return redirect()->back()->with('error', $e->getMessage());
         }
-        DB::commit();
-        return redirect()->route('salesorder.index')->with('success', 'Sales Order created successfully');
     }
 
     /**
@@ -192,9 +210,11 @@ class PointOfSalesController extends Controller
         ->with('unit', 'variants', 'batches')  
         ->where('is_active', '=', '1')
         ->get();
-        // return $productsall;
+        
         $coupon = Coupon::where('outlet_id', $id)->get();
-        // return $customer;
+        
+        // Check if Surat Jalan is enabled to pass to the view
+        
         return view('pos.show', [
             'breadcrumbItems' => $breadcrumbItems,
             'productsall' => $productsall,
@@ -203,7 +223,7 @@ class PointOfSalesController extends Controller
             'products' => $products,
             'customers' => $customer,
             'id' => $id,
-            'coupons' => $coupon
+            'coupons' => $coupon,
         ]);
     }
 

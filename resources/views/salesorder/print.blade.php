@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sales Order {{ $salesOrder->reference_no }}</title>
+    <title>{{ config('features.surat_jalan', env('ENABLE_SURAT_JALAN') == true) ? 'Sales Order' : 'Invoice' }} {{ $salesOrder->reference_no }}</title>
     <style>
         @page {
             size: A4;
@@ -83,11 +84,14 @@
                     <p>Telepon: +62 851-9898-9744 | Email: info@gubugbuah.com</p>
                 </td>
                 <td style="text-align: right" valign="top">
-                    <p><strong style="font-size: 16px">SALES ORDER</strong></p>
+                    @php
+                        $isSuratJalanEnabled = config('features.surat_jalan', env('ENABLE_SURAT_JALAN') == true);
+                        $documentType = $isSuratJalanEnabled ? 'SALES ORDER' : 'INVOICE';
+                        $numberPrefix = $isSuratJalanEnabled ? 'SO Number: ' : 'Invoice Number: ';
+                    @endphp
+                    <p><strong style="font-size: 16px">{{ $documentType }}</strong></p>
                     <p>Tanggal: {{ $salesOrder->created_at->format('d M Y') }}</p>
-                    <p>SO Number: {{ $salesOrder->reference_no }}</p>
-                    {{-- <p><strong>Kepada Yth:</strong> {{ $salesOrder->customer->name }}</p>
-                    <p><strong>Alamat:</strong> {{ $salesOrder->customer->address }}</p> --}}
+                    <p>{{ $numberPrefix }}{{ $salesOrder->reference_no }}</p>
                 </td>
             </tr>
         </table>
