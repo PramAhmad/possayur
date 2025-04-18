@@ -118,13 +118,14 @@ class PointOfSalesController extends Controller
             // Generate reference number based on Surat Jalan configuration
             $referencePrefix = $isSuratJalanEnabled ? 'SO-' : 'INV-';
             $referenceNo = $referencePrefix . time();
+            $status = $isSuratJalanEnabled ? 'pending' : 'completed';
             
             $salesOrder = SalesOrder::create([
                 'customer_id' => $request->customer,
                 'outlet_id' => $request->outlet,
                 'reference_no' => $referenceNo,
                 'note' => $request->note ?? '-',
-                'status' => 'pending',
+                'status' => $status,
                 'paid_amount' => $request->cash,
                 'grandtotal' => $request->total,
                 'user_id' => auth()->user()->id,
